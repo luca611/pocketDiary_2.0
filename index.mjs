@@ -9,6 +9,8 @@ import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from '
 import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { connectToDb, closeDbConnection } from './db/dbClinet.mjs';
+import { generateKey } from './security/encryption.mjs';
+import { register } from './controllers/user.mjs';
 
 
 dotenv.config();
@@ -88,12 +90,17 @@ app.use(cors(
 /*
     Routes
 */
+app.get('/getKey', (req, res) => {
+    sendSuccess(res, generateKey());
+});
+
+app.post('/register', register);
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
-    req.session.prem = 'proprio prem';
     sendSuccess(res, availableRoutes);
 });
+
 
 
 app.listen(PORT, () => {

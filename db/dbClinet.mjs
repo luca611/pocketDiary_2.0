@@ -8,7 +8,7 @@ const { Client } = pkg;
 /* Must change:
     -> connectionString: must be placed in .env file
 */
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL ? process.env.DATABASE_URL : false;
 
 /**
  * Connect to the database
@@ -17,6 +17,9 @@ const connectionString = process.env.DATABASE_URL;
  * @throws {Error} - Error if connection fails
  */
 export async function connectToDb() {
+    if (!connectionString) {
+        console.error("No connection string provided, please provide one in the .env file");
+    }
     const client = new Client({
         connectionString: connectionString,
     });
@@ -34,6 +37,9 @@ export async function connectToDb() {
  * @param {Client} client - PostgreSQL client
  */
 export async function closeDbConnection(client) {
+    if (!connectionString) {
+        console.error("No connection string provided, please provide one in the .env file");
+    }
     try {
         await client.end();
     } catch (err) {
@@ -49,6 +55,9 @@ export async function closeDbConnection(client) {
  * @returns {Array} - Result rows
  */
 export async function executeQuery(client, query) {
+    if (!connectionString) {
+        console.error("No connection string provided, please provide one in the .env file");
+    }
     try {
         const result = await client.query(query);
         return result.rows;
