@@ -9,7 +9,7 @@ import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from '
 import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
-import { register } from './controllers/user.mjs';
+import { register, logout, login } from './controllers/user.mjs';
 
 
 dotenv.config();
@@ -61,13 +61,18 @@ app.use((req, res, next) => {
     });
 
     req.on("end", () => {
-        try {
-            req.body = JSON.parse(data);
-            next();
-        } catch {
+        if (data) {
+            try {
+                req.body = JSON.parse(data);
+                next();
+            } catch {
+                req.body = null;
+                console.warn("▶ Received invalid JSON from " + req.ip);
+                sendError(res, "Invalid JSON");
+            }
+        } else {
             req.body = null;
-            console.warn("▶ Recived invalid JSON from " + req.ip);
-            sendError(res, "Invalid JSON");
+            next();
         }
     });
 });
@@ -104,10 +109,12 @@ app.get('/getKey', (req, res) => {
     User routes
 */
 app.post('/register', register);
-
+app.post('/login', login);
+app.delete('/logout', logout);
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
+    console.log(req.session)
     sendSuccess(res, availableRoutes);
 });
 

@@ -1,5 +1,4 @@
-import e from "express";
-import { connectToDb } from "../db/dbClinet.mjs";
+import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
 
 
@@ -43,10 +42,14 @@ export async function isTaken(email) {
     const query = `SELECT * FROM studenti WHERE email = $1`;
     const result = await connection.query(query, [encryptedEmail]);
 
-    if (result.rows.length > 0) {
-        return true;
+    closeDbConnection(connection);
+    console.log(result.rows.length);
+
+    let len = result.rows.length;
+    if (len === 0) {
+        return false;
     }
-    return false;
+    return true;
 }
 
 /**

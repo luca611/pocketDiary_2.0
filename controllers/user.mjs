@@ -1,9 +1,9 @@
-import { Query } from "pg";
-import { connectToDb } from "../db/dbClinet.mjs";
-import { createHash, decryptMessage, encryptMessage } from "../security/encryption.mjs";
+import e from "express";
+import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
+import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
 import { sendError, sendSuccess } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/validator.mjs";
-import { query } from "express";
+import session from "express-session";
 
 
 /**
@@ -14,24 +14,32 @@ import { query } from "express";
  * @returns {void}
  */
 export async function register(req, res) {
+    req.session.email = "";
+    req.session.name = "";
+    req.session.theme = "";
+    req.session.key = "";
+    req.session.password = "";
+
+    console.log("register session: ", req.session);
+
     let { email, password, ntema, name } = req.body;
 
     // email checks
     email = email.trim();
     email = email.toLowerCase();
 
-    if (isEmpty(email)) {
+    if (await isEmpty(email)) {
         sendError(res, "Email is required");
         return;
     }
 
-    if (!isValidEmail(email)) {
+    if (await !isValidEmail(email)) {
         console.log("email invalid");
         sendError(res, "Email format is invalid");
         return;
     }
 
-    if (isTaken(email)) {
+    if (await isTaken(email)) {
         sendError(res, "Email is already in use");
         return;
     }
@@ -39,12 +47,12 @@ export async function register(req, res) {
     // password checks
     password = password.trim();
 
-    if (isEmpty(password)) {
+    if (await isEmpty(password)) {
         sendError(res, "Password is required");
         return;
     }
 
-    if (!validatePassword(password)) {
+    if (await !validatePassword(password)) {
         sendError(res, "Password too weak");
         return;
     }
@@ -59,18 +67,16 @@ export async function register(req, res) {
     }
 
     // ntema checks
-    if(typeof ntema !== 'number'){
+    if (typeof ntema !== 'number') {
         sendError(res, "theme type not valid");
         return;
     }
 
-    if(!(ntema < 1 || ntema > 4)){
+    if (ntema < 1 || ntema > 4) {
         sendError(res, "invalid theme");
         return;
     }
 
-
-    sendSuccess(res, "User registered successfully");
     let connection = null;
     try {
         connection = await connectToDb();
@@ -89,24 +95,39 @@ export async function register(req, res) {
 
     try {
         await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, theme, key]);
-    } catch(error) {
+    } catch (error) {
+        console.log(error);
         sendError(res, "server network error");
+        closeDbConnection(connection);
         return;
     }
 
-    try{
+    try {
         closeDbConnection(connection);
-    }catch(e){
+    } catch (e) {
         sendError(res, "network error");
+        return
     }
 
     //binding credential to session
     req.session.email = encryptedEmail;
     req.session.name = encryptedName;
     req.session.theme = ntema;
-    req.session.key = key;
+    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, key);
+    req.session.password = encryptedPassword;
 
     sendSuccess(res, "User registered successfully");
+    closeDbConnection(connection);
+}
+
+export async function logout(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            sendError(res, "Failed to log out");
+            return;
+        }
+        sendSuccess(res, "Logged out successfully");
+    });
 }
 
 /**
@@ -116,50 +137,56 @@ export async function register(req, res) {
  * @param {Response} res
  * @returns {void}
  */
-export async function login(req, res){
+export async function login(req, res) {
+    req.session.email = "";
+    req.session.name = "";
+    req.session.theme = "";
+    req.session.key = "";
+    req.session.password = "";
+
     let { email, password } = req.body;
-    
-    if(isEmpty(email) || isEmpty(password)){
+
+    if (isEmpty(email) || isEmpty(password)) {
         sendError("invalid inputs: email or password is empty");
         return;
     }
 
     let connection = null;
-    
-    try{
+
+    try {
         connection = await connectToDb();
-    }catch(error){
+    } catch (error) {
         sendError(res, "server network error");
         return;
     }
 
     // ensuring data is the same format of the ones in db
-    email = encryptMessage(process.env.ENCRYPT_KEY, email);
-    password = createHash(password); 
+    email = encryptMessage(process.env.ENCRYPTION_KEY, email);
+    password = createHash(password);
 
     // cheking on the db 
     const query = `SELECT chiave, nome, ntema FROM studenti WHERE email = $1 AND password = $2`;
     const params = [email, password];
     let result;
-    try{
-        result = await client.query(query, params);
-    }catch(e){
+    try {
+        result = await connection.query(query, params);
+    } catch (e) {
         sendError(res, "network error");
         closeDbConnection(connection);
         return;
     }
-    
+
     // closing connection
-    try{
+    try {
         closeDbConnection(connection);
-    }catch(e){
+    } catch (e) {
         sendError(res, "network error");
     }
 
     // see if there's a user matching username and password
     // there should be only 1 match but to avoid any kind
     // of error i prefere
-    
+
     if (result.rows.length != 1) {
         sendError(res, "Invalid credentials");
         return;
@@ -168,10 +195,11 @@ export async function login(req, res){
     const user = result.rows[0];
 
     //binding user information to session
-    req.session.email = user.email;
+    req.session.email = email;
     req.session.name = user.nome;
-    req.session.password = user.password;
-    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.key)
+    req.session.password = password;
+    req.session.theme = user.ntema;
+    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.chiave);
 
     sendSuccess(res, "logged in successful");
 }
