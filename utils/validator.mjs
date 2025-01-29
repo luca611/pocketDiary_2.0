@@ -9,7 +9,8 @@ import { encryptMessage } from "../security/encryption.mjs";
  * @returns {boolean} - True if the password is valid, false otherwise
 */
 export function validatePassword(password) {
-    return password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    return password.length >= 8 && hasUpperCase;
 }
 
 
@@ -55,21 +56,8 @@ export async function isTaken(email) {
  * @throws {Error} - Error if connection fails
 */
 export async function isValidEmail(email) {
-    email = email.trim();
-    email = email.toLowerCase();
-
-    let response = null;
-
-    try {
-        response = await fetch(`https://www.disify.com/api/email/` + email);
-        if (!response.ok) {
-            return false;
-        }
-    } catch (error) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
         return false;
     }
-
-    response = await fetch(`https://www.disify.com/api/email/` + email);
-    const data = await response.json();
-    return data.dns === true;
 }
