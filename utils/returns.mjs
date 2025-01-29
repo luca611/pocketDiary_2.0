@@ -16,7 +16,7 @@ export function sendError(res, message) {
  * @param {string} message - success message
  */
 export function sendSuccess(res, message) {
-    res.status(200).send({ error:'0', message });
+    res.status(200).send({ error: '0', message });
 }
 
 /**
@@ -24,6 +24,6 @@ export function sendSuccess(res, message) {
  * 
  * @param {Response} res - express response object
  */
-export function notLoggedIn(res) {
-    res.status(401).send({ error: '1', message: 'You are not logged in' });
+export function sendNotLoggedIn(res) {
+    res.status(401).send({ error: '1', message: 'Login required' });
 }

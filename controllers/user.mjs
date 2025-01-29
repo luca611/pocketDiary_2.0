@@ -1,10 +1,9 @@
-import e from "express";
 import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
 import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
-import { sendError, sendSuccess } from "../utils/returns.mjs";
+import { sendError, sendSuccess, sendNotLoggedIn } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/validator.mjs";
-import session from "express-session";
 
+//----------------------------------- CREATE -----------------------------------//
 
 /**
  * Function that validate user credentials and adds it to the server
@@ -19,6 +18,7 @@ export async function register(req, res) {
     req.session.theme = "";
     req.session.key = "";
     req.session.password = "";
+    req.session.logged = false;
 
     console.log("register session: ", req.session);
 
@@ -102,32 +102,16 @@ export async function register(req, res) {
         return;
     }
 
-    try {
-        closeDbConnection(connection);
-    } catch (e) {
-        sendError(res, "network error");
-        return
-    }
-
     //binding credential to session
     req.session.email = encryptedEmail;
     req.session.name = encryptedName;
     req.session.theme = ntema;
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, key);
     req.session.password = encryptedPassword;
+    req.session.logged = true;
 
     sendSuccess(res, "User registered successfully");
     closeDbConnection(connection);
-}
-
-export async function logout(req, res) {
-    req.session.destroy((err) => {
-        if (err) {
-            sendError(res, "Failed to log out");
-            return;
-        }
-        sendSuccess(res, "Logged out successfully");
-    });
 }
 
 /**
@@ -139,10 +123,9 @@ export async function logout(req, res) {
  */
 export async function login(req, res) {
     req.session.email = "";
-    req.session.name = "";
-    req.session.theme = "";
     req.session.key = "";
     req.session.password = "";
+    req.session.logged = false;
 
     let { email, password } = req.body;
 
@@ -176,12 +159,7 @@ export async function login(req, res) {
         return;
     }
 
-    // closing connection
-    try {
-        closeDbConnection(connection);
-    } catch (e) {
-        sendError(res, "network error");
-    }
+
 
     // see if there's a user matching username and password
     // there should be only 1 match but to avoid any kind
@@ -196,10 +174,400 @@ export async function login(req, res) {
 
     //binding user information to session
     req.session.email = email;
-    req.session.name = user.nome;
     req.session.password = password;
-    req.session.theme = user.ntema;
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.chiave);
+    req.session.logged = true;
 
     sendSuccess(res, "logged in successful");
+    // closing connection
+    closeDbConnection(connection);
+}
+
+
+//----------------------------------- READ -----------------------------------//
+
+/**
+ *  Function that gets the user theme from the database
+ * 
+ *  @param {Request} req
+ *  @param {Response} res
+ *  @returns {void}
+ */
+
+export async function getTheme(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `SELECT ntema FROM studenti WHERE email = $1`;
+
+    let result;
+    try {
+        result = await connection.query(query, [encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    let theme = result.rows[0].ntema;
+    sendSuccess(res, theme);
+    closeDbConnection(connection);
+}
+
+/**
+ * Function that gets the user name from the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function getName(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `SELECT nome FROM studenti WHERE email = $1`;
+
+    let result;
+    try {
+        result = await connection.query(query, [encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    let name = decryptMessage(process.env.ENCRYPTION_KEY, result.rows[0].nome);
+    sendSuccess(res, name);
+    closeDbConnection(connection);
+}
+
+/**
+ * Function that gets the user email from the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ * 
+ */
+export async function getCustomTheme(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `SELECT HexCustom FROM studenti WHERE email = $1`;
+
+    let result;
+    try {
+        result = await connection.query(query, [encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    let customTheme = result.rows[0].hexcustom;
+    sendSuccess(res, customTheme);
+    closeDbConnection(connection);
+}
+//----------------------------------- UPDATE -----------------------------------//
+
+/**
+ *  Function that updates the user password in the database
+ *  
+ *  @param {Request} req
+ *  @param {Response} res
+ *  @returns {void}
+ */
+export async function updatePassword(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { newPassword } = req.body;
+
+    if (isEmpty(newPassword)) {
+        sendError(res, "Password is required");
+        return;
+    }
+
+    if (!validatePassword(newPassword)) {
+        sendError(res, "Password too weak");
+        return;
+    }
+
+    if (req.session.password === createHash(newPassword)) {
+        sendError(res, "Password is the same as the old one");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let encryptedNewPassword = createHash(newPassword);
+    let query = `UPDATE studenti SET password = $1 WHERE email = $2`;
+
+    try {
+        await connection.query(query, [encryptedNewPassword, encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+
+    req.session.password = encryptedNewPassword;
+    sendSuccess(res, "Password updated successfully");
+    closeDbConnection(connection);
+}
+
+/**
+ * Function that updates the user theme in the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function updateTheme(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { theme } = req.body;
+
+    if (typeof theme !== 'number') {
+        sendError(res, "theme type not valid");
+        return;
+    }
+
+    if (theme < 1 || theme > 4) {
+        sendError(res, "invalid theme");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `UPDATE studenti SET ntema = $1 WHERE email = $2`;
+
+    try {
+        await connection.query(query, [theme, encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    sendSuccess(res, "theme updated successfully");
+    closeDbConnection(connection);
+}
+
+/**
+ * Function that updates the user name in the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function updateName(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { name } = req.body;
+
+    if (isEmpty(name)) {
+        sendError(res, "Name is required");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
+    let query = `UPDATE studenti SET nome = $1 WHERE email = $2`;
+
+    try {
+        await connection.query(query, [encryptedName, encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    sendSuccess(res, "name updated successfully");
+    closeDbConnection(connection);
+}
+
+/**
+ * Function that updates the user custom theme in the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function updateCustomTheme(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { customTheme } = req.body;
+
+    if (isEmpty(customTheme)) {
+        sendError(res, "Custom theme is required");
+        return;
+    }
+
+    const hexPattern = /^#[0-9A-Fa-f]{6};#[0-9A-Fa-f]{6};#[0-9A-Fa-f]{6}$/;
+
+    if (!hexPattern.test(customTheme)) {
+        sendError(res, "Custom theme format is invalid");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `UPDATE studenti SET hexcustom = $1 WHERE email = $2`;
+
+    try {
+        await connection.query(query, [customTheme, encryptedEmail]);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    sendSuccess(res, "Custom theme updated successfully");
+    closeDbConnection(connection);
+}
+
+//----------------------------------- DELETE -----------------------------------//
+
+/**
+ * Function that deletes the session and logs out the user
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function logout(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            sendError(res, "Failed to log out");
+            return;
+        }
+        sendSuccess(res, "Logged out successfully");
+    });
+}
+
+/**
+ * Function that deletes the user from the database
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+
+export async function deleteUser(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    }
+    catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
+    let encryptedEmail = req.session.email;
+    let query = `DELETE FROM studenti WHERE email = $1`;
+
+    try {
+        await connection.query(query, [encryptedEmail]);
+    } catch (error) {
+        sendError(res, "server network error");
+        closeDbConnection(connection);
+        return;
+    }
+
+    req.session.destroy((err) => {
+        if (err) {
+            sendError(res, "Failed to delete user");
+            return;
+        }
+        sendSuccess(res, "User deleted successfully");
+    });
+    closeDbConnection(connection);
 }

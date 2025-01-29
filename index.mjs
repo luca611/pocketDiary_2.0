@@ -9,7 +9,7 @@ import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from '
 import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
-import { register, logout, login } from './controllers/user.mjs';
+import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
 
 
 dotenv.config();
@@ -110,6 +110,21 @@ app.get('/getKey', (req, res) => {
 */
 app.post('/register', register);
 app.post('/login', login);
+
+app.put('/updatePassword', updatePassword);
+app.put('/updateTheme', updateTheme);
+app.put('/updateName', updateName);
+app.put('/updateCustomTheme', updateCustomTheme);
+
+app.get('/getTheme', getTheme);
+app.get('/getName', getName);
+app.get('/getCustomTheme', getCustomTheme);
+
+app.delete('/logout', logout);
+app.delete('/deleteAccount', deleteUser);
+
+
+
 app.delete('/logout', logout);
 
 app.get('/', (req, res) => {
