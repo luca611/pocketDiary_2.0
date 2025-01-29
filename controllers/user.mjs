@@ -1,7 +1,18 @@
-import { encryptMessage } from "../security/encryption.mjs";
+import { Query } from "pg";
+import { connectToDb } from "../db/dbClinet.mjs";
+import { createHash, decryptMessage, encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendSuccess } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/validator.mjs";
+import { query } from "express";
 
+
+/**
+ * Function that validate user credentials and adds it to the server
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
 export async function register(req, res) {
     let { email, password, ntema, name } = req.body;
 
@@ -69,7 +80,7 @@ export async function register(req, res) {
     }
 
     let encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
-    let encryptedPassword = encryptMessage(process.env.ENCRYPTION_KEY, password);
+    let encryptedPassword = createHash(password)
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
     let theme = ntema;
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
@@ -78,14 +89,89 @@ export async function register(req, res) {
 
     try {
         await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, theme, key]);
-    } catch
-    (error) {
+    } catch(error) {
         sendError(res, "server network error");
         return;
     }
-    closeDbConnection(connection);
+
+    try{
+        closeDbConnection(connection);
+    }catch(e){
+        sendError(res, "network error");
+    }
+
+    //binding credential to session
+    req.session.email = encryptedEmail;
+    req.session.name = encryptedName;
+    req.session.theme = ntema;
+    req.session.key = key;
 
     sendSuccess(res, "User registered successfully");
+}
 
+/**
+ * 
+ * 
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {void}
+ */
+export async function login(req, res){
+    let { email, password } = req.body;
+    
+    if(isEmpty(email) || isEmpty(password)){
+        sendError("invalid inputs: email or password is empty");
+        return;
+    }
 
+    let connection = null;
+    
+    try{
+        connection = await connectToDb();
+    }catch(error){
+        sendError(res, "server network error");
+        return;
+    }
+
+    // ensuring data is the same format of the ones in db
+    email = encryptMessage(process.env.ENCRYPT_KEY, email);
+    password = createHash(password); 
+
+    // cheking on the db 
+    const query = `SELECT chiave, nome, ntema FROM studenti WHERE email = $1 AND password = $2`;
+    const params = [email, password];
+    let result;
+    try{
+        result = await client.query(query, params);
+    }catch(e){
+        sendError(res, "network error");
+        closeDbConnection(connection);
+        return;
+    }
+    
+    // closing connection
+    try{
+        closeDbConnection(connection);
+    }catch(e){
+        sendError(res, "network error");
+    }
+
+    // see if there's a user matching username and password
+    // there should be only 1 match but to avoid any kind
+    // of error i prefere
+    
+    if (result.rows.length != 1) {
+        sendError(res, "Invalid credentials");
+        return;
+    }
+
+    const user = result.rows[0];
+
+    //binding user information to session
+    req.session.email = user.email;
+    req.session.name = user.nome;
+    req.session.password = user.password;
+    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.key)
+
+    sendSuccess(res, "logged in successful");
 }

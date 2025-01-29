@@ -8,7 +8,6 @@ import cors from 'cors';
 import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from './utils/vars.mjs';
 import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
-import { connectToDb, closeDbConnection } from './db/dbClinet.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register } from './controllers/user.mjs';
 
@@ -53,20 +52,25 @@ app.use(session({
 }));
 
 /*
-    Middleware to parse JSON
+    Middleware to parse JSON and handle invalid JSON before sending it to the routes
 */
-app.use(
-    express.json({
-        strict: true,
-        verify: (req, res, buf, encoding) => {
-            try {
-                JSON.parse(buf);
-            } catch (e) {
-                sendError(res, 'Invalid JSON');
-            }
+app.use((req, res, next) => {
+    let data = "";
+    req.on("data", (chunk) => {
+        data += chunk;
+    });
+
+    req.on("end", () => {
+        try {
+            req.body = JSON.parse(data);
+            next();
+        } catch {
+            req.body = null;
+            console.warn("▶ Recived invalid JSON from " + req.ip);
+            sendError(res, "Invalid JSON");
         }
-    }
-));
+    });
+});
 
 
 /* 
@@ -96,7 +100,11 @@ app.get('/getKey', (req, res) => {
     sendSuccess(res, generateKey());
 });
 
+/*
+    User routes
+*/
 app.post('/register', register);
+
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);

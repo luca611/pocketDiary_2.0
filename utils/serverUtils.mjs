@@ -23,3 +23,4 @@ export function getAvailableRoutes(app) {
         methods: Object.keys(route.methods).join(', ').toUpperCase(),
     }));
 }
+

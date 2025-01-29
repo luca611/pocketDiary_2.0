@@ -6,7 +6,7 @@
  */
 
 export function sendError(res, message) {
-    res.status(400).send({ error: message });
+    res.status(400).send({ error: '1', message });
 }
 
 /** 
@@ -16,7 +16,7 @@ export function sendError(res, message) {
  * @param {string} message - success message
  */
 export function sendSuccess(res, message) {
-    res.status(200).send({ message });
+    res.status(200).send({ error:'0', message });
 }
 
 /**
