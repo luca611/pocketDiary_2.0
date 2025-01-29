@@ -55,16 +55,18 @@ app.use(session({
 /*
     Middleware to parse JSON
 */
-app.use(express.json({
-    strict: true,
-    verify: (req, res, buf, encoding) => {
-        try {
-            JSON.parse(buf);
-        } catch (e) {
-            sendError(res, 'Invalid JSON');
+app.use(
+    express.json({
+        strict: true,
+        verify: (req, res, buf, encoding) => {
+            try {
+                JSON.parse(buf);
+            } catch (e) {
+                sendError(res, 'Invalid JSON');
+            }
         }
     }
-}));
+));
 
 
 /* 
