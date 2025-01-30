@@ -10,6 +10,7 @@ import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
+import { addNote, deleteNote, getDayNotes, updateNote } from './controllers/notes.mjs';
 
 
 dotenv.config();
@@ -123,9 +124,19 @@ app.get('/getCustomTheme', getCustomTheme);
 app.delete('/logout', logout);
 app.delete('/deleteAccount', deleteUser);
 
+/*
+    Note routes
+*/
 
+app.post('/addNote', addNote);
+app.post('/getDayNotes', getDayNotes);
 
-app.delete('/logout', logout);
+app.get('/getNoteById', getNoteById);
+
+app.put('/updateNote', updateNote);
+
+app.delete('/deleteNote', deleteNote);
+
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);

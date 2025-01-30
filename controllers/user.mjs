@@ -14,8 +14,6 @@ import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/valid
  */
 export async function register(req, res) {
     req.session.email = "";
-    req.session.name = "";
-    req.session.theme = "";
     req.session.key = "";
     req.session.password = "";
     req.session.logged = false;

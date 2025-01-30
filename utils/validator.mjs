@@ -1,5 +1,6 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
+import { sendError } from "./returns.mjs";
 
 
 /**
@@ -63,4 +64,47 @@ export async function isValidEmail(email) {
     if (!emailRegex.test(email)) {
         return false;
     }
+}
+
+/**
+ * Validate a title
+ * @param {string} title - The title to validate
+ * @returns {boolean} - True if the title is valid, false otherwise
+*/
+export function isValidTitle(title) {
+    if (title.length < 1 || title.length > 127) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validate a description
+ * @param {string} description - The description to validate
+ * @returns {boolean} - True if the description is valid, false otherwise
+*/
+export function isValidDescription(description) {
+    if (description.length < 1 || description.length > 2047) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validate a date
+ * @param {string} date - The date to validate
+ * @returns {boolean} - True if the date is valid, false otherwise
+*/
+export function isValidDate(date) {
+    const parsedDate = new Date(date);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const maxFutureDate = new Date();
+    maxFutureDate.setFullYear(now.getFullYear() + 10);
+
+    if (isNaN(parsedDate.getTime())) {
+        return false;
+    }
+
+    return parsedDate >= now && parsedDate <= maxFutureDate;
 }
