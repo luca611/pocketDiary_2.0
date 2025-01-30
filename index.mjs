@@ -10,7 +10,7 @@ import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
-import { addNote, deleteNote, getDayNotes, updateNote } from './controllers/notes.mjs';
+import { addNote, deleteNote, getDayNotes, getNoteById, updateNote } from './controllers/notes.mjs';
 
 
 dotenv.config();
@@ -98,6 +98,8 @@ app.use(cors(
 /*
     -------------------------------------------------------------------------------------------
 */
+
+
 
 /*
     Routes

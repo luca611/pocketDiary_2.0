@@ -6,7 +6,7 @@ import { isValidDate, isValidDescription, isValidTitle } from "../utils/validato
 //----------------------------------- CREATE -----------------------------------//
 
 /**
- * Add a note :: TO BE TESTED
+ * Add a note
  * 
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -18,40 +18,39 @@ export async function addNote(req, res) {
         return;
     }
 
-    let {title, description, date} = req.body;
-    
-    if(!isValidTitle(title)) {
+    let { title, description, date } = req.body;
+
+    if (!isValidTitle(title)) {
         sendError(res, "Invalid title");
         return;
     }
 
-    if(!isValidDescription(description)) {
+    if (!isValidDescription(description)) {
         sendError(res, "Invalid description");
         return;
     }
 
-    if(!isValidDate(date)) {
+    if (!isValidDate(date)) {
         sendError(res, "Invalid date");
         return;
     }
 
-    let encryptedTitle = encryptMessage(title);
-    let encryptedDescription = encryptMessage(description);
-    let encryptedDate = encryptMessage(date);
+    let encryptedTitle = encryptMessage(req.session.key, title);
+    let encryptedDescription = encryptMessage(req.session.key, description);
 
     let conn = null;
-    try{
+    try {
         conn = await connectToDb();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         return;
     }
 
-    const query = `INSERT INTO notes(titolo, testo, dataora, idstudente) VALUES($1, $2, $3, $4)`;
-    try{
-        await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, req.session.email]);
-    }catch(err){
+    const query = `INSERT INTO note(titolo, testo, dataora, idstudente) VALUES($1, $2, $3, $4)`;
+    try {
+        await conn.query(query, [encryptedTitle, encryptedDescription, date, req.session.email]);
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);
@@ -65,7 +64,7 @@ export async function addNote(req, res) {
 //----------------------------------- READ -----------------------------------//
 
 /**
- * Get all notes of a day :: TO BE TESTED
+ * Get all notes of a day
  * 
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -79,26 +78,25 @@ export async function getDayNotes(req, res) {
 
     let { date } = req.body;
 
-    if(!isValidDate(date)) {
+    if (!isValidDate(date)) {
         sendError(res, "Invalid date");
         return;
     }
 
     let conn = null;
-    try{
+    try {
         conn = await connectToDb();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         return;
     }
 
-    let encryptedEmail = encryptMessage(req.session.email);
-    const query = `SELECT * FROM notes WHERE idstudente = $1 AND dataora = $2`;
+    const query = `SELECT * FROM note WHERE idstudente = $1 AND dataora = $2`;
     let result = null;
-    try{
-        result = await conn.query(query, [encryptedEmail, encryptMessage(date)]);
-    }catch(err){
+    try {
+        result = await conn.query(query, [req.session.email, date]);
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);
@@ -108,13 +106,13 @@ export async function getDayNotes(req, res) {
     let notes = result.rows.map((note) => {
         return {
             id: note.id,
-            title: decryptMessage(note.titolo),
-            description: decryptMessage(note.testo),
-            date: decryptMessage(note.dataora),
+            title: decryptMessage(req.session.key, note.titolo),
+            description: decryptMessage(req.session.key, note.testo),
+            date: note.dataora,
         };
     });
 
-    res.status(200).send({error: '0', notes});
+    res.status(200).send({ error: '0', notes });
     closeDbConnection(conn);
 }
 
@@ -133,9 +131,9 @@ export async function getNoteById(req, res) {
     let { id } = req.query;
 
     let conn = null;
-    try{
+    try {
         conn = await connectToDb();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         return;
@@ -144,16 +142,16 @@ export async function getNoteById(req, res) {
     let encryptedEmail = encryptMessage(req.session.email);
     const query = `SELECT * FROM notes WHERE idstudente = $1 AND id = $2`;
     let result = null;
-    try{
+    try {
         result = await conn.query(query, [encryptedEmail, id]);
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);
         return;
     }
 
-    if(result.rows.length === 0){
+    if (result.rows.length === 0) {
         sendError(res, "Note not found");
         closeDbConnection(conn);
         return;
@@ -164,10 +162,10 @@ export async function getNoteById(req, res) {
         id: note.id,
         title: decryptMessage(note.titolo),
         description: decryptMessage(note.testo),
-        date: decryptMessage(note.dataora),
+        date: note.dataora,
     };
 
-    res.status(200).send({error: '0', note: noteData});
+    res.status(200).send({ error: '0', note: noteData });
     closeDbConnection(conn);
 }
 
@@ -188,25 +186,25 @@ export async function updateNote(req, res) {
 
     let { id, title, description, date } = req.body;
 
-    if(!isValidTitle(title)) {
+    if (!isValidTitle(title)) {
         sendError(res, "Invalid title");
         return;
     }
 
-    if(!isValidDescription(description)) {
+    if (!isValidDescription(description)) {
         sendError(res, "Invalid description");
         return;
     }
 
-    if(!isValidDate(date)) {
+    if (!isValidDate(date)) {
         sendError(res, "Invalid date");
         return;
     }
 
     let conn = null;
-    try{
+    try {
         conn = await connectToDb();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         return;
@@ -214,13 +212,13 @@ export async function updateNote(req, res) {
 
     let encryptedTitle = encryptMessage(title);
     let encryptedDescription = encryptMessage(description);
-    let encryptedDate = encryptMessage(date);
+    let encryptedDate = date;
 
     const query = `UPDATE notes SET titolo = $1, testo = $2, dataora = $3 WHERE id = $4 AND idstudente = $5`;
-    try{
+    try {
         await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, id, req.session.email]);
     }
-    catch(err){
+    catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);
@@ -238,7 +236,7 @@ export async function updateNote(req, res) {
  * @param {Request} req - express request object
  * @param {Response} res - express response object
 */
-export async function deleteNote(req,res){
+export async function deleteNote(req, res) {
     if (!req.session.logged) {
         sendNotLoggedIn(res);
         return;
@@ -247,18 +245,18 @@ export async function deleteNote(req,res){
     let { id } = req.body;
 
     let conn = null;
-    try{
+    try {
         conn = await connectToDb();
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         return;
     }
 
     const query = `DELETE FROM notes WHERE id = $1 AND idstudente = $2`;
-    try{
+    try {
         await conn.query(query, [id, req.session.email]);
-    }catch(err){
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);

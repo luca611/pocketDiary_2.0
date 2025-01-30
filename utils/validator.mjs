@@ -1,7 +1,5 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
-import { sendError } from "./returns.mjs";
-
 
 /**
  * Validate a password
@@ -96,7 +94,18 @@ export function isValidDescription(description) {
  * @returns {boolean} - True if the date is valid, false otherwise
 */
 export function isValidDate(date) {
-    const parsedDate = new Date(date);
+    const dateParts = date.split('/');
+    if (dateParts.length !== 3) {
+        return false;
+    }
+    const [month, day, year] = dateParts.map(part => parseInt(part, 10));
+    if (isNaN(month) || isNaN(day) || isNaN(year)) {
+        return false;
+    }
+    const parsedDate = new Date(year, month - 1, day);
+    if (parsedDate.getMonth() + 1 !== month || parsedDate.getDate() !== day || parsedDate.getFullYear() !== year) {
+        return false;
+    }
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const maxFutureDate = new Date();
