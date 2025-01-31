@@ -124,7 +124,7 @@ app.get('/pingDB', async (req, res) => {
         closeConnection(conn);
     } catch (error) {
     }
-}
+});
 
 /*
     User routes
