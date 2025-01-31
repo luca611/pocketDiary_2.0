@@ -108,6 +108,14 @@ app.get('/getKey', (req, res) => {
     sendSuccess(res, generateKey());
 });
 
+app.get('/isLogged', (req, res) => {
+    if (req.session.logged) {
+        sendSuccess(res, true);
+    } else {
+        sendSuccess(res, false);
+    }
+});
+
 /*
     User routes
 */
@@ -142,7 +150,6 @@ app.delete('/deleteNote', deleteNote);
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
-    console.log(req.session)
     sendSuccess(res, availableRoutes);
 });
 
