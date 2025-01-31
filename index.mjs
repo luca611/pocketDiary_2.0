@@ -112,7 +112,7 @@ app.get('/isLogged', (req, res) => {
     if (req.session.logged) {
         sendSuccess(res, true);
     } else {
-        sendSuccess(res, false);
+        sendError(res, false);
     }
 });
 
