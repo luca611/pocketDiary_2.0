@@ -91,7 +91,7 @@ app.use((req, res, next) => {
 */
 app.use(cors(
     {
-        origin: "https://pocketdiary.tech/",
+        origin: process.env.CORS_ORIGIN || "*",
         methods: "GET,POST,DELETE,PUT",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true
