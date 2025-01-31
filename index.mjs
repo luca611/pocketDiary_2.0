@@ -7,7 +7,7 @@ import cors from 'cors';
 // local imports
 import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from './utils/vars.mjs';
 import { sendError, sendSuccess } from './utils/returns.mjs';
-import { getAvailableRoutes } from './utils/serverUtils.mjs';
+import { getAvailableRoutes, keepAlive } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
 import { addNote, deleteNote, getDayNotes, getNoteById, updateNote } from './controllers/notes.mjs';
@@ -126,6 +126,8 @@ app.get('/pingDB', async (req, res) => {
     }
 });
 
+
+
 /*
     User routes
 */
@@ -167,4 +169,5 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
     console.log('Server is running at http://localhost:' + PORT);
+    keepAlive();
 });
