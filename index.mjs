@@ -50,9 +50,10 @@ app.use(session({
     cookie: {
         maxAge: COOKIE_MAX_AGE,
         secure: true,
+        httpOnly: true,
+        sameSite: "none"
     }
 }));
-
 /*
     Middleware to parse JSON and handle invalid JSON before sending it to the routes
 */
@@ -90,7 +91,7 @@ app.use((req, res, next) => {
 */
 app.use(cors(
     {
-        origin: process.env.ALLOWD_ORIGINS || "*",
+        origin: "https://pocketdiary.vercel.app",
         methods: "GET,POST,DELETE,PUT",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true
