@@ -117,7 +117,7 @@ export async function getDayNotes(req, res) {
 }
 
 /**
- * Get a specific note by id :: TO BE TESTED
+ * Get a specific note by id
  * 
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -130,6 +130,11 @@ export async function getNoteById(req, res) {
 
     let { id } = req.query;
 
+    if (!id) {
+        sendError(res, "Invalid id");
+        return;
+    }
+
     let conn = null;
     try {
         conn = await connectToDb();
@@ -139,11 +144,10 @@ export async function getNoteById(req, res) {
         return;
     }
 
-    let encryptedEmail = encryptMessage(req.session.email);
-    const query = `SELECT * FROM notes WHERE idstudente = $1 AND id = $2`;
+    const query = `SELECT * FROM note WHERE idstudente = $1 AND id = $2`;
     let result = null;
     try {
-        result = await conn.query(query, [encryptedEmail, id]);
+        result = await conn.query(query, [req.session.email, id]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
@@ -160,8 +164,8 @@ export async function getNoteById(req, res) {
     let note = result.rows[0];
     let noteData = {
         id: note.id,
-        title: decryptMessage(note.titolo),
-        description: decryptMessage(note.testo),
+        title: decryptMessage(req.session.key, note.titolo),
+        description: decryptMessage(req.session.key, note.testo),
         date: note.dataora,
     };
 
@@ -172,7 +176,7 @@ export async function getNoteById(req, res) {
 //----------------------------------- UPDATE -----------------------------------//
 
 /**
- * Update a note :: TO BE TESTED
+ * Update a note
  * 
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -185,6 +189,11 @@ export async function updateNote(req, res) {
     }
 
     let { id, title, description, date } = req.body;
+
+    if (!id) {
+        sendError(res, "Invalid id");
+        return;
+    }
 
     if (!isValidTitle(title)) {
         sendError(res, "Invalid title");
@@ -210,15 +219,23 @@ export async function updateNote(req, res) {
         return;
     }
 
-    let encryptedTitle = encryptMessage(title);
-    let encryptedDescription = encryptMessage(description);
+    let encryptedTitle = encryptMessage(req.session.key, title);
+    let encryptedDescription = encryptMessage(req.session.key, description);
     let encryptedDate = date;
 
-    const query = `UPDATE notes SET titolo = $1, testo = $2, dataora = $3 WHERE id = $4 AND idstudente = $5`;
+    const existingNoteQuery = `SELECT * FROM note WHERE id = $1 AND idstudente = $2`;
+    const query = `UPDATE note SET titolo = $1, testo = $2, dataora = $3 WHERE id = $4 AND idstudente = $5`;
     try {
+        const existingNoteResult = await conn.query(existingNoteQuery, [id, req.session.email]);
+
+        if (existingNoteResult.rows.length === 0) {
+            sendError(res, "Note not found");
+            closeDbConnection(conn);
+            return;
+        }
+
         await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, id, req.session.email]);
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err);
         sendError(res, "Database error");
         closeDbConnection(conn);
@@ -232,7 +249,7 @@ export async function updateNote(req, res) {
 //----------------------------------- DELETE -----------------------------------//
 
 /**
- * Delete a note :: TO BE TESTED
+ * Delete a note
  * @param {Request} req - express request object
  * @param {Response} res - express response object
 */
@@ -242,7 +259,12 @@ export async function deleteNote(req, res) {
         return;
     }
 
-    let { id } = req.body;
+    let { id } = req.query;
+
+    if (!id) {
+        sendError(res, "Invalid id");
+        return;
+    }
 
     let conn = null;
     try {
@@ -253,8 +275,17 @@ export async function deleteNote(req, res) {
         return;
     }
 
-    const query = `DELETE FROM notes WHERE id = $1 AND idstudente = $2`;
+    const existingNoteQuery = `SELECT * FROM note WHERE id = $1 AND idstudente = $2`;
+    const query = `DELETE FROM note WHERE id = $1 AND idstudente = $2`;
     try {
+        const existingNoteResult = await conn.query(existingNoteQuery, [id, req.session.email]);
+
+        if (existingNoteResult.rows.length === 0) {
+            sendError(res, "Note not found");
+            closeDbConnection(conn);
+            return;
+        }
+
         await conn.query(query, [id, req.session.email]);
     } catch (err) {
         console.error(err);
