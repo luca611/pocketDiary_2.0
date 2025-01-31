@@ -49,7 +49,7 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: COOKIE_MAX_AGE,
-        secure: false,
+        secure: true,
     }
 }));
 
@@ -91,8 +91,9 @@ app.use((req, res, next) => {
 app.use(cors(
     {
         origin: process.env.ALLOWD_ORIGINS || "*",
-        methods: "GET,POST,DELETE,PATCH",
-        allowedHeaders: ["Content-Type", "Authorization"]
+        methods: "GET,POST,DELETE,PUT",
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true
     }
 ));
 
