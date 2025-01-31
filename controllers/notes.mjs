@@ -212,11 +212,10 @@ export async function updateNote(req, res) {
 
     let encryptedTitle = encryptMessage(title);
     let encryptedDescription = encryptMessage(description);
-    let encryptedDate = date;
 
     const query = `UPDATE notes SET titolo = $1, testo = $2, dataora = $3 WHERE id = $4 AND idstudente = $5`;
     try {
-        await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, id, req.session.email]);
+        await conn.query(query, [encryptedTitle, encryptedDescription, date, id, req.session.email]);
     }
     catch (err) {
         console.error(err);
