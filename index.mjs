@@ -49,7 +49,7 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: COOKIE_MAX_AGE,
-        secure: true,
+        secure: false,
         httpOnly: true,
         sameSite: "none"
     }
@@ -91,7 +91,7 @@ app.use((req, res, next) => {
 */
 app.use(cors(
     {
-        origin: "https://pocketdiary.vercel.app",
+        origin: "https://pocketdiary.tech/",
         methods: "GET,POST,DELETE,PUT",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true
@@ -160,7 +160,6 @@ app.get('/getNoteById', getNoteById);
 app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
-
 
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
