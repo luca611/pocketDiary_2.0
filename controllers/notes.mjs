@@ -112,6 +112,9 @@ export async function getDayNotes(req, res) {
         };
     });
 
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
     res.status(200).send({ error: '0', notes });
     closeDbConnection(conn);
 }
@@ -169,6 +172,9 @@ export async function getNoteById(req, res) {
         date: note.dataora,
     };
 
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
     res.status(200).send({ error: '0', note: noteData });
     closeDbConnection(conn);
 }
