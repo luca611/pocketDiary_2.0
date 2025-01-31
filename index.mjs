@@ -11,6 +11,7 @@ import { getAvailableRoutes } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
 import { addNote, deleteNote, getDayNotes, getNoteById, updateNote } from './controllers/notes.mjs';
+import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 
 
 dotenv.config();
@@ -115,6 +116,15 @@ app.get('/isLogged', (req, res) => {
         sendError(res, false);
     }
 });
+
+app.get('/pingDB', async (req, res) => {
+    try {
+        let conn = await connectToDb();
+        executeQuery(conn, 'SELECT 1')
+        closeConnection(conn);
+    } catch (error) {
+    }
+}
 
 /*
     User routes

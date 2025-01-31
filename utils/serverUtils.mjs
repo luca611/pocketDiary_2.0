@@ -24,3 +24,14 @@ export function getAvailableRoutes(app) {
     }));
 }
 
+
+export const keepAlive = () => {
+    setInterval(async () => {
+        try {
+            await axios.get('https://pocketserver.onrender.com/');
+            await axios.get('https://pocketserver.onrender.com/pingDB');
+        } catch (error) {
+            console.error('Ping failed:', error.message);
+        }
+    }, 60000 * 4);
+};
