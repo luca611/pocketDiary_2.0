@@ -506,6 +506,8 @@ function swapToHome() {
   ebi("pageTitle").innerText = "hi, ";
   ebi("decoratedTitle").innerText = username;
 
+  getTheme();
+  applyTheme();
   loadNotes();
   loadUsername();
   disableLoading();
@@ -980,6 +982,7 @@ function login(logEmail = ebi("loginUsername").value.trim().toLowerCase(), logPa
         cleanLogin();
         swapToHome();
       } else {
+        disableLoading();
         displayError("loginError", data.message);
       }
     })
@@ -1484,17 +1487,18 @@ function openReport() {
 //-----------------------------------------------------------------
 
 function loadUsername() {
-  const url = serverURL + "/getUsername";
+  const url = serverURL + "/getName";
 
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
+  xhr.open("GET", url);
   xhr.withCredentials = true;
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onload = function () {
+    console.log(xhr.responseText)
     let response = JSON.parse(xhr.responseText);
     if (response.error == 0) {
-      username = response.name;
+      username = response.message;
       ebi("decoratedTitle").innerText = username;
     } else {
       console.error(xhr.responseText);
@@ -1506,4 +1510,24 @@ function loadUsername() {
   };
 
   xhr.send();
+}
+
+//-----------------------------------------------------------------ù
+
+function getTheme() {
+  const url = serverURL + "/getTheme";
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", url);
+  xhr.withCredentials = true;
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onload = function () {
+    let response = JSON.parse(xhr.responseText);
+    if (response.error == 0) {
+      currentTheme = response.message;
+    } else {
+      console.error(xhr.responseText);
+    }
+  };
 }
