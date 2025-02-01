@@ -3,6 +3,8 @@ import express, { request } from 'express';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // local imports
 import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from './utils/vars.mjs';
@@ -16,7 +18,6 @@ import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 
 dotenv.config();
 
-let client;
 /*
     Port setup
 
@@ -28,11 +29,15 @@ const PORT = process.env.PORT || DEFAULT_PORT;
 const COOKIE_MAX_AGE = process.env.COOKIE_MAX_AGE || DEFAULT_SESSION_DURATION;
 const SESSION_SECRET = process.env.SESSION_SECRET || DEFAULT_SESSION_SECRET;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /*
     -------------------------------------------------------------------------------------------
     Express app setup
 */
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 
 /*
     session middleware
@@ -51,7 +56,7 @@ app.use(session({
         maxAge: COOKIE_MAX_AGE,
         secure: true,
         httpOnly: true,
-        sameSite: "none"
+        sameSite: "lax"
     }
 }));
 /*
@@ -161,11 +166,15 @@ app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
 
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
     sendSuccess(res, availableRoutes);
 });
-
 
 
 app.listen(PORT, () => {
