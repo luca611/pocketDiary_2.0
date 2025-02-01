@@ -411,7 +411,7 @@ function saveCustomTheme() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		let response = JSON.parse(x.responseText);
+		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			loadCustomTheme();
 		}
@@ -437,7 +437,7 @@ function loadCustomTheme() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		let response = JSON.parse(x.responseText);
+		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			if (response.customTheme !== null) {
 				let colors = response.colors.split(";");
