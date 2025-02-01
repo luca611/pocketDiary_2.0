@@ -436,7 +436,7 @@ function loadCustomTheme() {
 	xhr.open("GET", serverURL + "/getCustomTheme");
 	xhr.setRequestHeader("Content-Type", "application/json");
 
-	x.onload = function () {
+	xhr.onload = function () {
 		let response = JSON.parse(x.responseText);
 		if (response.error == 0) {
 			if (response.customTheme !== null) {
