@@ -404,13 +404,13 @@ function setHexColor(type) {
 function saveCustomTheme() {
 	let customTheme = primaryColor + ";" + secondaryColor + ";" + tertiaryColor;
 
-	let x = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 
 	xhr.withCredentials = true;
-	x.open("PUT", serverURL + "/updateCustomTheme");
-	x.setRequestHeader("Content-Type", "application/json");
+	xhr.open("PUT", serverURL + "/updateCustomTheme");
+	xhr.setRequestHeader("Content-Type", "application/json");
 
-	x.onload = function () {
+	xhr.onload = function () {
 		let response = JSON.parse(x.responseText);
 		if (response.error == 0) {
 			loadCustomTheme();
@@ -420,21 +420,21 @@ function saveCustomTheme() {
 		}
 	};
 
-	x.onerror = function () {
+	xhr.onerror = function () {
 		console.error("Network error");
 	}
 
-	x.send(JSON.stringify({ customTheme }));
+	xhr.send(JSON.stringify({ customTheme }));
 }
 
 //-----------------------------------------------------------------
 
 function loadCustomTheme() {
-	let x = new XMLHttpRequest();
+	let xhr = new XMLHttpRequest();
 
 	xhr.withCredentials = true;
-	x.open("GET", serverURL + "/getCustomTheme");
-	x.setRequestHeader("Content-Type", "application/json");
+	xhr.open("GET", serverURL + "/getCustomTheme");
+	xhr.setRequestHeader("Content-Type", "application/json");
 
 	x.onload = function () {
 		let response = JSON.parse(x.responseText);
@@ -450,11 +450,11 @@ function loadCustomTheme() {
 			}
 		};
 	};
-	x.onerror = function () {
+	xhr.onerror = function () {
 		console.error("Network error");
 	};
 
-	x.send();
+	xhr.send();
 }
 
 
