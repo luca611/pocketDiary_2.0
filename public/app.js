@@ -1534,4 +1534,6 @@ function getTheme() {
   xhr.onerror = function () {
     console.error(xhr.statusText);
   };
+
+  xhr.send();
 }
