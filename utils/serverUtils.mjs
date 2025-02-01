@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 /**
  * Get all available routes in the app
  * 
@@ -29,7 +31,6 @@ export const keepAlive = () => {
     setInterval(async () => {
         try {
             await axios.get('https://pocketserver.onrender.com/');
-            await axios.get('https://pocketserver.onrender.com/pingDB');
         } catch (error) {
             console.error('Ping failed:', error.message);
         }
