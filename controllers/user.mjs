@@ -18,8 +18,6 @@ export async function register(req, res) {
     req.session.password = "";
     req.session.logged = false;
 
-    console.log("register session: ", req.session);
-
     let { email, password, ntema, name } = req.body;
 
     // email checks
