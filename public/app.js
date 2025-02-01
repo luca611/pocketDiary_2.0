@@ -495,7 +495,7 @@ function swapToRegister() {
 
 //-----------------------------------------------------------------
 
-function swapToHome() {
+async function swapToHome() {
   setPopupPage(0);
   updateActivePageLink();
 
@@ -506,7 +506,7 @@ function swapToHome() {
   ebi("pageTitle").innerText = "hi, ";
   ebi("decoratedTitle").innerText = username;
 
-  getTheme();
+  await getTheme();
   applyTheme();
   loadNotes();
   loadUsername();
