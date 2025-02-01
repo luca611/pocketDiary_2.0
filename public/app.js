@@ -406,9 +406,9 @@ function saveCustomTheme() {
 
 	let x = new XMLHttpRequest();
 
+	xhr.withCredentials = true;
 	x.open("PUT", serverURL + "/updateCustomTheme");
 	x.setRequestHeader("Content-Type", "application/json");
-	xhr.withCredentials = true;
 
 	x.onload = function () {
 		let response = JSON.parse(x.responseText);
@@ -432,9 +432,9 @@ function saveCustomTheme() {
 function loadCustomTheme() {
 	let x = new XMLHttpRequest();
 
+	xhr.withCredentials = true;
 	x.open("GET", serverURL + "/getCustomTheme");
 	x.setRequestHeader("Content-Type", "application/json");
-	xhr.withCredentials = true;
 
 	x.onload = function () {
 		let response = JSON.parse(x.responseText);
