@@ -1,3 +1,5 @@
+import { fetchData, postData, putData, deleteData } from './functions/apiManager.js';
+
 const cacheName = "pwaname"; //PWA id here
 //Register PWA service worker
 if ("serviceWorker" in navigator) {
@@ -32,6 +34,8 @@ xhr.send();
 if (!navigator.cookieEnabled) {
   alert("Cookies are disabled in your browser. Please enable cookies to use this application.");
 }
+
+
 
 //-----------------------------------------------------------------
 //app code
@@ -505,6 +509,7 @@ function swapToHome() {
   ebi("decoratedTitle").innerText = username;
 
   loadNotes();
+  loadUsername();
   disableLoading();
 }
 
@@ -1151,10 +1156,10 @@ function showCalendarNotes(notes) {
   "dataora": "2025-01-26T00:00:00.000Z"
   */
 }
+
 function checkNotes(data, id) {
   const url = serverURL + "/getDayNotes";
 
-  data = formatDate(data);
   const body = JSON.stringify({ date: data });
 
   const xhr = new XMLHttpRequest();
@@ -1172,7 +1177,6 @@ function checkNotes(data, id) {
             let div = document.createElement('div');
             div.classList.add('dailyPin');
             ebi(id).appendChild(div);
-            console.log("true");
           }
         } else {
           console.error("Unexpected response format");
@@ -1240,7 +1244,6 @@ function loadNotesByDate(date) {
 
 let currentDate = new Date();
 function renderCalendar() {
-  //CALENDARIO
   const monthYear = document.getElementById('monthYear');
   const daysContainer = document.getElementById('daysContainer');
   const year = currentDate.getFullYear();
@@ -1261,9 +1264,6 @@ function renderCalendar() {
     dayDiv.classList.add('day');
     dayDiv.textContent = i;
     dayDiv.id = i;
-    console.log(month);
-    console.log(i);
-    console.log(year);
     let data = (month + 1) + '/' + i + '/' + year;
     if (checkNotes(data, i)) {
 
@@ -1391,7 +1391,6 @@ function changeName() {
     if (response.error == 0) {
       displayError("popupNameError", "");
       username = newName;
-      saveCredentials();
       ebi("newName").value = "";
       closePopup();
 
@@ -1484,6 +1483,29 @@ function openReport() {
   ebi("report").classList.remove("hidden");
 }
 
+//-----------------------------------------------------------------
 
+function loadUsername() {
+  const url = serverURL + "/getUsername";
 
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.withCredentials = true;
+  xhr.setRequestHeader("Content-Type", "application/json");
 
+  xhr.onload = function () {
+    let response = JSON.parse(xhr.responseText);
+    if (response.error == 0) {
+      username = response.name;
+      ebi("decoratedTitle").innerText = username;
+    } else {
+      console.error(xhr.responseText);
+    }
+  };
+
+  xhr.onerror = function () {
+    console.error(xhr.statusText);
+  };
+
+  xhr.send();
+}
