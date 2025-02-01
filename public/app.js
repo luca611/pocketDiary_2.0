@@ -440,7 +440,7 @@ function loadCustomTheme() {
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			if (response.customTheme !== null) {
-				let colors = response.colors.split(";");
+				let colors = response.message.split(";");
 				document.documentElement.style.setProperty("--primary-color", colors[0]);
 				document.documentElement.style.setProperty("--secondary-color", colors[1]);
 				document.documentElement.style.setProperty("--minor-color", colors[2]);
