@@ -1530,4 +1530,8 @@ function getTheme() {
       console.error(xhr.responseText);
     }
   };
+
+  xhr.onerror = function () {
+    console.error(xhr.statusText);
+  };
 }
