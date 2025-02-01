@@ -495,7 +495,7 @@ function swapToRegister() {
 
 //-----------------------------------------------------------------
 
-async function swapToHome() {
+function swapToHome() {
   setPopupPage(0);
   updateActivePageLink();
 
@@ -506,8 +506,7 @@ async function swapToHome() {
   ebi("pageTitle").innerText = "hi, ";
   ebi("decoratedTitle").innerText = username;
 
-  await getTheme();
-  applyTheme();
+  getTheme();
   loadNotes();
   loadUsername();
   disableLoading();
@@ -1526,6 +1525,7 @@ function getTheme() {
     let response = JSON.parse(xhr.responseText);
     if (response.error == 0) {
       currentTheme = response.message;
+      applyTheme();
     } else {
       console.error(xhr.responseText);
     }
