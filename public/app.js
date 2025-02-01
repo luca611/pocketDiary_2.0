@@ -556,10 +556,6 @@ function openPasswordChange() {
 	openPopup(1);
 }
 
-
-//-----------------------------------------------------------------
-
-
 //-----------------------------------------------------------------
 
 function updateActivePageLink() {
@@ -704,6 +700,7 @@ function toGrades() {
 //-----------------------------------------------------------------
 
 function toCalendar() {
+	setPopupPage(0);
 	disableAddButton();
 	hideAllPages();
 	ebi("calendar").classList.remove("hidden");
@@ -1110,6 +1107,7 @@ function createEvent() {
 			ebi("eventDate").value = "";
 			closePopup();
 			loadNotes();
+			renderCalendar();
 			showFeedback(0, "Event created");
 		} else {
 			displayError("eventError", response.message);
@@ -1138,7 +1136,6 @@ function loadNotes() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		console.log(xhr.responseText);
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			try {
@@ -1524,7 +1521,6 @@ function loadUsername() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		console.log(xhr.responseText)
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			username = response.message;
