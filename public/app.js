@@ -1,5 +1,3 @@
-import { fetchData, postData, putData, deleteData } from './functions/apiManager.js';
-
 const cacheName = "pwaname"; //PWA id here
 //Register PWA service worker
 if ("serviceWorker" in navigator) {

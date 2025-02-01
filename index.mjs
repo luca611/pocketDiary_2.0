@@ -181,5 +181,7 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
     console.log('Server is running at http://localhost:' + PORT);
+
+    //leave this line here only if you are using a free hosting service like replit or render to avoid 5 minutes inactivity shutdown
     keepAlive();
 });
