@@ -86,6 +86,8 @@ app.use((req, res, next) => {
 });
 
 
+app.set('trust proxy', 1);
+
 /* 
     Middleware to handle CORS
     Must change:
