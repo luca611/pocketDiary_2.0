@@ -78,7 +78,7 @@ export async function getDayNotes(req, res) {
 
     let { date } = req.body;
 
-    if (!isValidDate(date)) {
+    if (!isValidDate(date, true)) {
         sendError(res, "Invalid date");
         return;
     }

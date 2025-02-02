@@ -93,7 +93,7 @@ export function isValidDescription(description) {
  * @param {string} date - The date to validate
  * @returns {boolean} - True if the date is valid, false otherwise
 */
-export function isValidDate(date) {
+export function isValidDate(date, canBeInPast = false) {
     const dateParts = date.split('/');
     if (dateParts.length !== 3) {
         return false;
@@ -115,5 +115,8 @@ export function isValidDate(date) {
         return false;
     }
 
+    if (canBeInPast) {
+        return parsedDate <= maxFutureDate;
+    }
     return parsedDate >= now && parsedDate <= maxFutureDate;
 }

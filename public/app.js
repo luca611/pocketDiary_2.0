@@ -1110,6 +1110,7 @@ function createEvent() {
 			renderCalendar();
 			showFeedback(0, "Event created");
 		} else {
+			confirmButton.disabled = false;
 			displayError("eventError", response.message);
 		}
 	};
