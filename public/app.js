@@ -1244,6 +1244,8 @@ function renderCalendar() {
 		emptyDiv.classList.add('empty');
 		daysContainer.appendChild(emptyDiv);
 	}
+
+	let lastDay = 1;
 	for (let i = 1; i <= lastDate; i++) {
 		const dayDiv = document.createElement('div');
 		dayDiv.classList.add('day');
@@ -1251,6 +1253,7 @@ function renderCalendar() {
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
 		daysContainer.appendChild(dayDiv);
+		lastDayOfMonth = i;
 	}
 
 	let xhr = new XMLHttpRequest();
@@ -1276,7 +1279,10 @@ function renderCalendar() {
 		console.error("Network error");
 	}
 
-	data = { startDate: formatDate(new Date(year, month, currentDate.getFullYear())), endDate: formatDate(new Date(year, month + 1, currentDate.getFullYear())) };
+
+	const firstDayOfMonth = new Date(year, month, 1);
+	const lastDayOfMonth = new Date(year, month, lastDate);
+	let data = { startDate: firstDayOfMonth, endDate: lastDayOfMonth };
 	xhr.send(JSON.stringify(data));
 }
 
