@@ -1,6 +1,6 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { decryptMessage, encryptMessage } from "../security/encryption.mjs";
-import { sendError, sendNotLoggedIn, sendSuccess } from "../utils/returns.mjs";
+import { sendError, sendNotLoggedIn, sendServerError, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate, isValidDescription, isValidTitle } from "../utils/validator.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
@@ -176,6 +176,59 @@ export async function getNoteById(req, res) {
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
     res.status(200).send({ error: '0', note: noteData });
+    closeDbConnection(conn);
+}
+
+/**
+ * Get dates with notes
+ * 
+ * @param {Request} req - express request object
+ * @param {Response} res - express response object
+*/
+
+export async function getNoteDates(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { startDate, endDate } = req.body;
+
+    if (!isValidDate(startDate, true)) {
+        sendError(res, "Invalid start date");
+        return;
+    }
+
+    if (!isValidDate(endDate, true)) {
+        sendError(res, "Invalid end date");
+        return;
+    }
+
+    let conn = null;
+    try {
+        conn = await connectToDb();
+    } catch (err) {
+        console.error(err);
+        sendServerError(res, "Database error");
+        return;
+    }
+
+    const query = `SELECT DISTINCT EXTRACT(DAY FROM dataora) AS days FROM note WHERE idstudente = $1 AND dataora >= $2 AND dataora <= $3`;
+
+    let result = null;
+    try {
+        result = await conn.query(query, [req.session.email, startDate, endDate]);
+    } catch (err) {
+        console.error(err);
+        sendServerError(res, "Database error");
+        closeDbConnection(conn);
+        return;
+    }
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.status(200).send({ error: '0', days: result.rows.map((row) => row.days) });
     closeDbConnection(conn);
 }
 

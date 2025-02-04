@@ -24,6 +24,13 @@ export function sendSuccess(res, message) {
     res.status(200).send({ error: '0', message });
 }
 
+export function sendServerError(res, message) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.status(500).send({ error: '1', message });
+}
+
 /**
  * send a not logged in response
  * 

@@ -12,7 +12,7 @@ import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes, keepAlive } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
-import { addNote, deleteNote, getDayNotes, getNoteById, updateNote } from './controllers/notes.mjs';
+import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote } from './controllers/notes.mjs';
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 
 
@@ -161,6 +161,7 @@ app.delete('/deleteAccount', deleteUser);
 
 app.post('/addNote', addNote);
 app.post('/getDayNotes', getDayNotes);
+app.post('/getDaysWithNotes', getNoteDates);
 
 app.get('/getNoteById', getNoteById);
 
