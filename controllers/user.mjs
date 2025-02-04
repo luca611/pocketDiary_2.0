@@ -20,10 +20,16 @@ export async function register(req, res) {
 
     let { email, password, ntema, name } = req.body;
 
-    // email checks
+    if (!email || !password || !ntema || !name) {
+        sendError(res, "invalid inputs");
+        return;
+    }
+
     email = email.trim();
     email = email.toLowerCase();
+    name = name.trim();
 
+    // email checks
     if (await isEmpty(email)) {
         sendError(res, "Email is required");
         return;
@@ -125,6 +131,11 @@ export async function login(req, res) {
 
     let { email, password } = req.body;
 
+    if (!email || !password) {
+        sendError(res, "invalid inputs");
+        return;
+    }
+
     if (isEmpty(email) || isEmpty(password)) {
         sendError("invalid inputs: email or password is empty");
         return;
@@ -155,11 +166,9 @@ export async function login(req, res) {
         return;
     }
 
-
-
     // see if there's a user matching username and password
     // there should be only 1 match but to avoid any kind
-    // of error i prefere
+    // of error i prefered to check the length of the result
 
     if (result.rows.length != 1) {
         sendError(res, "Invalid credentials");
@@ -317,6 +326,11 @@ export async function updatePassword(req, res) {
 
     let { newPassword } = req.body;
 
+    if (!newPassword) {
+        sendError(res, "invalid inputs");
+        return;
+    }
+
     if (isEmpty(newPassword)) {
         sendError(res, "Password is required");
         return;
@@ -374,6 +388,11 @@ export async function updateTheme(req, res) {
 
     let { theme } = req.body;
 
+    if (!theme) {
+        sendError(res, "invalid inputs");
+        return;
+    }
+
     if (typeof theme !== 'number') {
         sendError(res, "theme type not valid");
         return;
@@ -423,6 +442,13 @@ export async function updateName(req, res) {
 
     let { name } = req.body;
 
+    if (!name) {
+        sendError(res, "invalid inputs");
+        return;
+    }
+
+    name = name.trim();
+
     if (isEmpty(name)) {
         sendError(res, "Name is required");
         return;
@@ -467,6 +493,11 @@ export async function updateCustomTheme(req, res) {
     }
 
     let { customTheme } = req.body;
+
+    if (!customTheme) {
+        sendError(res, "invalid inputs");
+        return;
+    }
 
     if (isEmpty(customTheme)) {
         sendError(res, "Custom theme is required");

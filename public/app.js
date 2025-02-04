@@ -1185,49 +1185,6 @@ function showCalendarNotes(notes) {
 	*/
 }
 
-function checkNotes(data, id) {
-	const url = serverURL + "/getDayNotes";
-
-	const body = JSON.stringify({ date: data });
-
-	const xhr = new XMLHttpRequest();
-	xhr.withCredentials = true;
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			try {
-				if (Array.isArray(response.notes)) {
-					if (response.notes.length > 0) {
-						ebi(id).classList.add('note');
-						let div = document.createElement('div');
-						div.classList.add('dailyPin');
-						ebi(id).appendChild(div);
-					}
-				} else {
-					console.error("Unexpected response format");
-					return false;
-				}
-			} catch (e) {
-				console.error("Error parsing response: " + e);
-				return false;
-			}
-		} else {
-			console.error(xhr.responseText);
-			return false;
-		}
-	};
-
-	xhr.onerror = function () {
-		console.error(xhr.statusText);
-		return false;
-	};
-
-	xhr.send(body);
-}
-
 function loadNotesByDate(date) {
 	const url = serverURL + "/getDayNotes";
 
@@ -1292,14 +1249,35 @@ function renderCalendar() {
 		dayDiv.classList.add('day');
 		dayDiv.textContent = i;
 		dayDiv.id = i;
-		let data = (month + 1) + '/' + i + '/' + year;
-		if (checkNotes(data, i)) {
-
-			dayDiv.classList.add('note');
-		}
 		dayDiv.classList.add('calendarDays');
 		daysContainer.appendChild(dayDiv);
 	}
+
+	let xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+	xhr.open("POST", serverURL + "/getDaysWithNotes");
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			if (response.days !== null && response.days.length > 0) {
+				response.days.forEach(day => {
+					document.getElementById(day).classList.add('note');
+					let div = document.createElement('div');
+					div.classList.add('dailyPin');
+					document.getElementById(day).appendChild(div);
+				});
+			}
+		}
+	}
+
+	xhr.onerror = function () {
+		console.error("Network error");
+	}
+
+	data = { startDate: formatDate(new Date(year, month, currentDate.getFullYear())), endDate: formatDate(new Date(year, month + 1, currentDate.getFullYear())) };
+	xhr.send(JSON.stringify(data));
 }
 
 function prevMonth() {

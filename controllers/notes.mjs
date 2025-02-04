@@ -20,6 +20,11 @@ export async function addNote(req, res) {
 
     let { title, description, date } = req.body;
 
+    if (!title || !description || !date) {
+        sendError(res, "Missing data");
+        return;
+    }
+
     if (!isValidTitle(title)) {
         sendError(res, "Invalid title");
         return;
@@ -77,6 +82,11 @@ export async function getDayNotes(req, res) {
     }
 
     let { date } = req.body;
+
+    if (!date) {
+        sendError(res, "Invalid date");
+        return;
+    }
 
     if (!isValidDate(date, true)) {
         sendError(res, "Invalid date");
@@ -180,7 +190,7 @@ export async function getNoteById(req, res) {
 }
 
 /**
- * Get dates with notes
+ * Get days with notes in a range (ment to be used for calendar so same month is required)
  * 
  * @param {Request} req - express request object
  * @param {Response} res - express response object
@@ -194,6 +204,11 @@ export async function getNoteDates(req, res) {
 
     let { startDate, endDate } = req.body;
 
+    if (!startDate || !endDate) {
+        sendError(res, "Invalid range");
+        return;
+    }
+
     if (!isValidDate(startDate, true)) {
         sendError(res, "Invalid start date");
         return;
@@ -201,6 +216,19 @@ export async function getNoteDates(req, res) {
 
     if (!isValidDate(endDate, true)) {
         sendError(res, "Invalid end date");
+        return;
+    }
+
+    const startMonth = new Date(startDate).getMonth();
+    const endMonth = new Date(endDate).getMonth();
+
+    if (startMonth !== endMonth) {
+        sendError(res, "Start date and end date must be in the same month");
+        return;
+    }
+
+    if (startDate > endDate) {
+        sendError(res, "Invalid range");
         return;
     }
 
@@ -251,6 +279,11 @@ export async function updateNote(req, res) {
 
     if (!id) {
         sendError(res, "Invalid id");
+        return;
+    }
+
+    if (!title || !description || !date) {
+        sendError(res, "No data to update");
         return;
     }
 
