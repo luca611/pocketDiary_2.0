@@ -1253,7 +1253,7 @@ function renderCalendar() {
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
 		daysContainer.appendChild(dayDiv);
-		lastDayOfMonth = i;
+		lastDay = i;
 	}
 
 	let xhr = new XMLHttpRequest();
@@ -1280,8 +1280,8 @@ function renderCalendar() {
 	}
 
 
-	const firstDayOfMonth = new Date(year, month, 1);
-	const lastDayOfMonth = new Date(year, month, lastDate);
+	const firstDayOfMonth = formatDate(new Date(year, month, 2));
+	const lastDayOfMonth = formatDate(new Date(year, month, lastDate + 1));
 	let data = { startDate: firstDayOfMonth, endDate: lastDayOfMonth };
 	xhr.send(JSON.stringify(data));
 }
