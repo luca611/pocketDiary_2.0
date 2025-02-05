@@ -14,7 +14,7 @@ import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
 import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote } from './controllers/notes.mjs';
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
-import { getChatCompletion } from './PocketAi/chat.mjs';
+import { getChatCompletion, setStudyPlan } from './pocketAi/chat.mjs';
 
 
 dotenv.config();
@@ -170,7 +170,8 @@ app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
 
-app.post('/getChatCompletion', getChatCompletion);
+app.post('/setStudyPlan', setStudyPlan);
+app.post('/chat', getChatCompletion);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
