@@ -1731,6 +1731,23 @@ p.warning {
     max-width: 50%;
     left: 25%;
   }
+
+  div.containerCalendario {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  div.evento{
+    margin-top: 0;
+  }
+
+  div.evento{
+    width: 50%;
+  }
+
+  div.calendario{
+    width: 50%;
+  }
 }
 
 @media screen and (max-height: 40.625rem) {
