@@ -14,7 +14,7 @@ import { generateKey } from './security/encryption.mjs';
 import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, getCustomTheme, deleteUser } from './controllers/user.mjs';
 import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote } from './controllers/notes.mjs';
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
-import { getChatCompletion, setStudyPlan } from './pocketAi/chat.mjs';
+import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 
 
 dotenv.config();
