@@ -333,6 +333,7 @@ function restoreColorsAndClose() {
 }
 
 function changeThemeSettings() {
+	showFeedback(0, "Theme changed successfully");
 	primaryColor = rootStyles.getPropertyValue("--primary-color");
 	secondaryColor = rootStyles.getPropertyValue("--secondary-color");
 	tertiaryColor = rootStyles.getPropertyValue("--minor-color");
@@ -1571,7 +1572,52 @@ function getTheme() {
 //-----------------------------------------------------------------
 
 function sendMessage() {
+	let message = ebi("userInput").value.trim();
+	if (!message || message === "") {
+		return;
+	}
 
+	ebi("sendButton").disabled = true;
+
+	let newMessage = document.createElement("div");
+	newMessage.classList.add("message");
+	newMessage.classList.add("user");
+	newMessage.innerText = message;
+
+	ebi("messagesList").appendChild(newMessage);
+
+	let aiResponse = document.createElement("div");
+	aiResponse.classList.add("message");
+	aiResponse.classList.add("ai");
+	aiResponse.classList.add("loading");
+	aiResponse.innerText = "Thinking...";
+	ebi("messagesList").appendChild(response);
+
+	let xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+	xhr.open("POST", serverURL + "/chat");
+
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		ebi("sendButton").disabled = false;
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			aiResponse.innerText = response.message;
+			aiResponse.classList.remove("loading");
+		} else {
+			aiResponse.innerText = "i'm sorry, something went wrong :(";
+			aiResponse.classList.remove("loading");
+		}
+	};
+
+	xhr.onerror = function () {
+		ebi("sendButton").disabled = false;
+		aiResponse.innerText = "i'm sorry, something went wrong :(";
+		aiResponse.classList.remove("loading");
+	};
+
+	xhr.send(JSON.stringify({ message }));
 }
 
 function sendScheduleInfo() {
