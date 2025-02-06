@@ -1591,7 +1591,7 @@ function sendMessage() {
 	aiResponse.classList.add("ai");
 	aiResponse.classList.add("loading");
 	aiResponse.innerText = "Thinking...";
-	ebi("messagesList").appendChild(response);
+	ebi("messagesList").appendChild(aiResponse);
 
 	let xhr = new XMLHttpRequest();
 	xhr.withCredentials = true;
