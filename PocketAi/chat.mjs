@@ -2,9 +2,9 @@ import OpenAI from "openai";
 import { sendError, sendServerError } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.inference.ai.azure.com";
-const modelName = "Llama-3.3-70B-Instruct";
+const token = process.env["GROQ_KEY"];
+const endpoint = "https://api.groq.com/openai/v1";
+const modelName = "llama-3.3-70b-versatile";
 
 const client = new OpenAI({ baseURL: endpoint, apiKey: token });
 
@@ -92,7 +92,7 @@ export async function setStudyPlan(req, res) {
                 ],
                 model: modelName,
                 temperature: 1,
-                max_tokens: 1000, // Reduced from 4096 to 1000
+                max_tokens: 1000,
                 top_p: 1
             },
             { signal: controller.signal }
