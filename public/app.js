@@ -1573,3 +1573,6 @@ function sendMessage() {
 
 }
 
+function sendScheduleInfo() {
+
+}

@@ -240,8 +240,8 @@
 
                         </div>
                     </div>
-
-                    <div class="userInputs">
+                </div>
+                <div class="userInputs">
                         <input type="text" class="inputField" id="userInput" placeholder="Type here...">
                         <button class="sendButton" onclick="sendMessage()">
                             <img src="resources/icons/send.svg" alt="">
@@ -249,9 +249,8 @@
                         <button class="scheduleAi" onclick="openPopup()">
                             <img src="resources/icons/calendar.svg" alt="">
                         </button>
-                    </div>
+                </div>
             </div>
-
             <div id="calendar" class="section hidden">
                 <div id="calendarHeader">
                     <h2 id="monthYear"></h2>
@@ -354,12 +353,12 @@
             </h3>
             <hr class="navSeparator">
 
-            <button id="homeButton" class="barLink" onclick="toSettings()">
+            <button id="settingsButton" class="barLink" onclick="toSettings()">
                 <img class="icon" src="resources/icons/settings.svg" alt="">
                 <b class="buttonText>">Settings</b>
             </button>
 
-            <button id="homeButton" class="barLink">
+            <button id="aiButton" class="barLink" onclick="toChat()">
                 <img class="icon" src="resources/icons/chat.svg" alt="">
                 <b class="buttonText>">Pocket AI</b>
             </button>
