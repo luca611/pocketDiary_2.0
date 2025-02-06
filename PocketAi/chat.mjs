@@ -45,6 +45,11 @@ export async function getChatCompletion(req, res) {
     catch (error) {
         sendServerError(res, "An error occurred while processing the request.");
     }
+
+    if (!response.choices[0].message.content) {
+        sendServerError(res, "An error occurred while processing the request.");
+        return;
+    }
     res.status(200).send({ error: '0', message: response.choices[0].message.content});
 }
 
@@ -91,8 +96,19 @@ export async function setStudyPlan(req, res) {
             top_p: 1
         });
 
-        
-        let cleanedOutput = JSON.parse(response.choices[0].message.content);
+        if(!response.choices[0].message.content) {
+            sendServerError(res, "An error occurred while processing the request.");
+            return;
+        }
+
+        let cleanedOutput;
+        try{
+            cleanedOutput = JSON.parse(response.choices[0].message.content);
+        }
+        catch (error) {
+            sendServerError(res, "An error occurred while processing the request, try again.");
+            return;
+        }
 
         res.status(200).send({ error: '0', message: cleanedOutput });
     } catch (error) {
