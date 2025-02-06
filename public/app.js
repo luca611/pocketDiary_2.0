@@ -565,7 +565,10 @@ function openPasswordChange() {
 
 function scrollToBottom() {
 	const div = document.getElementById("messagesList");
-	div.scrollTop = div.scrollHeight;
+	div.scrollTo({
+		top: div.scrollHeight,
+		behavior: 'smooth'
+	});
 }
 
 //-----------------------------------------------------------------
@@ -1599,6 +1602,7 @@ function sendMessage() {
 	aiResponse.classList.add("loading");
 	aiResponse.innerText = "Thinking...";
 	ebi("messagesList").appendChild(aiResponse);
+	scrollToBottom();
 
 	let xhr = new XMLHttpRequest();
 	xhr.withCredentials = true;
