@@ -170,6 +170,9 @@ app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
 
+/*
+    Chat routes
+*/
 app.post('/setStudyPlan', setStudyPlan);
 app.post('/chat', getChatCompletion);
 

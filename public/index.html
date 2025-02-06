@@ -225,6 +225,33 @@
                 </div>
             </div>
 
+            <div id="chatPage" class="section hidden">
+                <div class="chatContainer">
+                    <div class="chat">
+                        <div id="messagesList" class="messagesList">
+
+                            <div class="message ai">
+                                <p>Hello! I'm your pocket AI, how can I help you?</p>
+                            </div>
+
+                            <div class="message user">
+                                <p>Hello! I'm here to ask you some questions!</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="userInputs">
+                        <input type="text" class="inputField" id="userInput" placeholder="Type here...">
+                        <button class="sendButton" onclick="sendMessage()">
+                            <img src="resources/icons/send.svg" alt="">
+                        </button>
+                        <button class="scheduleAi" onclick="openPopup()">
+                            <img src="resources/icons/calendar.svg" alt="">
+                        </button>
+                    </div>
+            </div>
+
             <div id="calendar" class="section hidden">
                 <div id="calendarHeader">
                     <h2 id="monthYear"></h2>
@@ -570,7 +597,34 @@
                     </div>
                 </div>
 
-
+                <!-- ai scheduling popUp -->
+                <div id="aiSchedule" class="bodyContainer hidden">
+                    <div class="fillContainer">
+                        subject to study
+                    </div>
+                    <div class="inputContainer">
+                        <input class="inputField" type="text" id="subjectToStudy" placeholder="Simple past">
+                    </div>
+                    <div class="fillContainer">
+                        From
+                    </div>
+                    <div class="inputContainer">
+                        <input class="inputField" type="date" id="fromDate" placeholder="gg/mm/aaaa">
+                    </div>
+                    <div class="fillContainer">
+                        To
+                    </div>
+                    <div class="inputContainer">
+                        <input class="inputField" type="date" id="toDate" placeholder="gg/mm/aaaa">
+                    </div>
+                    <div class="fillContainer">
+                        Relevance
+                    </div>
+                    <div class="inputContainer">
+                        <input type="range" min="1" max="5" step="1" id="priority">
+                    </div>
+                    <p class="error" id="aiError"></p>
+                </div>
 
             </div>
             <!-- lower part of the pop up same as always-->
@@ -584,20 +638,6 @@
 
 
     <script>
-
-        /*
-                a = document.createElement("button")
-                a.innerHTML = "show"
-                a.style.position = "absolute";
-                a.style.top = "0";
-                a.style.left = "0";
-                a.onclick = () => {
-                        document.getElementById("themeContainer").classList.remove("hidden");
-                        document.getElementById("eventContainerbody").classList.add("hidden");
-                        console.log("ex")
-                }
-                document.getElementById("pageBody").appendChild(a)
-           */
 
         const numeriVoto = document.querySelectorAll('.numeroVoto');
 

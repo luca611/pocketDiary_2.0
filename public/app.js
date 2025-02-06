@@ -304,6 +304,10 @@ function setPopupPage(page = 0) {
 			ebi("popupConfrimButton").innerText = "Change";
 			ebi("popupCancelButton").onclick = restoreColorsAndClose;
 			break;
+		case 5:
+			ebi("popupConfrimButton").onclick = sendScheduleInfo;
+			ebi("popupConfrimButton").innerText = "Send";
+			break;
 		default:
 			break;
 	}
@@ -722,6 +726,19 @@ function toHome() {
 	ebi("pageTitle").innerText = "hi, ";
 	ebi("decoratedTitle").innerText = username;
 	currentPage = 2;
+	updateActivePageLink();
+	closeSidebar();
+}
+
+//-----------------------------------------------------------------
+
+function toChat() {
+	setPopupPage(5)
+	hideAllPages();
+	ebi("chatPage").classList.remove("hidden");
+	ebi("pageTitle").innerText = "Pocket AI";
+	ebi("decoratedTitle").innerText = "";
+	currentPage = 1;
 	updateActivePageLink();
 	closeSidebar();
 }
@@ -1549,3 +1566,10 @@ function getTheme() {
 
 	xhr.send();
 }
+
+//-----------------------------------------------------------------
+
+function sendMessage() {
+
+}
+
