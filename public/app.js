@@ -1584,6 +1584,7 @@ function getTheme() {
 function parseMarkdown(markdown) {
 	markdown = markdown.trim() + "\n";
 
+	// Headers
 	markdown = markdown.replace(/###### (.*?)\n/g, "<h6>$1</h6>\n");
 	markdown = markdown.replace(/##### (.*?)\n/g, "<h5>$1</h5>\n");
 	markdown = markdown.replace(/#### (.*?)\n/g, "<h4>$1</h4>\n");
@@ -1591,16 +1592,44 @@ function parseMarkdown(markdown) {
 	markdown = markdown.replace(/## (.*?)\n/g, "<h2>$1</h2>\n");
 	markdown = markdown.replace(/# (.*?)\n/g, "<h1>$1</h1>\n");
 
+	// Lists
 	markdown = markdown.replace(/(?:^|\n)- (.*?)(?=\n|$)/g, "<li>$1</li>");
 	markdown = markdown.replace(/(<li>.*?<\/li>)+/gs, "<ul>$&</ul>");
+	markdown = markdown.replace(/(?:^|\n)\d+\. (.*?)(?=\n|$)/g, "<li>$1</li>");
+	markdown = markdown.replace(/(<li>.*?<\/li>)+/gs, "<ol>$&</ol>");
 
+	// Blockquotes
+	markdown = markdown.replace(/(?:^|\n)> (.*?)(?=\n|$)/g, "<blockquote>$1</blockquote>");
+
+	// Code blocks
+	markdown = markdown.replace(/```(.*?)```/gs, "<pre><code>$1</code></pre>");
+	markdown = markdown.replace(/`(.*?)`/g, "<code>$1</code>");
+
+	// Bold and Italic
 	markdown = markdown.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 	markdown = markdown.replace(/\*(.*?)\*/g, "<i>$1</i>");
+	markdown = markdown.replace(/__(.*?)__/g, "<b>$1</b>");
+	markdown = markdown.replace(/_(.*?)_/g, "<i>$1</i>");
+
+	// Links
 	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
 
+	// Images
+	markdown = markdown.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+
+	// Tables
+	markdown = markdown.replace(/^\|(.+?)\|\n\|(?:-+\|)+\n((?:\|.*?\|\n)*)/gm, (match, header, body) => {
+		const headers = header.trim().split("|").map(h => `<th>${h.trim()}</th>`).join("");
+		const rows = body.trim().split("\n").map(row => {
+			const cells = row.trim().split("|").map(cell => `<td>${cell.trim()}</td>`).join("");
+			return `<tr>${cells}</tr>`;
+		}).join("");
+		return `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+	});
+
+	// Paragraphs
 	markdown = markdown.replace(/\n\s*\n/g, "</p><p>");
 	markdown = "<p>" + markdown + "</p>";
-
 	markdown = markdown.replace(/<p>\s*<\/p>/g, "");
 
 	return markdown;
@@ -1619,7 +1648,7 @@ function sendMessage() {
 	newMessage.classList.add("message");
 	newMessage.classList.add("user");
 	let displayMessage = parseMarkdown(message);
-	newMessage.innerText = displayMessage;
+	newMessage.innerHTML = displayMessage;
 
 	ebi("messagesList").appendChild(newMessage);
 
@@ -1641,8 +1670,8 @@ function sendMessage() {
 		ebi("sendButton").disabled = false;
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
-			let response = parseMarkdown(response.message);
-			aiResponse.innerText = response;
+			let parsedResponse = parseMarkdown(response.message);
+			aiResponse.innerHTML = parsedResponse;
 			aiResponse.classList.remove("loading");
 			scrollToBottom();
 		} else {
