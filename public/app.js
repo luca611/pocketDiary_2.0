@@ -563,6 +563,13 @@ function openPasswordChange() {
 
 //-----------------------------------------------------------------
 
+function scrollToBottom() {
+	const div = document.getElementById("messagesList");
+	div.scrollTop = div.scrollHeight;
+}
+
+//-----------------------------------------------------------------
+
 function updateActivePageLink() {
 	let links = document.getElementsByClassName("barLink");
 	Array.from(links).forEach((link) => {
@@ -1605,6 +1612,7 @@ function sendMessage() {
 		if (response.error == 0) {
 			aiResponse.innerText = response.message;
 			aiResponse.classList.remove("loading");
+			scrollToBottom();
 		} else {
 			aiResponse.innerText = "i'm sorry, something went wrong :(";
 			aiResponse.classList.remove("loading");
