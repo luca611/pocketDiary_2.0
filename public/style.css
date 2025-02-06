@@ -1600,10 +1600,25 @@ div.chatContainer {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 100%;
+  height: calc(100% - 4rem);
   width: 100%;
   padding: 1rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
 }
+
+div.userInputs {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  width: 100%;
+
+}
+
+input.noMinWidth {
+  min-width: 0;
+}
+
 
 div.chat {
   background-color: var(--minor-color);
@@ -1635,7 +1650,7 @@ div.message {
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: var(--general-border-radius);
-  max-width: 50%;
+  max-width: 80%;
   color: white;
   font-family: 'Inter';
   font-size: var(--body-size);
@@ -1643,12 +1658,12 @@ div.message {
 
 div.message.ai {
   background-color: var(--primary-color);
-  align-self: right;
+  align-self: flex-start;
 }
 
 div.message.user {
   background-color: var(--secondary-color);
-  align-self: left;
+  align-self: flex-end;
 }
 
 @keyframes in-out {
