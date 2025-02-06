@@ -8,11 +8,10 @@ const modelName = "gpt-4o";
 
 export async function getChatCompletion(req, res) {
 
-    /*
     if (!req.session.logged) {
         sendError(res, "You are not logged in");
         return;
-    }*/
+    }
 
     let response;
 
@@ -51,11 +50,10 @@ export async function getChatCompletion(req, res) {
 
 export async function setStudyPlan(req, res) {
 
-    /*
     if (!req.session.logged) {
         sendError(res, "You are not logged in");
         return;
-    }*/
+    }
 
     let response;
 
