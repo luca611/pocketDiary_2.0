@@ -733,7 +733,8 @@ function toHome() {
 //-----------------------------------------------------------------
 
 function toChat() {
-	setPopupPage(5)
+	setPopupPage(5);
+	disableAddButton();
 	hideAllPages();
 	ebi("chatPage").classList.remove("hidden");
 	ebi("pageTitle").innerText = "Pocket AI";
