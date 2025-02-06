@@ -1581,6 +1581,32 @@ function getTheme() {
 
 //-----------------------------------------------------------------
 
+function parseMarkdown(markdown) {
+	markdown = markdown.trim() + "\n";
+
+	markdown = markdown.replace(/###### (.*?)\n/g, "<h6>$1</h6>\n");
+	markdown = markdown.replace(/##### (.*?)\n/g, "<h5>$1</h5>\n");
+	markdown = markdown.replace(/#### (.*?)\n/g, "<h4>$1</h4>\n");
+	markdown = markdown.replace(/### (.*?)\n/g, "<h3>$1</h3>\n");
+	markdown = markdown.replace(/## (.*?)\n/g, "<h2>$1</h2>\n");
+	markdown = markdown.replace(/# (.*?)\n/g, "<h1>$1</h1>\n");
+
+	markdown = markdown.replace(/(?:^|\n)- (.*?)(?=\n|$)/g, "<li>$1</li>");
+	markdown = markdown.replace(/(<li>.*?<\/li>)+/gs, "<ul>$&</ul>");
+
+	markdown = markdown.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+	markdown = markdown.replace(/\*(.*?)\*/g, "<i>$1</i>");
+	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+	markdown = markdown.replace(/\n\s*\n/g, "</p><p>");
+	markdown = "<p>" + markdown + "</p>";
+
+	markdown = markdown.replace(/<p>\s*<\/p>/g, "");
+
+	return markdown;
+}
+//-----------------------------------------------------------------
+
 function sendMessage() {
 	let message = ebi("userInput").value.trim();
 	if (!message || message === "") {
@@ -1592,7 +1618,8 @@ function sendMessage() {
 	let newMessage = document.createElement("div");
 	newMessage.classList.add("message");
 	newMessage.classList.add("user");
-	newMessage.innerText = message;
+	let displayMessage = parseMarkdown(message);
+	newMessage.innerText = displayMessage;
 
 	ebi("messagesList").appendChild(newMessage);
 
@@ -1614,7 +1641,8 @@ function sendMessage() {
 		ebi("sendButton").disabled = false;
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
-			aiResponse.innerText = response.message;
+			let response = parseMarkdown(response.message);
+			aiResponse.innerText = response;
 			aiResponse.classList.remove("loading");
 			scrollToBottom();
 		} else {
