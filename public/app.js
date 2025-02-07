@@ -307,10 +307,13 @@ function setPopupPage(page = 0) {
 			ebi("popupCancelButton").onclick = restoreColorsAndClose;
 			break;
 		case 5:
-			ebi("popupConfrimButton").onclick = sendScheduleInfo;
+			ebi("popupConfrimButton").onclick = function () {
+				sendScheduleInfo();
+			};
 			ebi("popupConfrimButton").innerText = "Plan";
 			break;
 		default:
+			console.error("Invalid page number");
 			break;
 	}
 
@@ -1648,7 +1651,7 @@ function sendMessage() {
 
 function sendScheduleInfo() {
 	ebi("popupConfrimButton").disabled = true;
-	
+
 	let subject = ebi("subjectToStudy").value.trim();
 
 	if (!subject || subject === "") {
@@ -1658,10 +1661,10 @@ function sendScheduleInfo() {
 
 	let fromDate;
 	let toDate;
-	try{
-		fromDate= formatDate(ebi("fromDate").value.trim());
+	try {
+		fromDate = formatDate(ebi("fromDate").value.trim());
 		toDate = formatDate(ebi("toDate").value.trim());
-	}catch(e){
+	} catch (e) {
 		displayError("aiError", "Please fill in all fields");
 		return;
 	}
@@ -1676,14 +1679,14 @@ function sendScheduleInfo() {
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		
+
 		if (response.error == 0) {
 			displayError("aiError", "");
 			closePopup();
 			let chat = ebi("messagesList")
 
 			let notes = response.message.notes;
-			let i = 0; 
+			let i = 0;
 			for (let note of notes) {
 				let messageContainer = document.createElement("div");
 				let id = "messageContainer" + i
