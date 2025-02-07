@@ -1682,7 +1682,7 @@ function sendScheduleInfo() {
 			closePopup();
 			let chat = ebi("messagesList")
 
-			let notes = response.message;
+			let notes = response.message.notes;
 			let i = 0; 
 			for (let note of notes) {
 				let messageContainer = document.createElement("div");
