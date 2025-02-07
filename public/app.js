@@ -308,7 +308,7 @@ function setPopupPage(page = 0) {
 			break;
 		case 5:
 			ebi("popupConfrimButton").onclick = sendScheduleInfo;
-			ebi("popupConfrimButton").innerText = "Send";
+			ebi("popupConfrimButton").innerText = "Plan";
 			break;
 		default:
 			break;
@@ -1677,14 +1677,14 @@ function sendScheduleInfo() {
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
 		
-		if (response.error == 0) {ù
+		if (response.error == 0) {
 			displayError("aiError", "");
 			closePopup();
 			let chat = ebi("messagesList")
 
 			let notes = response.message;
 			let i = 0; 
-			notes.forEach(note => {
+			for (let note of notes) {
 				let messageContainer = document.createElement("div");
 				let id = "messageContainer" + i
 				messageContainer.id = id;
