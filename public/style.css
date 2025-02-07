@@ -1629,11 +1629,41 @@ button.userInputButton {
 	align-content: center;
 }
 
+button.userInputButton::hover {
+	filter: brightness(0.9);
+}
+
 input.priority {
 	width: 100%;
 	height: 3rem;
 	-webkit-appearance: none;
 	background: transparent;
+}
+
+div.messageButtons{
+	display: flex;
+	flex-direction: row;
+	gap: 0.5rem;
+}
+
+button.messageButton{
+	color: white;
+	font-family: 'Inter';
+	width: 4rem;
+	min-width: fit-content;
+	padding: 0.5rem;
+}
+
+button.messageButton:hover{
+	filter: brightness(0.9);
+}
+
+button.messageButton.success{
+	background: var(--primary-green);
+}
+
+button.messageButton.delete{
+	background: var(--primary-red);
 }
 
 input.priority::before {

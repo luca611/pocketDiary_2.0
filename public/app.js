@@ -1,3 +1,5 @@
+
+
 const cacheName = "pwaname"; //PWA id here
 //Register PWA service worker
 if ("serviceWorker" in navigator) {
@@ -1645,5 +1647,112 @@ function sendMessage() {
 }
 
 function sendScheduleInfo() {
+	ebi("popupConfrimButton").disabled = true;
+	
+	let subject = ebi("subjectToStudy").value.trim();
 
+	if (!subject || subject === "") {
+		displayError("aiError", "Please fill in all fields");
+		return;
+	}
+
+	let fromDate;
+	let toDate;
+	try{
+		fromDate= formatDate(ebi("fromDate").value.trim());
+		toDate = formatDate(ebi("toDate").value.trim());
+	}catch(e){
+		displayError("aiError", "Please fill in all fields");
+		return;
+	}
+
+	let frequency = ebi("frequency").value;
+
+	let xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+	xhr.open("POST", serverURL + "/setStudyPlan");
+
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		
+		if (response.error == 0) {ù
+			displayError("aiError", "");
+			closePopup();
+			let chat = ebi("messagesList")
+
+			let notes = response.message;
+			let i = 0; 
+			notes.forEach(note => {
+				let messageContainer = document.createElement("div");
+				let id = "messageContainer" + i
+				messageContainer.id = id;
+				i++;
+
+				let messageBody = document.createElement("div");
+				messageBody.classList.add("message");
+				messageBody.classList.add("ai");
+
+				let title = document.createElement("h4");
+				title.innerText = note.title;
+
+				let description = document.createElement("p");
+				description.innerText = note.description;
+
+				let date = document.createElement("p");
+				date.innerText = note.date;
+
+				let messageButtons = document.createElement("div");
+				messageButtons.classList.add("messageButtons");
+
+				let addButton = document.createElement("button");
+
+				addButton.innerText = "Add";
+				addButton.classList.add("messageButton");
+				addButton.classList.add("success");
+				addButton.onclick = () => {
+					addStudyPlan(note, id);
+
+				}
+
+				let cancelButton = document.createElement("button");
+				cancelButton.innerText = "refuse";
+				cancelButton.classList.add("messageButton");
+				cancelButton.classList.add("delete");
+				cancelButton.onclick = () => {
+					cancelStudyPlan(id);
+				}
+
+				messageButtons.appendChild(addButton);
+				messageButtons.appendChild(cancelButton);
+
+				messageBody.appendChild(title);
+				messageBody.appendChild(description);
+				messageBody.appendChild(date);
+
+				messageContainer.appendChild(messageBody);
+				messageContainer.appendChild(messageButtons);
+
+				chat.appendChild(messageContainer);
+			});
+		} else {
+			displayError("aiError", response.message);
+		}
+	};
+
+	xhr.onerror = function () {
+		displayError("aiError", "Network error. Please try again.");
+	};
+
+	xhr.send(JSON.stringify({ subject, startDate: fromDate, endDate: toDate, frequency }));
+}
+
+function addStudyPlan(note, id) {
+	console.log(note);
+	console.log(id);
+}
+
+function cancelStudyPlan(id) {
+	ebi(id).remove();
 }
