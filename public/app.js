@@ -1589,6 +1589,8 @@ function parseMarkdown(markdownText) {
 
 function sendMessage() {
 	let message = ebi("userInput").value.trim();
+	ebi("userInput").value = "";
+	ebi("userInput").disabled = true;
 	if (!message || message === "") {
 		return;
 	}
@@ -1619,6 +1621,7 @@ function sendMessage() {
 
 	xhr.onload = function () {
 		ebi("sendButton").disabled = false;
+		ebi("userInput").disabled = false;
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			let parsedResponse = parseMarkdown(response.message);
@@ -1633,6 +1636,7 @@ function sendMessage() {
 
 	xhr.onerror = function () {
 		ebi("sendButton").disabled = false;
+		ebi("userInput").disabled = false;
 		aiResponse.innerText = "i'm sorry, something went wrong :(";
 		aiResponse.classList.remove("loading");
 	};

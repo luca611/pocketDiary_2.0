@@ -1717,15 +1717,22 @@ div.messagesList {
 }
 
 div.message {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-	padding: 0.5rem;
-	border-radius: var(--general-border-radius);
-	max-width: 80%;
-	color: white;
-	font-family: 'Inter';
-	font-size: var(--body-size);
+	flex-shrink: 0;
+    min-height: 2.5rem;
+    height: auto;
+    overflow: visible;
+    flex-wrap: nowrap;
+    display: flex;
+    overflow-y: auto;
+    overflow-x: scroll;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--general-border-radius);
+    max-width: 80%;
+    color: white;
+    font-family: 'Inter';
+    font-size: var(--body-size);
 }
 
 div.message.ai {

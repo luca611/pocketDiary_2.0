@@ -242,7 +242,7 @@
                     <button class="userInputButton" onclick="openPopup()">
                         <img src="resources/icons/calendar.svg" alt="">
                     </button>
-                    <input type="text" class="inputField noMinWidth" id="userInput" placeholder="Type here...">
+                    <input type="text" class="inputField noMinWidth" id="userInput" placeholder="Type here..." onkeydown="if(event.keyCode == 13) sendMessage()">
                         
                     <button class="userInputButton" onclick="sendMessage()" id="sendButton"> 
                         <img src="resources/icons/send.svg" alt="">
