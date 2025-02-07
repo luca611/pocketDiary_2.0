@@ -1678,6 +1678,8 @@ function sendScheduleInfo() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
+
+		ebi("popupConfrimButton").disabled = false;
 		let response = JSON.parse(xhr.responseText);
 
 		if (response.error == 0) {
@@ -1754,6 +1756,30 @@ function sendScheduleInfo() {
 function addStudyPlan(note, id) {
 	console.log(note);
 	console.log(id);
+
+	let xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+	xhr.open("POST", serverURL + "/addNote");
+
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			ebi(id).remove();
+			showFeedback(0, "Event added to your calendar");
+		} else {
+			showFeedback(1, response.message);
+		}
+	};
+
+	xhr.onerror = function () {
+		showFeedback(2, "Network error");
+	}
+
+	xhr.send(JSON.stringify({ title: note.title, description: note.description, date: note.date }));
+
+	ebi(id).remove();
 }
 
 function cancelStudyPlan(id) {
