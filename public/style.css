@@ -1812,6 +1812,27 @@ p.warning {
 	background-color: var(--primary-red);
 }
 
+pre {
+    display: block;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    overflow: auto;
+    font-size: .875em;
+    background: var(--body-text-color);
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+tr{
+	border: solid 0.1rem;
+	padding: .2rem;
+}
+
+blockquote {
+	border-left: 4px solid var(--minor-color);
+	padding-left: 0.4rem;
+	margin: 0;
+}
 
 @media screen and (max-height: 50rem) {
 	div.popup {
