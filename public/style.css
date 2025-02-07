@@ -1812,25 +1812,6 @@ p.warning {
 	background-color: var(--primary-red);
 }
 
-pre {
-	display: block;
-    margin-top: 0;
-    margin-bottom: 1rem;
-    overflow: auto;
-    font-size: .875em;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    background: var(--body-text-color);
-}
-
-pre h1 {
-	color: rgb(102, 102, 102);
-	font-size: 1rem;
-}
-
-pre h1::before {
-	content: '//';
-}
 
 @media screen and (max-height: 50rem) {
 	div.popup {
