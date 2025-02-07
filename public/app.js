@@ -1735,7 +1735,7 @@ function sendScheduleInfo() {
 				messageContainer.appendChild(messageButtons);
 
 				chat.appendChild(messageContainer);
-			});
+			};
 		} else {
 			displayError("aiError", response.message);
 		}
