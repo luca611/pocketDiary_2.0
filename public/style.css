@@ -1646,6 +1646,10 @@ div.messageButtons{
 	gap: 0.5rem;
 }
 
+img.loadingAnimation {
+	width: 2rem;
+}
+
 button.messageButton{
 	margin-top: 0.40rem;
     color: white;

@@ -1611,7 +1611,10 @@ function sendMessage() {
 	aiResponse.classList.add("message");
 	aiResponse.classList.add("ai");
 	aiResponse.classList.add("loading");
-	aiResponse.innerText = "Thinking...";
+	let loadAnimation = document.createElement("img");
+	loadAnimation.src = "resources/icons/loading.svg";
+	loadAnimation.classList.add("loadingAnimation");
+	aiResponse.appendChild(loadAnimation);
 	ebi("messagesList").appendChild(aiResponse);
 	scrollToBottom();
 
@@ -1626,6 +1629,7 @@ function sendMessage() {
 		ebi("userInput").disabled = false;
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
+			aiResponse.innerHTML = "";
 			let parsedResponse = parseMarkdown(response.message);
 			aiResponse.innerHTML = parsedResponse;
 			aiResponse.classList.remove("loading");
