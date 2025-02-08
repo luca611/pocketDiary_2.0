@@ -1615,7 +1615,7 @@ function sendMessage() {
 	aiResponse.classList.add("ai");
 	aiResponse.classList.add("loading");
 	let loadAnimation = document.createElement("img");
-	loadAnimation.src = "resources/icons/loading.svg";
+	loadAnimation.src = "resources/icons/chatLoading.svg";
 	loadAnimation.classList.add("loadingAnimation");
 	aiResponse.appendChild(loadAnimation);
 	ebi("messagesList").appendChild(aiResponse);
