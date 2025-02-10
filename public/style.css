@@ -1672,6 +1672,8 @@ div.noteTitle{
     text-overflow: ellipsis;
     overflow: hidden;
     width: 80%;
+    line-height: 3rem;
+    cursor: pointer;
 }
 
 div.noteList{
