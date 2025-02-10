@@ -1835,7 +1835,7 @@ function loadCalendarNotesInfo(date){
 
 				let buttonImage = document.createElement("img");
 				buttonImage.src = "resources/icons/edit.svg";
-				buttonImage.classList.add("icon");
+				buttonImage.classList.add("eventIcon");
 
 				button.appendChild(buttonImage);
 
