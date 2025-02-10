@@ -1679,6 +1679,7 @@ div.noteList{
     min-width: 50%;
 	min-height: 50%;
     height: 100%;
+	gap: 0.5rem;
 }
 
 div.noteListCalendar{
@@ -1705,6 +1706,7 @@ div.noteCalendar{
 
 div.desctiptionNote{
 	max-width: 50%;
+	min-width: 50%;
     max-height: 50%;
     display: flex;
     flex-direction: column;

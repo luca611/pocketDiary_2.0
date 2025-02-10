@@ -1287,7 +1287,7 @@ function renderCalendar() {
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
 		dayDiv.onclick = () => {
-			let date = currentDate.getMonth+"/"+i+"/"+currentDate.getFullYear();
+			let date = currentDate.getMonth()+1+"/"+i+"/"+currentDate.getFullYear();
 			loadCalendarNotesInfo(date);
 		}
 		daysContainer.appendChild(dayDiv);
@@ -1809,7 +1809,7 @@ function loadCalendarNotesInfo(date){
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		if(response.error!==0){
+		if(response.error!=="0"){
 			showFeedback(1,"an error occured");
 			return;
 		}
