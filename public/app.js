@@ -1290,8 +1290,7 @@ function renderCalendar() {
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
 		dayDiv.onclick = () => {
-			let date = new Date(month,i,yeay);
-			date = formatDate(date);
+			let date = currentDate.getMonth()+1+"/"+i+"/"+currentDate.getFullYear();
 			loadCalendarNotesInfo(date);
 		}
 		daysContainer.appendChild(dayDiv);
@@ -1804,7 +1803,7 @@ function loadCalendarNotesInfo(date){
 	}
 
 	ebi("headerNote").innerText = "events on " + date;
-
+	ebi("descriptionCalendar").innerText = "click on an event to see the description";
 	let xhr = new XMLHttpRequest();
 	xhr.withCredentials = true;
 	xhr.open("POST", serverURL + "/getDayNotes");
@@ -1813,7 +1812,7 @@ function loadCalendarNotesInfo(date){
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		if(response.error!==0){
+		if(response.error!=="0"){
 			showFeedback(1,"an error occured");
 			return;
 		}
@@ -1836,6 +1835,13 @@ function loadCalendarNotesInfo(date){
 				button.classList.add("eventButton");
 				button.onclick = () => openCalendarEvent(note);
 
+
+				let buttonImage = document.createElement("img");
+				buttonImage.src = "resources/icons/edit.svg";
+				buttonImage.classList.add("eventIcon");
+
+				button.appendChild(buttonImage);
+
 				let title = document.createElement("div");
 				title.classList.add("noteTitle");
 
@@ -1849,7 +1855,13 @@ function loadCalendarNotesInfo(date){
 				container.appendChild(externalContainer);
 			}
 		}
-	}	
+	}
+
+	xhr.onerror = function () {
+		showFeedback(2,"Network error");
+	}
+
+	xhr.send(JSON.stringify({date}));
 }
 
 function openCalendarEvent(note){

@@ -1665,8 +1665,10 @@ div.informations{
 }
 
 div.noteTitle{
-	text-overflow: ellipsis;
+	white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
+    width: 80%;
 }
 
 div.noteList{
@@ -1679,6 +1681,8 @@ div.noteList{
     min-width: 50%;
 	min-height: 50%;
     height: 100%;
+	gap: 0.5rem;
+    overflow-y: auto;
 }
 
 div.noteListCalendar{
@@ -1705,6 +1709,7 @@ div.noteCalendar{
 
 div.desctiptionNote{
 	max-width: 50%;
+	min-width: 50%;
     max-height: 50%;
     display: flex;
     flex-direction: column;
