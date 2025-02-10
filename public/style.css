@@ -1713,8 +1713,8 @@ div.noteCalendar{
 }
 
 div.desctiptionNote{
-	max-width: 50%;
-	min-width: 50%;
+	max-width: calc(50% - 0.5rem);
+	min-width: calc(50% - 0.5rem);
     max-height: 50%;
     display: flex;
     flex-direction: column;
