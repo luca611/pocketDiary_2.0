@@ -1682,6 +1682,7 @@ div.noteList{
 	min-height: 50%;
     height: 100%;
 	gap: 0.5rem;
+    overflow-y: auto;
 }
 
 div.noteListCalendar{
