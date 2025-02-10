@@ -614,13 +614,16 @@ p.eventInfo {
 }
 
 button.eventButton {
-	height: 80%;
-	aspect-ratio: 1/1;
-	background-color: var(--primary-color);
-	background: var(--primary-color);
-	border-radius: var(--button-border-radius);
-	border: none;
-	transition: all 0.3s;
+	height: 3.5rem;
+    width: 3.5rem;
+    background-color: var(--primary-color);
+    background: var(--primary-color);
+    border-radius: var(--button-border-radius);
+    border: none;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .iconAdjustment {
