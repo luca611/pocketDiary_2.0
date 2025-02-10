@@ -847,10 +847,10 @@ function showDeleteButton(id) {
 
 		deleteButton.appendChild(deleteIcon);
 		ebi(id).appendChild(deleteButton);
-		confirm();
+
 		deleteButton.onclick = (e) => {
 			e.stopPropagation();
-			deleteEvent(id);
+			confirm(id);
 		};
 
 		let fakeScroll = document.createElement("div");
@@ -877,7 +877,7 @@ function showDeleteButton(id) {
 	}
 }
 
-function confirm() {
+function confirm(id) {
 	const deletePopup = document.createElement("div");
 	deletePopup.classList.add("deletePopup");
 
@@ -903,7 +903,6 @@ function confirm() {
 	deletePopup.appendChild(cancelButton);
 
 	document.body.appendChild(deletePopup);
-
 }
 
 //-----------------------------------------------------------------
