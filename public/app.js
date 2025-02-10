@@ -1287,8 +1287,7 @@ function renderCalendar() {
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
 		dayDiv.onclick = () => {
-			let date = new Date(month,i,year);
-			date = formatDate(date);
+			let date = currentDate.getMonth+"/"+i+"/"+currentDate.getFullYear();
 			loadCalendarNotesInfo(date);
 		}
 		daysContainer.appendChild(dayDiv);
