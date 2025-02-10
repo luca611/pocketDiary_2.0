@@ -1704,10 +1704,13 @@ div.noteCalendar{
 
 div.desctiptionNote{
 	max-width: 50%;
-	max-height: 50%;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
+    max-height: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: white;
+    border-radius: var(--minor-border-radius);
+    padding: 1rem;
 }
 
 div.headerDescription{
@@ -1716,14 +1719,13 @@ div.headerDescription{
 }
 
 div.descriptionCalendar {
-	max-width: 50%;
-    max-height: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    background: white;
-    border-radius: var(--minor-border-radius);
-    padding: 1rem;
+	text-align: left;
+	font-family: 'Itim';
+	overflow-y: scroll;
+	overflow-x: hidden;
+	max-width: 100%;
+	height: 100%;
+	word-wrap: break-word;
 }
 
 img.loadingAnimation {
