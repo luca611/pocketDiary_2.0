@@ -850,7 +850,7 @@ function showDeleteButton(id) {
 
 		deleteButton.onclick = (e) => {
 			e.stopPropagation();
-			confirm(id);
+			confirmDelete(id);
 		};
 
 		let fakeScroll = document.createElement("div");
@@ -858,22 +858,25 @@ function showDeleteButton(id) {
 		ebi(id).appendChild(fakeScroll);
 
 		const handleClickOutside = (e) => {
-			try {
-				if (!ebi(id).contains(e.target)) {
-					fakeScroll.classList.add("hide");
-					setTimeout(() => {
-						fakeScroll.classList.remove("fakeScroll");
-						fakeScroll.classList.remove("hide");
-						deleteButton.remove();
-						fakeScroll.remove();
-					}, 210);
-					document.removeEventListener("click", handleClickOutside);
-				}
-			} catch (e) {
+			if (!ebi(id).contains(e.target)) {
+				fakeScroll.classList.add("hide");
+				setTimeout(() => {
+					fakeScroll.classList.remove("fakeScroll");
+					fakeScroll.classList.remove("hide");
+					deleteButton.remove();
+					fakeScroll.remove();
+				}, 210);
+				document.removeEventListener("click", handleClickOutside);
 			}
 		};
 
 		document.addEventListener("click", handleClickOutside);
+	}
+}
+
+function confirmDelete(id) {
+	if (confirm("Are you sure you want to delete this event?")) {
+		deleteEvent(id);
 	}
 }
 
