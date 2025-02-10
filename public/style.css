@@ -1650,27 +1650,33 @@ div.headerNote{
 	background-color: var(--primary-color);
 	color: white;
 	font-family: 'Inter';
-	padding: .30rem;
+	padding: .55rem;
 	text-align: left;
-	border-radius: var(--general-border-radius);
+	border-radius: var(--minor-border-radius);
 }
 
 div.informations{
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 4rem);
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+div.noteTitle{
+	text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 div.noteList{
 	background: white;
-	border-radius: var(--general-border-radius);
-	padding: 0.5rem;
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
+    border-radius: var(--minor-border-radius);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+    height: 100%;
 }
 
 div.noteListCalendar{
@@ -1681,17 +1687,23 @@ div.noteListCalendar{
 }
 
 div.noteCalendar{
-	background: var(--minor-color);
-	border-radius: var(--general-border-radius);
-	padding: 0.5rem;
-	display: flex;
-	flex-direction: row;
-	color: var(--primary-color);
+	gap: 0.25rem;
+    background: var(--minor-color);
+    border-radius: var(--minor-border-radius);
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    color: var(--primary-color);
+    min-height: 5rem;
+    align-items: center;
+    font-size: 1.4rem;
+    overflow: hidden;
+    padding-right: 1rem;
 }
 
 div.desctiptionNote{
-	width: 100%;
-	height: 50%;
+	max-width: 50%;
+	max-height: 50%;
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -1702,9 +1714,14 @@ div.headerDescription{
 	font-family: 'Inter';
 }
 
-div.descriptionCalendar{
+div.descriptionCalendar {
 	text-align: left;
 	font-family: 'Itim';
+	overflow-y: scroll;
+	overflow-x: hidden;
+	max-width: 100%;
+	height: 100%;
+	word-wrap: break-word;
 }
 
 img.loadingAnimation {
