@@ -2045,7 +2045,7 @@ blockquote {
 }
 
 @media screen and (max-width: 65.5rem) {
-	div.descriptionNote{
+	div.desctiptionNote{
 		display: none;
 	}
 
