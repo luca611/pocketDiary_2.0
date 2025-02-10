@@ -1314,6 +1314,11 @@ function renderCalendar() {
 		dayDiv.textContent = i;
 		dayDiv.id = i;
 		dayDiv.classList.add('calendarDays');
+		dayDiv.onclick = () => {
+			let date = new Date(month,i,yeay);
+			date = formatDate(date);
+			loadCalendarNotesInfo(date);
+		}
 		daysContainer.appendChild(dayDiv);
 		lastDay = i;
 	}
@@ -1816,4 +1821,66 @@ function addStudyPlan(note, id) {
 
 function cancelStudyPlan(id) {
 	ebi(id).remove();
+}
+
+function loadCalendarNotesInfo(date){
+	if(!date){
+		return;
+	}
+
+	ebi("headerNote").innerText = "events on " + date;
+
+	let xhr = new XMLHttpRequest();
+	xhr.withCredentials = true;
+	xhr.open("POST", serverURL + "/getDayNotes");
+
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if(response.error!==0){
+			showFeedback(1,"an error occured");
+			return;
+		}
+
+		let notes = response.notes;
+
+		let container = ebi("noteListCalendar");
+
+		container.innerHTML = "";
+
+		if(notes.length === 0){
+			
+		}
+		else{
+			for(let note of notes){
+				let externalContainer = document.createElement("div");
+				externalContainer.classList.add("noteCalendar");
+
+				let button = document.createElement("button");
+				button.classList.add("eventButton");
+				button.onclick = () => openCalendarEvent(note);
+
+				let title = document.createElement("div");
+				title.classList.add("noteTitle");
+
+				title.innerText = note.title;
+
+				title.onclick = () => showEventDesctiption(note.description);
+
+				externalContainer.appendChild(button);
+				externalContainer.appendChild(title);
+
+				container.appendChild(externalContainer);
+			}
+		}
+	}	
+}
+
+function openCalendarEvent(note){
+	console.log("called");
+}
+
+function showEventDesctiption(description){
+	ebi("descriptionCalendar").innerText = description;
 }
