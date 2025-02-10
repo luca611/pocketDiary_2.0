@@ -1800,7 +1800,7 @@ function loadCalendarNotesInfo(date){
 	}
 
 	ebi("headerNote").innerText = "events on " + date;
-
+	ebi("descriptionCalendar").innerText = "click on an event to see the description";
 	let xhr = new XMLHttpRequest();
 	xhr.withCredentials = true;
 	xhr.open("POST", serverURL + "/getDayNotes");
@@ -1831,6 +1831,12 @@ function loadCalendarNotesInfo(date){
 				let button = document.createElement("button");
 				button.classList.add("eventButton");
 				button.onclick = () => openCalendarEvent(note);
+
+
+				let buttonImage = document.createElement("img");
+				buttonImage.src = "resources/icons/edit.svg";
+
+				button.appendChild(buttonImage);
 
 				let title = document.createElement("div");
 				title.classList.add("noteTitle");
