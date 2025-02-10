@@ -849,6 +849,31 @@ function showDeleteButton(id) {
 		ebi(id).appendChild(deleteButton);
 
 		deleteButton.onclick = (e) => {
+			const deletePopup = document.createElement("div");
+			deletePopup.classList.add("deletePopup");
+
+			const deleteMessage = document.createElement("p");
+			deleteMessage.innerText = "Are you sure you want to delete this event?";
+			deletePopup.appendChild(deleteMessage);
+
+			const confirmButton = document.createElement("button");
+			confirmButton.innerText = "Yes";
+			confirmButton.classList.add("confirmButton");
+			confirmButton.onclick = () => {
+				deleteEvent(id);
+				document.body.removeChild(deletePopup);
+			};
+			deletePopup.appendChild(confirmButton);
+
+			const cancelButton = document.createElement("button");
+			cancelButton.innerText = "No";
+			cancelButton.classList.add("cancelButton");
+			cancelButton.onclick = () => {
+				document.body.removeChild(deletePopup);
+			};
+			deletePopup.appendChild(cancelButton);
+
+			document.body.appendChild(deletePopup);
 			e.stopPropagation();
 			deleteEvent(id);
 		};
