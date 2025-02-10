@@ -1676,6 +1676,7 @@ div.noteList{
     display: flex;
     flex-direction: column;
     max-width: 50%;
+    min-width: 50%;
 	min-height: 50%;
     height: 100%;
 }
@@ -2042,6 +2043,18 @@ blockquote {
 		width: 50%;
 	}
 }
+
+@media screen and (max-width: 65.5rem) {
+	div.descriptionNote{
+		display: none;
+	}
+
+	div.noteList{
+		max-width: 100%;
+		min-width: 100%;
+	}
+}
+
 
 @media screen and (max-height: 40.625rem) {
 	img.logo {
