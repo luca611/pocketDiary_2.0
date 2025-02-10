@@ -1868,4 +1868,4 @@ function openCalendarEvent(note){
 
 function showEventDesctiption(description){
 	ebi("descriptionCalendar").innerText = description;
-}
+} 
