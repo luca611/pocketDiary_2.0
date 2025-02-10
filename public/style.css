@@ -1665,8 +1665,10 @@ div.informations{
 }
 
 div.noteTitle{
-	text-overflow: ellipsis;
+	white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
+    width: 80%;
 }
 
 div.noteList{
