@@ -1058,7 +1058,6 @@ div.evento {
     overflow-y: hidden;
     overflow-y: auto;
     padding: 1rem;
-    margin-top: 0.5rem;
     background: var(--minor-color);
     border-radius: var(--general-border-radius);
     height: 50%;
@@ -2055,11 +2054,8 @@ blockquote {
 	}
 
 	div.evento {
-    	height: 100%;
-	}
-
-	div.evento {
 		width: 50%;
+		margin-top: 0.5rem;
 	}
 
 	div.calendario {
