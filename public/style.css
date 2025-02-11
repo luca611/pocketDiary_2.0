@@ -1060,7 +1060,8 @@ div.evento {
     padding: 1rem;
     background: var(--minor-color);
     border-radius: var(--general-border-radius);
-    height: 50%;
+    height: 100%;
+    width: calc(50% - 1.5rem);
     min-height: 10rem;
     position: relative;
     margin-bottom: 0.3rem;
@@ -2040,11 +2041,6 @@ blockquote {
 		padding-left: 1rem;
 		padding-right: 1rem;
 	}
-
-	div.evento {
-		width: 50%;
-		margin-top: 0.5rem;
-	}
 }
 
 @media screen and (min-width: 65.5rem) {
@@ -2071,6 +2067,11 @@ blockquote {
 	div.noteList{
 		max-width: 100%;
 		min-width: 100%;
+	}
+
+	div.evento {
+		width: 100%;
+		margin-top: 0.5rem;
 	}
 }
 
