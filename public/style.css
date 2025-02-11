@@ -2040,6 +2040,11 @@ blockquote {
 		padding-left: 1rem;
 		padding-right: 1rem;
 	}
+
+	div.evento {
+		width: 50%;
+		margin-top: 0.5rem;
+	}
 }
 
 @media screen and (min-width: 65.5rem) {
@@ -2051,11 +2056,6 @@ blockquote {
 	div.containerCalendario {
 		flex-direction: row;
 		gap: 1rem;
-	}
-
-	div.evento {
-		width: 50%;
-		margin-top: 0.5rem;
 	}
 
 	div.calendario {
