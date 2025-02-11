@@ -588,6 +588,16 @@ div.upcomingEvent {
 	}
 }
 
+@keyframes slideDown {
+	0% {
+		transform: translateY(-100%);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
+
 h3.eventTitle {
 	font-size: calc(var(--body-size) + 0.2rem);
 	font-family: 'Inter';
@@ -1710,6 +1720,7 @@ div.noteCalendar{
     font-size: 1.4rem;
     overflow: hidden;
     padding-right: 1rem;
+	animation: slideDown 0.3s;
 }
 
 div.desctiptionNote{
