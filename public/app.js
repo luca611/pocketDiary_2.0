@@ -883,7 +883,8 @@ function showDeleteButton(id) {
 }
 
 function showConfirmDelete(id) {
-	deleteEvent(id);
+	ebi("cancelOverlay").classList.remove("hidden");
+	ebi("confirmCancellation").onclick = () => deleteEvent(id);
 }
 
 //-----------------------------------------------------------------
