@@ -495,11 +495,13 @@ div.cancellationButton{
 	max-width: 7rem;
 }
 
-div.cancellationButton confirmCancellation{
+div.cancellationButton .confirmCancellation{
+	font-family: 'Inter';
 	color: var(--primary-red);
 }
 
-div.cancellationButton cancelCancellation{
+div.cancellationButton .cancelCancellation{
+	font-family: 'Inter';
 	color: var(--primary-blue);
 }
 
