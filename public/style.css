@@ -498,6 +498,11 @@ div.cancellationButton{
     align-items: center;
 }
 
+div.cancellationButton:hover{
+	filter: brightness(0.9);
+	transition: all 0.3s;
+}
+
 div.confirmCancellation{
 	font-family: 'Inter';
 	color: var(--primary-red);
