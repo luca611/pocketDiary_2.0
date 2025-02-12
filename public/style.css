@@ -486,6 +486,32 @@ div.overlay {
 	transition: all 0.3s;
 }
 
+div.cancellationButton{
+	background: white;
+	border-radius: var(--general-border-radius);
+	text-align: center;
+	display: flex;
+	width: 100%;
+	max-width: 7rem;
+}
+
+div.cancellationButton confirmCancellation{
+	color: var(--primary-red);
+}
+
+div.cancellationButton cancelCancellation{
+	color: var(--primary-blue);
+}
+
+div.cancellation{
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1rem;
+	align-items: flex-end;
+	align-content: center;
+}
+
 div.overlay.visible {
 	display: block;
 	transition: all 0.3s;

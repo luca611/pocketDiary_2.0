@@ -57,6 +57,8 @@ let primaryColor = rootStyles.getPropertyValue("--primary-color");
 let secondaryColor = rootStyles.getPropertyValue("--secondary-color");
 let tertiaryColor = rootStyles.getPropertyValue("--minor-color");
 
+let currentDate = new Date();
+
 //-----------------------------------------------------------------
 
 function ebi(id) {
@@ -730,6 +732,9 @@ function toCalendar() {
 	updateActivePageLink();
 	closeSidebar();
 	renderCalendar();
+
+	let date = currentDate.getMonth()+1+"/"+i+"/"+currentDate.getFullYear();
+	loadCalendarNotesInfo(date);
 }
 
 //-----------------------------------------------------------------
@@ -850,7 +855,7 @@ function showDeleteButton(id) {
 
 		deleteButton.onclick = (e) => {
 			e.stopPropagation();
-			deleteEvent(id);
+			showConfirmDelete(id);
 		};
 
 		let fakeScroll = document.createElement("div");
@@ -875,6 +880,10 @@ function showDeleteButton(id) {
 
 		document.addEventListener("click", handleClickOutside);
 	}
+}
+
+function showConfirmDelete(id) {
+	deleteEvent(id);
 }
 
 //-----------------------------------------------------------------
@@ -1258,10 +1267,20 @@ function loadNotesByDate(date) {
 	xhr.send(body);
 }
 
+
+function closeCancellation(){
+	ebi("cancelOverlay").classList.add("hidden");
+	ebi("confirmCancellation").onclick = () => {};
+}
+
+function showCancellation(id){
+	ebi("cancelOverlay").classList.remove("hidden");
+	ebi("confirmCancellation").onclick = () => deleteEvent(id);
+}
 //-----------------------------------------------------------------
 
 
-let currentDate = new Date();
+
 function renderCalendar() {
 	const monthYear = document.getElementById('monthYear');
 	const daysContainer = document.getElementById('daysContainer');
@@ -1387,6 +1406,7 @@ function saveEvent(note) {
 //-----------------------------------------------------------------
 
 function deleteEvent(id) {
+	closeCancellation();
 	let url = serverURL + "/deleteNote";
 
 	url += `?id=` + id;
