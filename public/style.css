@@ -571,6 +571,10 @@ div#eventPlaceholder.visible {
 	align-items: center;
 }
 
+p.chatMessage{
+	margin:0;
+}
+
 img.emptyImg {
 	width: 70%;
 	max-width: 25rem;

@@ -1642,6 +1642,7 @@ function sendMessage() {
 	newMessage.classList.add("message");
 	newMessage.classList.add("user");
 	let displayMessage = parseMarkdown(message);
+	displayMessage.classList.add("chatMessage");
 	newMessage.innerHTML = displayMessage;
 
 	ebi("messagesList").appendChild(newMessage);
@@ -1671,6 +1672,7 @@ function sendMessage() {
 			aiResponse.innerHTML = "";
 			let parsedResponse = parseMarkdown(response.message);
 			aiResponse.innerHTML = parsedResponse;
+			aiResponse.classList.add("chatMessage");
 			aiResponse.classList.remove("loading");
 			scrollToBottom();
 		} else {
