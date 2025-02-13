@@ -899,10 +899,10 @@ function showConfirmDelete(id) {
 }
 
 //-----------------------------------------------------------------
-function openEvent(note) {
+function openEvent(note, date = 0) {
 	openPopup();
 	ebi("popupConfrimButton").innerText = "Save";
-	ebi("popupConfrimButton").onclick = () => saveEvent(note);
+	ebi("popupConfrimButton").onclick = () => saveEvent(note, date);
 	ebi("eventName").value = note.title;
 	ebi("eventDescription").value = note.description;
 	let data = note.date.split('T')[0];
@@ -1366,7 +1366,7 @@ function nextMonth() {
 }
 //-----------------------------------------------------------------
 
-function saveEvent(note) {
+function saveEvent(note, date) {
 	if (typeof note === "undefined") {
 		return;
 	}
@@ -1399,7 +1399,11 @@ function saveEvent(note) {
 			ebi("eventDescription").value = "";
 			ebi("eventDate").value = "";
 			closePopup();
-			loadNotes();
+			if(date === 0){
+				loadNotes();
+			}else{
+				loadCalendarNotesInfo(date);
+			}
 
 			showFeedback(0, "Event updated");
 		} else {
@@ -1865,7 +1869,7 @@ function loadCalendarNotesInfo(date){
 
 				let button = document.createElement("button");
 				button.classList.add("eventButton");
-				button.onclick = () => openEvent(note);
+				button.onclick = () => openEvent(note, date);
 
 
 				let buttonImage = document.createElement("img");
