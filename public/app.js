@@ -744,7 +744,7 @@ function toCalendar() {
 	closeSidebar();
 	renderCalendar();
 	let today = new Date();
-	let date = currentDate.getMonth()+1+"/"+today.getDay()+"/"+currentDate.getFullYear();
+	let date = currentDate.getMonth()+1+"/"+today.getDate()+"/"+currentDate.getFullYear();
 	loadCalendarNotesInfo(date);
 }
 
