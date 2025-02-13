@@ -1163,6 +1163,7 @@ function createEvent() {
 			closePopup();
 			loadNotes();
 			renderCalendar();
+			loadCalendarNotesInfo(date);
 			showFeedback(0, "Event created");
 		} else {
 			confirmButton.disabled = false;
