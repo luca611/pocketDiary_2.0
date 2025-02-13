@@ -1366,7 +1366,7 @@ function nextMonth() {
 }
 //-----------------------------------------------------------------
 
-function saveEvent(note, date) {
+function saveEvent(note, sentDate) {
 	if (typeof note === "undefined") {
 		return;
 	}
@@ -1399,10 +1399,10 @@ function saveEvent(note, date) {
 			ebi("eventDescription").value = "";
 			ebi("eventDate").value = "";
 			closePopup();
-			if(date === 0){
+			if(sentDate === 0){
 				loadNotes();
 			}else{
-				loadCalendarNotesInfo(date);
+				loadCalendarNotesInfo(sentDate);
 			}
 
 			showFeedback(0, "Event updated");
