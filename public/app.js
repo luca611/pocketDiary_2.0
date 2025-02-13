@@ -743,8 +743,8 @@ function toCalendar() {
 	updateActivePageLink();
 	closeSidebar();
 	renderCalendar();
-
-	let date = currentDate.getMonth()+1+"/"+i+"/"+currentDate.getFullYear();
+	let today = new Date();
+	let date = currentDate.getMonth()+1+"/"+today.getDay()+"/"+currentDate.getFullYear();
 	loadCalendarNotesInfo(date);
 }
 
