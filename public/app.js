@@ -633,7 +633,7 @@ async function proceedToTheme() {
 		return;
 	}
 	if(!validatePassword(password)){
-		displayError("registerError", "Password must be at least 8 characters long and contain an uppercase letter");
+		displayError("registerError", "Password too weak");
 		disableLoading();
 		return;
 	}
