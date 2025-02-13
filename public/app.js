@@ -610,6 +610,10 @@ function hideAllPages() {
 }
 
 //-----------------------------------------------------------------
+function validatePassword(password) {
+    const hasUpperCase = /[A-Z]/.test(password);
+    return password.length >= 8 && hasUpperCase;
+}
 
 async function proceedToTheme() {
 	enableLoading();
@@ -628,6 +632,11 @@ async function proceedToTheme() {
 		disableLoading();
 		return;
 	}
+	if(!validatePassword(password)){
+		displayError("registerError", "Password must be at least 8 characters long and contain an uppercase letter");
+		disableLoading();
+		return;
+	}
 
 	const available = await checkEmailAvailability(email);
 
@@ -641,6 +650,8 @@ async function proceedToTheme() {
 		displayError("registerError", errorMessage);
 	}
 }
+
+
 
 //-----------------------------------------------------------------
 
