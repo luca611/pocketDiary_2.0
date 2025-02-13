@@ -610,6 +610,46 @@ function hideAllPages() {
 }
 
 //-----------------------------------------------------------------
+function validatePassword(password) {
+    const hasUpperCase = /[A-Z]/.test(password);
+    return password.length >= 8 && hasUpperCase;
+}
+
+async function proceedToTheme() {
+	enableLoading();
+	email = ebi("registerUsername").value.trim().toLowerCase();
+	password = ebi("registerPassword").value.trim();
+	const confirmPassword = ebi("confirmPassword").value.trim();
+
+	if (!email || !password || !confirmPassword) {
+		displayError("registerError", "Please fill in all fields");
+		disableLoading();
+		return;
+	}
+
+	if (password !== confirmPassword) {
+		displayError("registerError", "Passwords do not match");
+		disableLoading();
+		return;
+	}
+	if(!validatePassword(password)){
+		displayError("registerError", "Password must be at least 8 characters long and contain an uppercase letter");
+		disableLoading();
+		return;
+	}
+
+	const available = await checkEmailAvailability(email);
+
+	disableLoading();
+	if (available) {
+		toPage("register", "theme");
+	} else {
+		const errorMessage = navigator.onLine
+			? "Email already taken"
+			: "No connection. Please try again.";
+		displayError("registerError", errorMessage);
+	}
+}
 
 async function proceedToTheme() {
 	enableLoading();
