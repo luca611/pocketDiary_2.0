@@ -1858,12 +1858,14 @@ function loadCalendarNotesInfo(date){
 		}
 		else{
 			for(let note of notes){
+
 				let externalContainer = document.createElement("div");
+				externalContainer.id = "calendarNote"+note.id;
 				externalContainer.classList.add("noteCalendar");
 
 				let button = document.createElement("button");
 				button.classList.add("eventButton");
-				button.onclick = () => openCalendarEvent(note);
+				button.onclick = () => openEvent(note);
 
 
 				let buttonImage = document.createElement("img");
@@ -1894,9 +1896,6 @@ function loadCalendarNotesInfo(date){
 	xhr.send(JSON.stringify({date}));
 }
 
-function openCalendarEvent(note){
-	console.log("called");
-}
 
 function showEventDesctiption(description){
 	ebi("descriptionCalendar").innerText = description;
