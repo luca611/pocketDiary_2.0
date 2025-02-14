@@ -1,4 +1,4 @@
-const cacheName = 'pwaname'; // PWA id here
+const cacheName = 'pocketdiary'; // PWA id here
 const appFiles = [
   'index.html',
   'app.js',

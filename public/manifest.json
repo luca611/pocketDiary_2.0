@@ -1,8 +1,8 @@
 {
-    "name": "PWA Template",
-    "short_name": "PWA",
-    "id": "pwaname",
-    "description": "Empty PWA Template",
+    "name": "pocket diary",
+    "short_name": "p.diary",
+    "id": "pocketdiary",
+    "description": "a diary for your pocket",
     "icons": [
         {
             "src": "pwaicon.png",
@@ -12,6 +12,6 @@
         }
     ],
     "start_url": "index.html",
-    "scope": "/pwatemplate/",
+    "scope": "/",
     "display": "standalone"
 }
