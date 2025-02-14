@@ -918,29 +918,25 @@ function openEvent(note, date = 0) {
 */
 
 function checkEmailAvailability(email) {
-	
 	if (!navigator.onLine) {
 		return false;
 	}
-	if(!email){
+	if (!email) {
 		return false;
 	}
-	let url = serverURL + "/validateEmail?email="+ email;
+	let url = serverURL + "/validateEmail?email=" + email;
 	let timestamp = new Date().getTime();
 	url += "&t=" + timestamp;
 	let xhr = new XMLHttpRequest();
-	xhr.open("GET", url);
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error === "0") {
-			return true;
-		}
-		return false;
-	};
-	xhr.onerror = function () {
-		return false;
-	};
+	xhr.open("GET", url, false); 
 	xhr.send();
+
+	if (xhr.status === 200) {
+		let response = JSON.parse(xhr.responseText);
+		return response.error === "0";
+	} else {
+		return false;
+	}
 }
 
 //-----------------------------------------------------------------
@@ -1799,8 +1795,6 @@ function sendScheduleInfo() {
 }
 
 function addStudyPlan(note, id) {
-	console.log(note);
-	console.log(id);
 
 	let xhr = new XMLHttpRequest();
 	xhr.withCredentials = true;
