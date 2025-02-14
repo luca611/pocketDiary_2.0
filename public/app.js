@@ -918,30 +918,27 @@ function openEvent(note, date = 0) {
 */
 
 function checkEmailAvailability(email) {
-	return true;
+	
 	if (!navigator.onLine) {
 		return false;
 	}
-
-	return new Promise((resolve) => {
-		const xhr = new XMLHttpRequest();
-		xhr.open("POST", serverURL + "/checkAvailability", true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-
-		xhr.onload = function () {
-			if (xhr.status >= 200 && xhr.status < 300) {
-				resolve(true);
-			} else {
-				resolve(false);
-			}
-		};
-
-		xhr.onerror = function () {
-			resolve(false);
-		};
-
-		xhr.send(JSON.stringify({ email }));
-	});
+	if(!email){
+		return false;
+	}
+	const url = serverURL + "/validateEmail?email=" + email;
+	let xhr = new XMLHttpRequest();
+	xhr.open("GET", url);
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			return true;
+		}
+		return false;
+	};
+	xhr.onerror = function () {
+		return false;
+	};
+	xhr.send();
 }
 
 //-----------------------------------------------------------------
