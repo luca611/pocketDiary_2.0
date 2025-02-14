@@ -8,6 +8,15 @@ const modelName = "llama-3.3-70b-versatile";
 
 const client = new OpenAI({ baseURL: endpoint, apiKey: token });
 
+/**
+ * Get a chat completion from the AI model
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Response} - JSON response
+ * @throws {Error} - Error if request fails
+ */
+
 export async function getChatCompletion(req, res) {
     if (!req.session || !req.session.logged) {
         return sendError(res, "You are not logged in");
@@ -55,6 +64,15 @@ export async function getChatCompletion(req, res) {
         }
     }
 }
+
+/**
+ * Generate a study plan based on user inputs
+ * 
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Response} - JSON response
+ * @throws {Error} - Error if request fails
+ */
 
 export async function setStudyPlan(req, res) {
     if (!req.session || !req.session.logged) {
