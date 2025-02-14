@@ -90,9 +90,9 @@ export function isValidDescription(description) {
 }
 
 /**
- * Validate a date
- * @param {string} date - The date to validate
- * @returns {boolean} - True if the date is valid, false otherwise
+ * Validate an email
+ * @param {string} email - The email to validate
+ * @returns {boolean} - True if the email is valid, false otherwise
 */
 export async function validateEmail(req, res) {
     const { email } = req.query;

@@ -925,7 +925,10 @@ function checkEmailAvailability(email) {
 	if(!email){
 		return false;
 	}
-	const url = serverURL + "/validateEmail?email=" + email;
+	let url = serverURL + "/validateEmail?email="+ email;
+	let timestamp = new Date().getTime();
+	url += "&t=" + timestamp;
+	console.log(url);
 	let xhr = new XMLHttpRequest();
 	xhr.open("GET", url);
 	xhr.onload = function () {
