@@ -928,12 +928,11 @@ function checkEmailAvailability(email) {
 	let url = serverURL + "/validateEmail?email="+ email;
 	let timestamp = new Date().getTime();
 	url += "&t=" + timestamp;
-	console.log(url);
 	let xhr = new XMLHttpRequest();
 	xhr.open("GET", url);
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
+		if (response.error === "0") {
 			return true;
 		}
 		return false;
