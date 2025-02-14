@@ -61,12 +61,18 @@ let currentDate = new Date();
 
 //-----------------------------------------------------------------
 
+/**
+ * shorthand for document.getElementById
+ * @param {string} id html object id 
+ * @returns 
+ */
 function ebi(id) {
 	return document.getElementById(id);
 }
 
 //-----------------------------------------------------------------
 
+// event listeners for online/offline status
 window.addEventListener('online', () => {
 	showFeedback(0, "You are back online");
 	autologin();
@@ -76,9 +82,13 @@ window.addEventListener('offline', () => {
 	showFeedback(2, "You are offline");
 });
 
-
+//-----------------------------------------------------------------
+//COLORS FUNCTIONS
 //-----------------------------------------------------------------
 
+/**
+ * Function that applys a standart theme to the website, used if custom theme is not set
+ */
 function applyTheme() {
 	const themeColors = {
 		1: "yellow",
@@ -100,19 +110,6 @@ function applyTheme() {
 		colorValue = getComputedStyle(document.documentElement).getPropertyValue(colorVar);
 		document.documentElement.style.setProperty("--minor-color", colorValue);
 	}
-}
-
-//sidebar functions
-function openSideBar() {
-	ebi("sidebar").classList.add("open");
-	ebi("overlaySidebar").classList.add("visible");
-}
-
-//-----------------------------------------------------------------
-
-function closeSidebar() {
-	ebi("sidebar").classList.remove("open");
-	ebi("overlaySidebar").classList.remove("visible");
 }
 
 //-----------------------------------------------------------------
@@ -203,6 +200,21 @@ function applyTertiaryColor(color) {
 
 
 //-----------------------------------------------------------------
+
+//sidebar functions
+function openSideBar() {
+	ebi("sidebar").classList.add("open");
+	ebi("overlaySidebar").classList.add("visible");
+}
+
+//-----------------------------------------------------------------
+
+function closeSidebar() {
+	ebi("sidebar").classList.remove("open");
+	ebi("overlaySidebar").classList.remove("visible");
+}
+
+
 
 //popup functions
 function openPopup(page = 0) {
