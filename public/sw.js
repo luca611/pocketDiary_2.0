@@ -30,7 +30,8 @@ const dontCache = [
   '/updateCustomTheme',
   '/getDayNotes',
   '/updateNote',
-  'pocketserver'
+  'pocketserver',
+  '/validateEmail'
   // add all files that should not be cached here
 ]
 // Caches all the PWA shell files (appFiles array) when the app is launched
