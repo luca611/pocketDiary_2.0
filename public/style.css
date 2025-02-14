@@ -1242,9 +1242,7 @@ div.dayNames div {
 #daysContainer {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
-	/* 7 colonne uguali */
 	grid-auto-rows: 1fr;
-	/* Altezza uniforme per le righe */
 	width: 100%;
 	height: 100%;
 
