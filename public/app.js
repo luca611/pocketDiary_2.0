@@ -1408,6 +1408,7 @@ function saveEvent(note, sentDate) {
 
 			showFeedback(0, "Event updated");
 		} else {
+			confirmButton.disabled = false; 
 			displayError("eventError", response.message);
 		}
 	};
@@ -1891,6 +1892,9 @@ function loadCalendarNotesInfo(date){
 
 				container.appendChild(externalContainer);
 			}
+
+			const confirmButton = ebi("popupConfrimButton");
+			confirmButton.disabled = false;
 		}
 	}
 
