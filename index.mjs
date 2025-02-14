@@ -15,6 +15,7 @@ import { register, logout, login, updatePassword, updateTheme, updateName, updat
 import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote } from './controllers/notes.mjs';
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
+import { validateEmail } from './utils/validator.mjs';
 
 
 dotenv.config();
@@ -155,6 +156,8 @@ app.get('/getCustomTheme', getCustomTheme);
 
 app.delete('/logout', logout);
 app.delete('/deleteAccount', deleteUser);
+
+app.get("/validateEmail", validateEmail);
 
 /*
     Note routes

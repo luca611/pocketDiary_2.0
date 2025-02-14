@@ -1,5 +1,6 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
+import { sendError, sendServerError, sendSuccess } from "./returns.mjs";
 
 /**
  * Validate a password
@@ -86,6 +87,36 @@ export function isValidDescription(description) {
         return false;
     }
     return true;
+}
+
+/**
+ * Validate a date
+ * @param {string} date - The date to validate
+ * @returns {boolean} - True if the date is valid, false otherwise
+*/
+export async function validateEmail(req, res) {
+    const { email } = req.query;
+    if(!email) {
+        return sendError(res, "Email cannot be empty");
+    }
+    let client=null;
+    try {
+        client = await connectToDb();
+    } catch (error) {
+        return sendError(res, "Error connecting to database");
+    }
+    const encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
+    const query = `SELECT * FROM studenti WHERE email = $1`;
+    try{
+        const result = await client.query(query, [encryptedEmail]);
+        closeDbConnection(client);
+        if(result.rows.length > 0) {
+            return sendError(res, "Email already taken");
+        }
+        return sendSuccess(res, "Email is valid");
+    }catch(error) {
+        return sendServerError(res, "Error validating email");
+    }
 }
 
 /**
