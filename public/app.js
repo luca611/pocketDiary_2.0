@@ -1410,6 +1410,7 @@ function saveEvent(note, sentDate) {
 			if(sentDate === 0){
 				loadNotes();
 			}else{
+				renderCalendar();
 				loadCalendarNotesInfo(sentDate);
 			}
 

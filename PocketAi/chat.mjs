@@ -85,7 +85,11 @@ export async function setStudyPlan(req, res) {
     }
 
     if (!isValidDate(startDate) || !isValidDate(endDate)) {
-        return sendError(res, "Invalid date format");
+        return sendError(res, "Invalid dates");
+    }
+
+    if (new Date(endDate) < new Date(startDate)) {
+        return sendError(res, "End date cannot be before start date");
     }
 
     if (frequency < 1 || frequency > 5) {
