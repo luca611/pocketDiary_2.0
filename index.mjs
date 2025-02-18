@@ -210,7 +210,7 @@ app.listen(PORT, () => {
         process.exit(1);
     }
 
-    if (!session.env.GROQ_KEY) {
+    if (!process.env["GROQ_KEY"]) {
         console.error("▶ No OpenAI API key provided. Please add GROQ_KEY to your .env file. (aborting server start)");
         process.exit(1);
     }
