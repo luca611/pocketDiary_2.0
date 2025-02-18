@@ -3,6 +3,7 @@ import { sendError, sendServerError } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
 
 const token = process.env["GROQ_KEY"];
+
 const endpoint = "https://api.groq.com/openai/v1";
 const modelName = "llama-3.3-70b-versatile";
 

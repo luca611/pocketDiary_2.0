@@ -6,17 +6,13 @@ const { Client } = pkg;
 
 const connectionString = process.env.DATABASE_URL;
 
-if (!connectionString) {
-    console.error("No connection string provided. Please add DATABASE_URL to your .env file.");
-}
-
 /**
  * Connect to the database
  * @returns {Client | null} - PostgreSQL client or null if connection fails
  */
 export async function connectToDb() {
     if (!connectionString) {
-        console.error("Cannot connect: No connection string provided.");
+        console.error("▶ Cannot connect: No connection string provided.");
         return null;
     }
 
@@ -24,10 +20,10 @@ export async function connectToDb() {
 
     try {
         await client.connect();
-        console.log("Database connected successfully.");
+        console.log("▶ Database connected successfully.");
         return client;
     } catch (err) {
-        console.error("Database connection error:", err);
+        console.error("▶ Database connection error:", err);
         return null; 
     }
 }
@@ -38,15 +34,15 @@ export async function connectToDb() {
  */
 export async function closeDbConnection(client) {
     if (!client) {
-        console.warn("Cannot close database: Client is null or undefined.");
+        console.warn("▶ Cannot close database: Client is null or undefined.");
         return;
     }
 
     try {
         await client.end();
-        console.log("Database connection closed.");
+        console.log("▶ Database connection closed.");
     } catch (err) {
-        console.error("Error closing database connection:", err);
+        console.error("▶ Error closing database connection:", err);
     }
 }
 
@@ -59,7 +55,7 @@ export async function closeDbConnection(client) {
  */
 export async function executeQuery(client, query, params = []) {
     if (!client) {
-        console.error("Cannot execute query: Database client is null.");
+        console.error("▶ Cannot execute query: Database client is null.");
         return null;
     }
 
@@ -67,7 +63,7 @@ export async function executeQuery(client, query, params = []) {
         const result = await client.query(query, params);
         return result.rows;
     } catch (err) {
-        console.error("Database query error:", err);
+        console.error("▶ Database query error:", err);
         return null; 
     }
 }

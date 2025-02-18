@@ -5,6 +5,7 @@ import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/valid
 
 //----------------------------------- CREATE -----------------------------------//
 
+
 /**
  * Function that validate user credentials and adds it to the server
  * 
