@@ -2,29 +2,22 @@ import pkg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
-const { Client } = pkg;
+const { Pool } = pkg;
 
 const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
 
 /**
  * Connect to the database
  * @returns {Client | null} - PostgreSQL client or null if connection fails
  */
 export async function connectToDb() {
-    if (!connectionString) {
-        console.error("▶ Cannot connect: No connection string provided.");
-        return null;
-    }
-
-    const client = new Client({ connectionString });
-
     try {
-        await client.connect();
-        console.log("▶ Database connected successfully.");
+        const client = await pool.connect();
         return client;
     } catch (err) {
         console.error("▶ Database connection error:", err);
-        return null; 
+        return null;
     }
 }
 
@@ -34,15 +27,14 @@ export async function connectToDb() {
  */
 export async function closeDbConnection(client) {
     if (!client) {
-        console.warn("▶ Cannot close database: Client is null or undefined.");
+        console.error("▶ Cannot close connection: Database client is null.");
         return;
     }
 
     try {
-        await client.end();
-        console.log("▶ Database connection closed.");
+        await client.release();
     } catch (err) {
-        console.error("▶ Error closing database connection:", err);
+        console.error("▶ Database close connection error:", err);
     }
 }
 
