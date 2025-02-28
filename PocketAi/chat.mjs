@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { sendError, sendServerError } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
 
-const token = process.env["GROQ_KEY"];
+const token = process.env["AI_API_KEY"];
 
 const endpoint = "https://api.groq.com/openai/v1";
 const modelName = "llama-3.3-70b-versatile";
@@ -19,7 +19,7 @@ const client = new OpenAI({ baseURL: endpoint, apiKey: token });
  */
 
 export async function getChatCompletion(req, res) {
-    try{
+    try {
         if (!req.session || !req.session.logged) {
             return sendError(res, "You are not logged in");
         }
@@ -56,14 +56,14 @@ export async function getChatCompletion(req, res) {
             res.status(200).json({ error: '0', message: response.choices[0].message.content });
 
         } catch (error) {
-        clearTimeout(timeout);
+            clearTimeout(timeout);
 
-        if (error.name === "AbortError") {
-            sendServerError(res, "AI request timed out. Try again.");
-        } else {
-            console.error("Chat API Error:", error);
-            sendServerError(res, "An error occurred while processing the request.");
-        }
+            if (error.name === "AbortError") {
+                sendServerError(res, "AI request timed out. Try again.");
+            } else {
+                console.error("Chat API Error:", error);
+                sendServerError(res, "An error occurred while processing the request.");
+            }
         }
     } catch (error) {
         console.error("▶ Chat API Error:", error);
@@ -81,7 +81,7 @@ export async function getChatCompletion(req, res) {
  */
 
 export async function setStudyPlan(req, res) {
-    try{
+    try {
         if (!req.session || !req.session.logged) {
             return sendError(res, "You are not logged in");
         }

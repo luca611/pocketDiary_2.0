@@ -193,14 +193,14 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log('Server is running at http://localhost:' + PORT);
 
-    if(process.env.SESSION_SECRET === DEFAULT_SESSION_SECRET || !process.env.SESSION_SECRET) {
+    if (process.env.SESSION_SECRET === DEFAULT_SESSION_SECRET || !process.env.SESSION_SECRET) {
         console.warn("▶ Session secret is set to default. Please change it in .env file (the server will still work).");
     }
-    if(!process.env.CORS_ORIGIN){
+    if (!process.env.CORS_ORIGIN) {
         console.warn("▶ No CORS origin provided. Allowing all origins.");
     }
 
-    if(!process.env.ENCRYPTION_KEY){
+    if (!process.env.ENCRYPTION_KEY) {
         console.error("▶ No encryption key provided. Please add ENCRYPTION_KEY to your .env file (aborting server start)");
         process.exit(1);
     }
@@ -210,11 +210,11 @@ app.listen(PORT, () => {
         process.exit(1);
     }
 
-    if (!process.env["GROQ_KEY"]) {
+    if (!process.env["AI_API_KEY"]) {
         console.error("▶ No OpenAI API key provided. Please add GROQ_KEY to your .env file. (aborting server start)");
         process.exit(1);
     }
-    
+
 
     //leave this line here only if you are using a hosting service that requires the server to be kept alive (e.g. Repl.it, Render, Heroku)
     keepAlive();
