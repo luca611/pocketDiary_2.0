@@ -5,7 +5,17 @@ dotenv.config();
 const { Pool } = pkg;
 
 const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
+const pool = new Pool({ 
+    connectionString,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000
+});
+
+pool.on('error', (err, client) => {
+    console.error('▶ Database connection idle');
+});
+
+
 
 /**
  * Connect to the database
