@@ -12,7 +12,7 @@ const pool = new Pool({
 });
 
 pool.on('error', (err, client) => {
-    console.error('▶ Database connection idle');
+    console.error('▶ Database connection idle', err, client);
 });
 
 
