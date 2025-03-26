@@ -17,6 +17,9 @@ import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 import { validateEmail } from './utils/validator.mjs';
 
+process.on('uncaughtException', function (err) {
+    console.error("▶ An error occurred while processing the request: ", error);
+});
 
 dotenv.config();
 
@@ -65,31 +68,26 @@ app.use(session({
     Middleware to parse JSON and handle invalid JSON before sending it to the routes
 */
 app.use((req, res, next) => {
-    try {
-        let data = "";
-        req.on("data", (chunk) => {
-            data += chunk;
-        });
+    let data = "";
+    req.on("data", (chunk) => {
+        data += chunk;
+    });
 
-        req.on("end", () => {
-            if (data) {
-                try {
-                    req.body = JSON.parse(data);
-                    next();
-                } catch {
-                    req.body = null;
-                    console.warn("▶ Received invalid JSON from " + req.ip);
-                    sendError(res, "Invalid JSON");
-                }
-            } else {
-                req.body = null;
+    req.on("end", () => {
+        if (data) {
+            try {
+                req.body = JSON.parse(data);
                 next();
+            } catch {
+                req.body = null;
+                console.warn("▶ Received invalid JSON from " + req.ip);
+                sendError(res, "Invalid JSON");
             }
-        });
-    } catch (error) {
-        console.error("▶ An error occurred while processing the request: ", error);
-        sendError(res, "An unexpected error occurred");
-    }
+        } else {
+            req.body = null;
+            next();
+        }
+    });
 });
 
 
