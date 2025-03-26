@@ -65,26 +65,31 @@ app.use(session({
     Middleware to parse JSON and handle invalid JSON before sending it to the routes
 */
 app.use((req, res, next) => {
-    let data = "";
-    req.on("data", (chunk) => {
-        data += chunk;
-    });
+    try {
+        let data = "";
+        req.on("data", (chunk) => {
+            data += chunk;
+        });
 
-    req.on("end", () => {
-        if (data) {
-            try {
-                req.body = JSON.parse(data);
-                next();
-            } catch {
+        req.on("end", () => {
+            if (data) {
+                try {
+                    req.body = JSON.parse(data);
+                    next();
+                } catch {
+                    req.body = null;
+                    console.warn("▶ Received invalid JSON from " + req.ip);
+                    sendError(res, "Invalid JSON");
+                }
+            } else {
                 req.body = null;
-                console.warn("▶ Received invalid JSON from " + req.ip);
-                sendError(res, "Invalid JSON");
+                next();
             }
-        } else {
-            req.body = null;
-            next();
-        }
-    });
+        });
+    } catch (error) {
+        console.error("▶ An error occurred while processing the request: ", error);
+        sendError(res, "An unexpected error occurred");
+    }
 });
 
 
