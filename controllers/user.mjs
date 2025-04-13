@@ -278,62 +278,23 @@ export async function getName(req, res) {
         return;
     }
 
-    let encryptedEmail = req.session.email;
-    let query = `SELECT nome FROM studenti WHERE email = $1`;
+    let id = req.session.userid;
+    let query = `SELECT name FROM students WHERE id = $1`;
 
     let result;
     try {
-        result = await connection.query(query, [encryptedEmail]);
+        result = await connection.query(query, [id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);
         return;
     }
 
-    let name = decryptMessage(process.env.ENCRYPTION_KEY, result.rows[0].nome);
+    let name = decryptMessage(process.env.ENCRYPTION_KEY, result.rows[0].name);
     sendSuccess(res, name);
     closeDbConnection(connection);
 }
 
-/**
- * Function that gets the user email from the database
- * 
- * @param {Request} req
- * @param {Response} res
- * @returns {void}
- * 
- */
-export async function getCustomTheme(req, res) {
-    if (!req.session.logged) {
-        sendNotLoggedIn(res);
-        return;
-    }
-
-    let connection = null;
-    try {
-        connection = await connectToDb();
-    }
-    catch (error) {
-        sendError(res, "server network error");
-        return;
-    }
-
-    let encryptedEmail = req.session.email;
-    let query = `SELECT HexCustom FROM studenti WHERE email = $1`;
-
-    let result;
-    try {
-        result = await connection.query(query, [encryptedEmail]);
-    } catch (error) {
-        sendError(res, "server network error");
-        closeDbConnection(connection);
-        return;
-    }
-
-    let customTheme = result.rows[0].hexcustom;
-    sendSuccess(res, customTheme);
-    closeDbConnection(connection);
-}
 //----------------------------------- UPDATE -----------------------------------//
 
 /**
