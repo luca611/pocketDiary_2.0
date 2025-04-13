@@ -91,6 +91,8 @@ export async function register(req, res) {
     let tertiary_color = tertiary
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
 
+    let connection = null;
+
     try {
         connection = await connectToDb();
     } catch (error) {
