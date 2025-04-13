@@ -230,19 +230,28 @@ export async function getTheme(req, res) {
         return;
     }
 
-    let encryptedEmail = req.session.email;
-    let query = `SELECT ntema FROM studenti WHERE email = $1`;
+    let id = req.session.userid;
+    let query = `SELECT primary_color,secondary_color,tertiary_color  FROM students WHERE id = $1`;
 
     let result;
     try {
-        result = await connection.query(query, [encryptedEmail]);
+        result = await connection.query(query, [id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);
         return;
     }
 
-    let theme = result.rows[0].ntema;
+    let primary = result.rows[0].primary_color;
+    let secondary = result.rows[0].secondary_color;
+    let tertiary = result.rows[0].tertiary_color;
+
+    let theme = {
+        primary: primary,
+        secondary: secondary,
+        tertiary: tertiary
+    };
+
     sendSuccess(res, theme);
     closeDbConnection(connection);
 }
