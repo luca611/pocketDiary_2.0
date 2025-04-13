@@ -195,7 +195,7 @@ export async function login(req, res) {
     const user = result.rows[0];
 
     //binding user information to session
-    req.session.id = user.id;
+    req.session.userid = user.id;
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.key);
     req.session.logged = true;
 
