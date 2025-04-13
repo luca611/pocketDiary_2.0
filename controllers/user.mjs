@@ -103,7 +103,7 @@ export async function register(req, res) {
     }
 
     //get the user id from the database
-    const query2 = `SELECT key FROM studenti WHERE email = $1`;
+    const query2 = `SELECT key FROM students WHERE email = $1`;
     const params = [encryptedEmail];
 
     let userid;
