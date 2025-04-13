@@ -91,6 +91,13 @@ export async function register(req, res) {
     let tertiary_color = tertiary
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
 
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        sendError(res, "server network error");
+        return;
+    }
+
     const query = `INSERT INTO students (email, password, name, primary_color, secondary_color, tertiary_color, key) VALUES ($1, $2, $3, $4, $5, $6)`;
 
     try {
