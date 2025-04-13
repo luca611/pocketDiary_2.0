@@ -15,7 +15,7 @@ import { isEmpty, isTaken, isValidColor, isValidEmail, validatePassword } from "
  */
 export async function register(req, res) {
     req.session.email = "";
-    req.session.id = "";
+    req.session.userid = "";
     req.session.key = "";
     req.session.logged = false;
 
@@ -121,7 +121,7 @@ export async function register(req, res) {
 
     //binding credential to session
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, key);
-    req.session.id = userid;
+    req.session.userid = userid;
     req.session.logged = true;
 
     sendSuccess(res, "User registered successfully");
