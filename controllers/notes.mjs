@@ -2,6 +2,7 @@ import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { decryptMessage, encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendNotLoggedIn, sendServerError, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate, isValidDescription, isValidTitle } from "../utils/validator.mjs";
+import { NOTE_DESCRIPTION_MAX_LENGTH, NOTE_TITLE_MAX_LENGTH } from "../utils/vars.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -18,9 +19,10 @@ export async function addNote(req, res) {
         return;
     }
 
+    //data verification
     let { title, description, date } = req.body;
 
-    if (!title || !description || !date) {
+    if (!title || !date) {
         sendError(res, "Missing data");
         return;
     }
@@ -40,9 +42,22 @@ export async function addNote(req, res) {
         return;
     }
 
+    if (title.length > NOTE_TITLE_MAX_LENGTH) {
+        sendError(res, "Title too long");
+        return;
+    }
+
+    if (description.length > NOTE_DESCRIPTION_MAX_LENGTH) {
+        sendError(res, "Description too long");
+        return;
+    }
+
+    //data encryption
+
     let encryptedTitle = encryptMessage(req.session.key, title);
     let encryptedDescription = encryptMessage(req.session.key, description);
 
+    //data insertion
     let conn = null;
     try {
         conn = await connectToDb();
@@ -52,7 +67,7 @@ export async function addNote(req, res) {
         return;
     }
 
-    const query = `INSERT INTO note(titolo, testo, dataora, idstudente) VALUES($1, $2, $3, $4)`;
+    const query = `INSERT INTO notes(title, description, dataora, idstudente) VALUES($1, $2, $3, (select id from students where email=$4))`;
     try {
         await conn.query(query, [encryptedTitle, encryptedDescription, date, req.session.email]);
     } catch (err) {

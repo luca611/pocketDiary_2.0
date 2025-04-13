@@ -96,10 +96,10 @@ export function isValidDescription(description) {
 */
 export async function validateEmail(req, res) {
     const { email } = req.query;
-    if(!email) {
+    if (!email) {
         return sendError(res, "Email cannot be empty");
     }
-    let client=null;
+    let client = null;
     try {
         client = await connectToDb();
     } catch (error) {
@@ -107,14 +107,14 @@ export async function validateEmail(req, res) {
     }
     const encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
     const query = `SELECT * FROM studenti WHERE email = $1`;
-    try{
+    try {
         const result = await client.query(query, [encryptedEmail]);
         closeDbConnection(client);
-        if(result.rows.length > 0) {
+        if (result.rows.length > 0) {
             return sendError(res, "Email already taken");
         }
         return sendSuccess(res, "Email is valid");
-    }catch(error) {
+    } catch (error) {
         return sendServerError(res, "Error validating email");
     }
 }
@@ -150,4 +150,14 @@ export function isValidDate(date, canBeInPast = false) {
         return parsedDate <= maxFutureDate;
     }
     return parsedDate >= now && parsedDate <= maxFutureDate;
+}
+
+/**
+ * Validate a color
+ * @param {string} color - The color to validate
+ * @return {boolean} - True if the color is valid, false otherwise
+ * */
+export function isValidColor(color) {
+    const hexColorRegex = /^[0-9A-Fa-f]{6}$/;
+    return hexColorRegex.test(color);
 }

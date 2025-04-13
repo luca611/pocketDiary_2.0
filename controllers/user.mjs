@@ -1,7 +1,7 @@
 import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
 import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
 import { sendError, sendSuccess, sendNotLoggedIn } from "../utils/returns.mjs";
-import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/validator.mjs";
+import { isEmpty, isTaken, isValidColor, isValidEmail, validatePassword } from "../utils/validator.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -15,20 +15,28 @@ import { isEmpty, isTaken, isValidEmail, validatePassword } from "../utils/valid
  */
 export async function register(req, res) {
     req.session.email = "";
+    req.session.id = "";
     req.session.key = "";
-    req.session.password = "";
     req.session.logged = false;
 
-    let { email, password, ntema, name } = req.body;
+    // getting the data from the request body
 
-    if (!email || !password || !ntema || !name) {
-        sendError(res, "invalid inputs");
+    let { email, password, primary, secondary, tertiary, name } = req.body;
+
+    // controling the data
+
+    if (!email || !password || !name || !primary || !secondary || !tertiary) {
+        sendError(res, "missing inputs");
         return;
     }
 
     email = email.trim();
     email = email.toLowerCase();
     name = name.trim();
+    name = name.toLowerCase();
+    primary = primary.trim();
+    secondary = secondary.trim();
+    tertiary = tertiary.trim();
 
     // email checks
     if (await isEmpty(email)) {
@@ -69,53 +77,55 @@ export async function register(req, res) {
         return;
     }
 
-    // ntema checks
-    if (typeof ntema !== 'number') {
-        sendError(res, "theme type not valid");
-        return;
-    }
-
-    if (ntema < 1 || ntema > 4) {
-        sendError(res, "invalid theme");
-        return;
-    }
-
-    let connection = null;
-    try {
-        connection = await connectToDb();
-    } catch (error) {
-        sendError(res, "server network error");
+    // theme checks
+    if (isValidColor(primary) && isValidColor(secondary) && isValidColor(tertiary)) {
+        sendError(res, "Theme colors are not valid");
         return;
     }
 
     let encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
     let encryptedPassword = createHash(password)
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
-    let theme = ntema;
+    let primary_color = primary
+    let secondary_color = secondary
+    let tertiary_color = tertiary
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
 
-    const query = `INSERT INTO studenti (email, password, nome, ntema, chiave) VALUES ($1, $2, $3, $4, $5)`;
+    const query = `INSERT INTO students (email, password, name, primary_color, secondary_color, tertiary_color, key) VALUES ($1, $2, $3, $4, $5, $6)`;
 
     try {
-        await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, theme, key]);
+        await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, primary_color, secondary_color, tertiary_color, key]);
     } catch (error) {
         console.log(error);
-        sendError(res, "server network error");
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection);
+        return;
+    }
+
+    //get the user id from the database
+    const query2 = `SELECT key FROM studenti WHERE email = $1`;
+    const params = [encryptedEmail];
+
+    let userid;
+    try {
+        userid = await connection.query(query2, params);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "Error retriving user id");
         closeDbConnection(connection);
         return;
     }
 
     //binding credential to session
-    req.session.email = encryptedEmail;
-    req.session.name = encryptedName;
-    req.session.theme = ntema;
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, key);
-    req.session.password = encryptedPassword;
+    req.session.id = userid.rows[0].key;
     req.session.logged = true;
 
     sendSuccess(res, "User registered successfully");
     closeDbConnection(connection);
 }
+
+
 
 /**
  * 
@@ -180,7 +190,6 @@ export async function login(req, res) {
 
     //binding user information to session
     req.session.email = email;
-    req.session.password = password;
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.chiave);
     req.session.logged = true;
 
