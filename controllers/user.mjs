@@ -117,6 +117,7 @@ export async function register(req, res) {
     }
 
     userid = userid.rows[0].key;
+    console.log(userid);
 
     //binding credential to session
     req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, key);
