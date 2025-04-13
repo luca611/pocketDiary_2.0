@@ -18,7 +18,7 @@ import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 import { validateEmail } from './utils/validator.mjs';
 
 process.on('uncaughtException', function (err) {
-    console.error("▶ An error occurred while processing the request: ", error);
+    console.error("▶ An error occurred while processing the request: ", err);
 });
 
 dotenv.config();
