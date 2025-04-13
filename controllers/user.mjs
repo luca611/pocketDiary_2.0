@@ -97,7 +97,7 @@ export async function register(req, res) {
         await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, primary_color, secondary_color, tertiary_color, key]);
     } catch (error) {
         console.log(error);
-        sendError(res, "server internal error, try again");
+        sendError(res, "server internal error, try again " + error);
         closeDbConnection(connection);
         return;
     }
