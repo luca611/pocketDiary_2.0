@@ -106,7 +106,7 @@ export async function register(req, res) {
         await connection.query(query, [encryptedEmail, encryptedPassword, encryptedName, primary_color, secondary_color, tertiary_color, key]);
     } catch (error) {
         console.log(error);
-        sendError(res, "server internal error, try again " + error);
+        sendError(res, "server internal error, try again");
         closeDbConnection(connection);
         return;
     }
@@ -136,8 +136,6 @@ export async function register(req, res) {
     sendSuccess(res, "User registered successfully");
     closeDbConnection(connection);
 }
-
-
 
 /**
  * 
@@ -178,7 +176,7 @@ export async function login(req, res) {
     password = createHash(password);
 
     // cheking on the db 
-    const query = `SELECT chiave, nome, ntema FROM studenti WHERE email = $1 AND password = $2`;
+    const query = `SELECT id, key FROM students WHERE email = $1 AND password = $2`;
     const params = [email, password];
     let result;
     try {
@@ -189,10 +187,6 @@ export async function login(req, res) {
         return;
     }
 
-    // see if there's a user matching username and password
-    // there should be only 1 match but to avoid any kind
-    // of error i prefered to check the length of the result
-
     if (result.rows.length != 1) {
         sendError(res, "Invalid credentials");
         return;
@@ -201,8 +195,8 @@ export async function login(req, res) {
     const user = result.rows[0];
 
     //binding user information to session
-    req.session.email = email;
-    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.chiave);
+    req.session.id = user.id;
+    req.session.key = decryptMessage(process.env.ENCRYPTION_KEY, user.key);
     req.session.logged = true;
 
     sendSuccess(res, "logged in successful");
