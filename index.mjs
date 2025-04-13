@@ -155,7 +155,6 @@ app.put('/updateCustomTheme', updateCustomTheme);
 
 app.get('/getTheme', getTheme);
 app.get('/getName', getName);
-app.get('/getCustomTheme', getCustomTheme);
 
 app.delete('/logout', logout);
 app.delete('/deleteAccount', deleteUser);
