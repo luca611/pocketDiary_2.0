@@ -39,7 +39,7 @@ export async function isTaken(email) {
     }
 
     let encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
-    const query = `SELECT * FROM studenti WHERE email = $1`;
+    const query = `SELECT * FROM students WHERE email = $1`;
     const result = await connection.query(query, [encryptedEmail]);
 
     closeDbConnection(connection);
