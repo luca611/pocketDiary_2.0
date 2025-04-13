@@ -78,7 +78,7 @@ export async function register(req, res) {
     }
 
     // theme checks
-    if (isValidColor(primary) && isValidColor(secondary) && isValidColor(tertiary)) {
+    if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(tertiary)) {
         sendError(res, "Theme colors are not valid");
         return;
     }
