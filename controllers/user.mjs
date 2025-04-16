@@ -2,6 +2,7 @@ import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
 import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
 import { sendError, sendSuccess, sendNotLoggedIn } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidColor, isValidEmail, validatePassword } from "../utils/validator.mjs";
+import { STUDENT_MAXNAME_LENGTH } from "../utils/vars.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -341,20 +342,18 @@ export async function updatePassword(req, res) {
         return;
     }
 
-    let encryptedEmail = req.session.email;
     let encryptedNewPassword = createHash(newPassword);
-    let query = `UPDATE studenti SET password = $1 WHERE email = $2`;
+    let query = `UPDATE students SET password = $1 WHERE id = $2`;
 
+    let id = req.session.userid;
     try {
-        await connection.query(query, [encryptedNewPassword, encryptedEmail]);
+        await connection.query(query, [encryptedNewPassword, id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);
         return;
     }
 
-
-    req.session.password = encryptedNewPassword;
     sendSuccess(res, "Password updated successfully");
     closeDbConnection(connection);
 }
@@ -372,23 +371,30 @@ export async function updateTheme(req, res) {
         return;
     }
 
-    let { theme } = req.body;
+    let { primary, secondary, tertiary } = req.body;
 
-    if (!theme) {
-        sendError(res, "invalid inputs");
+    //making sure the data is not empty
+    if (!primary || !secondary || !tertiary) {
+        sendError(res, "Missing inputs");
         return;
     }
 
-    if (typeof theme !== 'number') {
-        sendError(res, "theme type not valid");
+    primary = primary.trim();
+    secondary = secondary.trim();
+    tertiary = tertiary.trim();
+    
+    if (isEmpty(primary) || isEmpty(secondary) || isEmpty(tertiary)) {
+        sendError(res, "Theme colors are required");
         return;
     }
-
-    if (theme < 1 || theme > 4) {
-        sendError(res, "invalid theme");
+    
+    //making sure the data is in the right format
+    if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(tertiary)) {
+        sendError(res, "Theme colors are not valid");
         return;
-    }
+    }    
 
+    //applying the changes to the database
     let connection = null;
     try {
         connection = await connectToDb();
@@ -397,12 +403,12 @@ export async function updateTheme(req, res) {
         sendError(res, "server network error");
         return;
     }
-
-    let encryptedEmail = req.session.email;
-    let query = `UPDATE studenti SET ntema = $1 WHERE email = $2`;
+    
+    let id = req.session.userid;
+    let query = `UPDATE students SET primary_color = $1, secondary_color = $2, tertiary_color = $3  WHERE id = $4`;
 
     try {
-        await connection.query(query, [theme, encryptedEmail]);
+        await connection.query(query, [primary, secondary, tertiary, id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);
@@ -427,7 +433,8 @@ export async function updateName(req, res) {
     }
 
     let { name } = req.body;
-
+    
+    //making sure the data is not empty
     if (!name) {
         sendError(res, "invalid inputs");
         return;
@@ -440,6 +447,12 @@ export async function updateName(req, res) {
         return;
     }
 
+    if(name.length > STUDENT_MAXNAME_LENGTH){
+        sendError(res, "Name exceed max length allowed");
+        return;
+    }
+
+    //applying the changes to the database
     let connection = null;
     try {
         connection = await connectToDb();
@@ -449,9 +462,9 @@ export async function updateName(req, res) {
         return;
     }
 
-    let encryptedEmail = req.session.email;
+    let id = req.session.userid;
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
-    let query = `UPDATE studenti SET nome = $1 WHERE email = $2`;
+    let query = `UPDATE students SET name = $1 WHERE id = $2`;
 
     try {
         await connection.query(query, [encryptedName, encryptedEmail]);
@@ -462,63 +475,6 @@ export async function updateName(req, res) {
     }
 
     sendSuccess(res, "name updated successfully");
-    closeDbConnection(connection);
-}
-
-/**
- * Function that updates the user custom theme in the database
- * 
- * @param {Request} req
- * @param {Response} res
- * @returns {void}
- */
-export async function updateCustomTheme(req, res) {
-    if (!req.session.logged) {
-        sendNotLoggedIn(res);
-        return;
-    }
-
-    let { customTheme } = req.body;
-
-    if (!customTheme) {
-        sendError(res, "invalid inputs");
-        return;
-    }
-
-    if (isEmpty(customTheme)) {
-        sendError(res, "Custom theme is required");
-        return;
-    }
-
-    const hexPattern = /^#[0-9A-Fa-f]{6};#[0-9A-Fa-f]{6};#[0-9A-Fa-f]{6}$/;
-
-    if (!hexPattern.test(customTheme)) {
-        sendError(res, "Custom theme format is invalid");
-        return;
-    }
-
-    let connection = null;
-    try {
-        connection = await connectToDb();
-    }
-    catch (error) {
-        sendError(res, "server network error");
-        return;
-    }
-
-    let encryptedEmail = req.session.email;
-    let query = `UPDATE studenti SET hexcustom = $1 WHERE email = $2`;
-
-    try {
-        await connection.query(query, [customTheme, encryptedEmail]);
-    } catch (error) {
-        console.log(error);
-        sendError(res, "server network error");
-        closeDbConnection(connection);
-        return;
-    }
-
-    sendSuccess(res, "Custom theme updated successfully");
     closeDbConnection(connection);
 }
 
@@ -564,11 +520,11 @@ export async function deleteUser(req, res) {
         return;
     }
 
-    let encryptedEmail = req.session.email;
-    let query = `DELETE FROM studenti WHERE email = $1`;
+    let id = req.session.userid;
+    let query = `DELETE FROM students WHERE id = $1`;
 
     try {
-        await connection.query(query, [encryptedEmail]);
+        await connection.query(query, [id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);
