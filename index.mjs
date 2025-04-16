@@ -11,7 +11,7 @@ import { DEFAULT_PORT, DEFAULT_SESSION_DURATION, DEFAULT_SESSION_SECRET } from '
 import { sendError, sendSuccess } from './utils/returns.mjs';
 import { getAvailableRoutes, keepAlive } from './utils/serverUtils.mjs';
 import { generateKey } from './security/encryption.mjs';
-import { register, logout, login, updatePassword, updateTheme, updateName, updateCustomTheme, getTheme, getName, deleteUser } from './controllers/user.mjs';
+import { register, logout, login, updatePassword, updateTheme, updateName, getTheme, getName, deleteUser } from './controllers/user.mjs';
 import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote } from './controllers/notes.mjs';
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
@@ -151,7 +151,6 @@ app.post('/login', login);
 app.put('/updatePassword', updatePassword);
 app.put('/updateTheme', updateTheme);
 app.put('/updateName', updateName);
-app.put('/updateCustomTheme', updateCustomTheme);
 
 app.get('/getTheme', getTheme);
 app.get('/getName', getName);
