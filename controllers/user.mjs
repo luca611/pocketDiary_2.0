@@ -2,7 +2,7 @@ import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
 import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
 import { sendError, sendSuccess, sendNotLoggedIn } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidColor, isValidEmail, validatePassword } from "../utils/validator.mjs";
-import { STUDENT_MAXEMAIL_LENGTH, STUDENT_MAXKEY_LENGTH, STUDENT_MAXNAME_LENGTH, STUDENT_MAXPASSWORD_LENGTH } from "../utils/vars.mjs";
+import { STUDENT_MAXEMAIL_LENGTH, STUDENT_MAXENCRYPTEDEMAIL_LENGTH, STUDENT_MAXENCRYPTEDNAME_LENGTH, STUDENT_MAXKEY_LENGTH, STUDENT_MAXNAME_LENGTH, STUDENT_MAXPASSWORD_LENGTH } from "../utils/vars.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -56,6 +56,11 @@ export async function register(req, res) {
         return;
     }
 
+    if (email.length > STUDENT_MAXEMAIL_LENGTH) {
+        sendError(res, "Email exceed max length allowed");
+        return;
+    }
+
     // password checks
     password = password.trim();
 
@@ -78,6 +83,11 @@ export async function register(req, res) {
         return;
     }
 
+    if (name.length > STUDENT_MAXNAME_LENGTH) {
+        sendError(res, "Name exceed max length allowed");
+        return;
+    }
+
     // theme checks
     if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(tertiary)) {
         sendError(res, "Theme colors are not valid");
@@ -86,7 +96,7 @@ export async function register(req, res) {
 
     // encrypting the data before sending it to the database and making sure it is not too long
     let encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
-    if (encryptedEmail.length > STUDENT_MAXEMAIL_LENGTH) {
+    if (encryptedEmail.length > STUDENT_MAXENCRYPTEDEMAIL_LENGTH) {
         sendError(res, "Email exceed max length allowed");
         return;
     }
@@ -97,7 +107,7 @@ export async function register(req, res) {
         return;
     }
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
-    if (encryptedName.length > STUDENT_MAXNAME_LENGTH) {
+    if (encryptedName.length > STUDENT_MAXENCRYPTEDNAME_LENGTH) {
         sendError(res, "Name exceed max length allowed");
         return;
     }
@@ -479,8 +489,13 @@ export async function updateName(req, res) {
         return;
     }
 
+    if (name.length > STUDENT_MAXNAME_LENGTH) {
+        sendError(res, "Name exceed max length allowed");
+        return;
+    }
+
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
-    if (encryptedName.length > STUDENT_MAXNAME_LENGTH) {
+    if (encryptedName.length > STUDENT_MAXENCRYPTEDNAME_LENGTH) {
         sendError(res, "Name exceed max length allowed");
         return;
     }
