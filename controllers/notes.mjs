@@ -136,7 +136,7 @@ export async function getDayNotes(req, res) {
         return;
     }
 
-    let notes = result.rows.map((note) => {
+    let notes = result.rows.map((notes) => {
         return {
             id: notes.id,
             title: decryptMessage(req.session.key, notes.title),
