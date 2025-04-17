@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { sendError, sendServerError } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
+import { NOTE_DESCRIPTION_MAX_LENGTH, NOTE_TITLE_MAX_LENGTH } from "../utils/vars.mjs";
 
 const token = process.env["AI_API_KEY"];
 
@@ -36,7 +37,7 @@ export async function getChatCompletion(req, res) {
             const response = await client.chat.completions.create(
                 {
                     messages: [
-                        { role: "system", content: "You are a helpful assistant." },
+                        { role: "system", content: "Always respond in the same language as the user. You are a school-oriented chatbot, so ensure your responses are formal, respectful, and appropriate for an academic setting." },
                         { role: "user", content: message }
                     ],
                     temperature: 0.5,
@@ -112,7 +113,7 @@ export async function setStudyPlan(req, res) {
                     messages: [
                         {
                             role: "system",
-                            content: "Receive inputs from the user: start date, termination date, subject, and study frequency (1 to 5). Generate a pure and valid JSON with no special chars or extra text neither tabs and no formatting chars, response with an array named 'notes' containing objects called 'note' to represent individual study sessions. Each 'note' object must include the following fields: - 'title': A string combining the subject and session number. - 'description': A brief description for the session giving advices on what the user should do in that session.  - 'date': The session's date formatted as mm/dd/yyyy.  Distribute the 'note' objects evenly between the start and termination dates based on the provided frequency, where higher frequency values (e.g., 5) result in more frequent notes and lower frequency values (e.g., 1) result in fewer notes. Note that the frequency value does not directly define the exact number of notes but influences their distribution density across the given date range."
+                            content: "Receive inputs from the user: start date, termination date, subject, and study frequency (1 to 5). Generate a pure and valid JSON with no special chars or extra text neither tabs and no formatting chars, response with an array named 'notes' containing objects called 'note' to represent individual study sessions. Each 'note' object must include the following fields: - 'title': A string combining the subject and session number. - 'description': A brief description for the session giving advices on what the user should do in that session.  - 'date': The session's date formatted as mm/dd/yyyy.  Distribute the 'note' objects evenly between the start and termination dates based on the provided frequency, where higher frequency values (e.g., 5) result in more frequent notes and lower frequency values (e.g., 1) result in fewer notes. Note that the frequency value does not directly define the exact number of notes but influences their distribution density across the given date range. Always use same language as the one used by the user for the content of each note, not for the tags themselves. The response must be a pure JSON with no extra text, no formatting chars, and no special characters. The JSON must be valid and parsable. If the AI cannot generate a valid JSON, it should respond with an error message in the same format. for the title you can use at max: " + NOTE_TITLE_MAX_LENGTH + " characters for the description: " + NOTE_DESCRIPTION_MAX_LENGTH + ". The description should be a brief description of the session, and the date should be formatted as mm/dd/yyyy. The response must be a pure JSON with no extra text, no formatting chars, and no special characters. The JSON must be valid and parsable. If the AI cannot generate a valid JSON, it should respond with an error message in the same format.",
                         },
                         {
                             role: "user",
