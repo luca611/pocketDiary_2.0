@@ -415,6 +415,11 @@ export async function updateTheme(req, res) {
         return;
     }
 
+    // Remove '#' from the beginning of the colors if present
+    primary = primary.startsWith('#') ? primary.slice(1) : primary;
+    secondary = secondary.startsWith('#') ? secondary.slice(1) : secondary;
+    tertiary = tertiary.startsWith('#') ? tertiary.slice(1) : tertiary;
+
     //making sure the data is in the right format
     if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(tertiary)) {
         sendError(res, "Theme colors are not valid");
