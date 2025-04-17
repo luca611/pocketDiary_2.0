@@ -260,6 +260,7 @@ export async function getNoteDates(req, res) {
     }
 
     let conn = null;
+    let studentid = req.session.userid;
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -268,11 +269,11 @@ export async function getNoteDates(req, res) {
         return;
     }
 
-    const query = `SELECT DISTINCT EXTRACT(DAY FROM dataora) AS days FROM note WHERE idstudente = $1 AND dataora >= $2 AND dataora <= $3`;
+    const query = `SELECT DISTINCT EXTRACT(DAY FROM DATE) AS days FROM notes WHERE studentid = $1 AND date >= $2 AND date <= $3`;
 
     let result = null;
     try {
-        result = await conn.query(query, [req.session.email, startDate, endDate]);
+        result = await conn.query(query, [studentid, startDate, endDate]);
     } catch (err) {
         console.error(err);
         sendServerError(res, "Database error");
@@ -330,6 +331,8 @@ export async function updateNote(req, res) {
     }
 
     let conn = null;
+    let studentid = req.session.userid;
+
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -339,13 +342,23 @@ export async function updateNote(req, res) {
     }
 
     let encryptedTitle = encryptMessage(req.session.key, title);
+    if (title.length > NOTE_ENCRYPTEDTITLE_LENGTH) {
+        sendError(res, "Title too long");
+        return;
+    }
+
     let encryptedDescription = encryptMessage(req.session.key, description);
+    if (description.length > NOTE_DESCRIPTION_MAX_LENGTH) {
+        sendError(res, "Description too long");
+        return;
+    }
+
     let encryptedDate = date;
 
-    const existingNoteQuery = `SELECT * FROM note WHERE id = $1 AND idstudente = $2`;
-    const query = `UPDATE note SET titolo = $1, testo = $2, dataora = $3 WHERE id = $4 AND idstudente = $5`;
+    const existingNoteQuery = `SELECT * FROM notes WHERE id = $1 AND studentid = $2`;
+    const query = `UPDATE notes SET title = $1, description = $2, date = $3 WHERE id = $4 AND studentid = $5`;
     try {
-        const existingNoteResult = await conn.query(existingNoteQuery, [id, req.session.email]);
+        const existingNoteResult = await conn.query(existingNoteQuery, [id, studentid]);
 
         if (existingNoteResult.rows.length === 0) {
             sendError(res, "Note not found");
@@ -353,7 +366,7 @@ export async function updateNote(req, res) {
             return;
         }
 
-        await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, id, req.session.email]);
+        await conn.query(query, [encryptedTitle, encryptedDescription, encryptedDate, id, studentid]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
@@ -386,6 +399,7 @@ export async function deleteNote(req, res) {
     }
 
     let conn = null;
+    let studentid = req.session.userid;
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -394,10 +408,10 @@ export async function deleteNote(req, res) {
         return;
     }
 
-    const existingNoteQuery = `SELECT * FROM note WHERE id = $1 AND idstudente = $2`;
-    const query = `DELETE FROM note WHERE id = $1 AND idstudente = $2`;
+    const existingNoteQuery = `SELECT * FROM notes WHERE id = $1 AND studentid = $2`;
+    const query = `DELETE FROM notes WHERE id = $1 AND studentid = $2`;
     try {
-        const existingNoteResult = await conn.query(existingNoteQuery, [id, req.session.email]);
+        const existingNoteResult = await conn.query(existingNoteQuery, [id, studentid]);
 
         if (existingNoteResult.rows.length === 0) {
             sendError(res, "Note not found");
