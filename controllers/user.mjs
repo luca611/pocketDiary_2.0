@@ -2,7 +2,7 @@ import { connectToDb, closeDbConnection } from "../db/dbClinet.mjs";
 import { createHash, decryptMessage, encryptMessage, generateKey } from "../security/encryption.mjs";
 import { sendError, sendSuccess, sendNotLoggedIn } from "../utils/returns.mjs";
 import { isEmpty, isTaken, isValidColor, isValidEmail, validatePassword } from "../utils/validator.mjs";
-import { STUDENT_MAXNAME_LENGTH } from "../utils/vars.mjs";
+import { STUDENT_MAXEMAIL_LENGTH, STUDENT_MAXKEY_LENGTH, STUDENT_MAXNAME_LENGTH, STUDENT_MAXPASSWORD_LENGTH } from "../utils/vars.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -84,16 +84,37 @@ export async function register(req, res) {
         return;
     }
 
+    // encrypting the data before sending it to the database and making sure it is not too long
     let encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
+    if (encryptedEmail.length > STUDENT_MAXEMAIL_LENGTH) {
+        sendError(res, "Email exceed max length allowed");
+        return;
+    }
+
     let encryptedPassword = createHash(password)
+    if (encryptedPassword.length > STUDENT_MAXPASSWORD_LENGTH) {
+        sendError(res, "Password exceed max length allowed");
+        return;
+    }
     let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
+    if (encryptedName.length > STUDENT_MAXNAME_LENGTH) {
+        sendError(res, "Name exceed max length allowed");
+        return;
+    }
+
     let primary_color = primary
     let secondary_color = secondary
     let tertiary_color = tertiary
+
+    //unique key for the user
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
+    if (key.length > STUDENT_MAXKEY_LENGTH) {
+        sendError(res, "Key exceed max length allowed");
+        return;
+    }
 
+    // adding the user to the database
     let connection = null;
-
     try {
         connection = await connectToDb();
     } catch (error) {
@@ -247,6 +268,8 @@ export async function getTheme(req, res) {
     let secondary = result.rows[0].secondary_color;
     let tertiary = result.rows[0].tertiary_color;
 
+
+    // [*] might reconsider reformatting the response to be more readable
     let theme = {
         primary: primary,
         secondary: secondary,
@@ -328,10 +351,13 @@ export async function updatePassword(req, res) {
         return;
     }
 
-    if (req.session.password === createHash(newPassword)) {
-        sendError(res, "Password is the same as the old one");
+    // encrypting the data before sending it to the database and making sure it is not too long
+    let encryptedNewPassword = createHash(newPassword);
+    if (encryptedNewPassword.length > STUDENT_MAXPASSWORD_LENGTH) {
+        sendError(res, "Password exceed max length allowed");
         return;
     }
+
 
     let connection = null;
     try {
@@ -342,7 +368,7 @@ export async function updatePassword(req, res) {
         return;
     }
 
-    let encryptedNewPassword = createHash(newPassword);
+
     let query = `UPDATE students SET password = $1 WHERE id = $2`;
 
     let id = req.session.userid;
@@ -360,6 +386,7 @@ export async function updatePassword(req, res) {
 
 /**
  * Function that updates the user theme in the database
+ * [*] might consider making colors optional and only update the ones that are provided
  * 
  * @param {Request} req
  * @param {Response} res
@@ -382,17 +409,17 @@ export async function updateTheme(req, res) {
     primary = primary.trim();
     secondary = secondary.trim();
     tertiary = tertiary.trim();
-    
+
     if (isEmpty(primary) || isEmpty(secondary) || isEmpty(tertiary)) {
         sendError(res, "Theme colors are required");
         return;
     }
-    
+
     //making sure the data is in the right format
     if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(tertiary)) {
         sendError(res, "Theme colors are not valid");
         return;
-    }    
+    }
 
     //applying the changes to the database
     let connection = null;
@@ -403,7 +430,7 @@ export async function updateTheme(req, res) {
         sendError(res, "server network error");
         return;
     }
-    
+
     let id = req.session.userid;
     let query = `UPDATE students SET primary_color = $1, secondary_color = $2, tertiary_color = $3  WHERE id = $4`;
 
@@ -433,7 +460,7 @@ export async function updateName(req, res) {
     }
 
     let { name } = req.body;
-    
+
     //making sure the data is not empty
     if (!name) {
         sendError(res, "invalid inputs");
@@ -447,7 +474,8 @@ export async function updateName(req, res) {
         return;
     }
 
-    if(name.length > STUDENT_MAXNAME_LENGTH){
+    let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
+    if (encryptedName.length > STUDENT_MAXNAME_LENGTH) {
         sendError(res, "Name exceed max length allowed");
         return;
     }
@@ -463,11 +491,10 @@ export async function updateName(req, res) {
     }
 
     let id = req.session.userid;
-    let encryptedName = encryptMessage(process.env.ENCRYPTION_KEY, name);
     let query = `UPDATE students SET name = $1 WHERE id = $2`;
 
     try {
-        await connection.query(query, [encryptedName, encryptedEmail]);
+        await connection.query(query, [encryptedName, id]);
     } catch (error) {
         sendError(res, "server network error");
         closeDbConnection(connection);

@@ -5,10 +5,10 @@ dotenv.config();
 const { Pool } = pkg;
 
 const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({ 
+const pool = new Pool({
     connectionString,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000
+    connectionTimeoutMillis: 100000
 });
 
 pool.on('error', (err, client) => {
@@ -66,6 +66,6 @@ export async function executeQuery(client, query, params = []) {
         return result.rows;
     } catch (err) {
         console.error("▶ Database query error:", err);
-        return null; 
+        return null;
     }
 }
