@@ -61,8 +61,6 @@ export function decryptMessage(key, encryptedMessage) {
 
 */
 
-import crypto from "crypto";
-
 /**
  * Encrypts a message using AES-256-CBC algorithm.
  *
