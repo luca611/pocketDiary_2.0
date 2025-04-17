@@ -21,6 +21,8 @@ export function createHash(data) {
     return hash.digest("hex");
 }
 
+
+
 /**
  * Encrypts a message using AES-256-CBC algorithm.
  *
@@ -28,6 +30,8 @@ export function createHash(data) {
  * @param {string} message - The message to be encrypted.
  * @returns {string} The encrypted message in hexadecimal format.
  */
+
+/*
 export function encryptMessage(key, message) {
     const iv = Buffer.alloc(16, 0);
     const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(key, "hex"), iv);
@@ -36,6 +40,8 @@ export function encryptMessage(key, message) {
     return encrypted;
 }
 
+*/
+
 /**
  * Decrypts an encrypted message using AES-256-CBC algorithm.
  *
@@ -43,6 +49,8 @@ export function encryptMessage(key, message) {
  * @param {string} encryptedMessage - The encrypted message in hexadecimal format.
  * @returns {string} The decrypted message in UTF-8 format.
  */
+
+/*
 export function decryptMessage(key, encryptedMessage) {
     const iv = Buffer.alloc(16, 0);
     const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(key, "hex"), iv);
@@ -51,3 +59,36 @@ export function decryptMessage(key, encryptedMessage) {
     return decrypted;
 }
 
+*/
+
+import crypto from "crypto";
+
+/**
+ * Encrypts a message using AES-256-CBC algorithm.
+ *
+ * @param {string} key - The encryption key in hexadecimal format.
+ * @param {string} message - The message to be encrypted.
+ * @returns {string} The encrypted message in Base64 format.
+ */
+export function encryptMessage(key, message) {
+    const iv = Buffer.alloc(16, 0);
+    const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(key, "hex"), iv);
+    let encrypted = cipher.update(message, "utf8", "base64");
+    encrypted += cipher.final("base64");
+    return encrypted;
+}
+
+/**
+ * Decrypts an encrypted message using AES-256-CBC algorithm.
+ *
+ * @param {string} key - The encryption key in hexadecimal format.
+ * @param {string} encryptedMessage - The encrypted message in Base64 format.
+ * @returns {string} The decrypted message in UTF-8 format.
+ */
+export function decryptMessage(key, encryptedMessage) {
+    const iv = Buffer.alloc(16, 0);
+    const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(key, "hex"), iv);
+    let decrypted = decipher.update(encryptedMessage, "base64", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+}
