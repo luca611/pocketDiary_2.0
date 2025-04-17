@@ -119,7 +119,7 @@ export async function register(req, res) {
     //unique key for the user
     let key = encryptMessage(process.env.ENCRYPTION_KEY, generateKey());
     if (key.length > STUDENT_MAXKEY_LENGTH) {
-        sendError(res, "Key exceed max length allowed" + key.length);
+        sendError(res, "Key exceed max length allowed");
         return;
     }
 
