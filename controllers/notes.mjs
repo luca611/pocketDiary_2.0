@@ -74,7 +74,7 @@ export async function addNote(req, res) {
         return;
     }
 
-    const query = `INSERT INTO notes(title, description, date, sutentID) VALUES($1, $2, $3, $4)`;
+    const query = `INSERT INTO notes(title, description, date, studentID) VALUES($1, $2, $3, $4)`;
     try {
         await conn.query(query, [encryptedTitle, encryptedDescription, date, id]);
     } catch (err) {
@@ -125,7 +125,7 @@ export async function getDayNotes(req, res) {
         return;
     }
 
-    const query = `SELECT * FROM notes WHERE sutentID = $1 AND date = $2`;
+    const query = `SELECT * FROM notes WHERE studentID = $1 AND date = $2`;
     let result = null;
     try {
         result = await conn.query(query, [id, date]);
