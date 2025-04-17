@@ -2,7 +2,7 @@ import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { decryptMessage, encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendNotLoggedIn, sendServerError, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate, isValidDescription, isValidTitle } from "../utils/validator.mjs";
-import { NOTE_DESCRIPTION_MAX_LENGTH, NOTE_TITLE_MAX_LENGTH } from "../utils/vars.mjs";
+import { NOTE_DESCRIPTION_MAX_LENGTH, NOTE_ENCRYPTEDTITLE_LENGTH, NOTE_TITLE_MAX_LENGTH } from "../utils/vars.mjs";
 
 //----------------------------------- CREATE -----------------------------------//
 
@@ -27,13 +27,19 @@ export async function addNote(req, res) {
         return;
     }
 
+    //cleanng data 
+    title = title.trim().tolowerCase();
+    description = description.trim().tolowerCase();
+
+    //data validation
     if (!isValidTitle(title)) {
-        sendError(res, "Invalid title");
+        sendError(res, "Invalid title length");
         return;
     }
 
+    //can be empty
     if (!isValidDescription(description)) {
-        sendError(res, "Invalid description");
+        sendError(res, "Invalid description length");
         return;
     }
 
@@ -42,23 +48,24 @@ export async function addNote(req, res) {
         return;
     }
 
-    if (title.length > NOTE_TITLE_MAX_LENGTH) {
+    //data encryption
+
+    let encryptedTitle = encryptMessage(req.session.key, title);
+    if (title.length > NOTE_ENCRYPTEDTITLE_LENGTH) {
         sendError(res, "Title too long");
         return;
     }
 
+    let encryptedDescription = encryptMessage(req.session.key, description);
     if (description.length > NOTE_DESCRIPTION_MAX_LENGTH) {
         sendError(res, "Description too long");
         return;
     }
 
-    //data encryption
-
-    let encryptedTitle = encryptMessage(req.session.key, title);
-    let encryptedDescription = encryptMessage(req.session.key, description);
-
     //data insertion
     let conn = null;
+    let id = req.session.userid;
+
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -67,9 +74,9 @@ export async function addNote(req, res) {
         return;
     }
 
-    const query = `INSERT INTO notes(title, description, dataora, idstudente) VALUES($1, $2, $3, (select id from students where email=$4))`;
+    const query = `INSERT INTO notes(title, description, date, sutentID) VALUES($1, $2, $3, $4)`;
     try {
-        await conn.query(query, [encryptedTitle, encryptedDescription, date, req.session.email]);
+        await conn.query(query, [encryptedTitle, encryptedDescription, date, id]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
@@ -109,6 +116,7 @@ export async function getDayNotes(req, res) {
     }
 
     let conn = null;
+    let id = req.session.userid;
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -117,10 +125,10 @@ export async function getDayNotes(req, res) {
         return;
     }
 
-    const query = `SELECT * FROM note WHERE idstudente = $1 AND dataora = $2`;
+    const query = `SELECT * FROM notes WHERE sutentID = $1 AND date = $2`;
     let result = null;
     try {
-        result = await conn.query(query, [req.session.email, date]);
+        result = await conn.query(query, [id, date]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
@@ -130,13 +138,15 @@ export async function getDayNotes(req, res) {
 
     let notes = result.rows.map((note) => {
         return {
-            id: note.id,
-            title: decryptMessage(req.session.key, note.titolo),
-            description: decryptMessage(req.session.key, note.testo),
-            date: note.dataora,
+            id: notes.id,
+            title: decryptMessage(req.session.key, notes.title),
+            description: decryptMessage(req.session.key, notes.description),
+            date: notes.date,
         };
     });
 
+
+    //for comodity i used custom response then the ones in the returns.mjs
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
@@ -164,6 +174,7 @@ export async function getNoteById(req, res) {
     }
 
     let conn = null;
+    let studentid = req.session.userid;
     try {
         conn = await connectToDb();
     } catch (err) {
@@ -172,10 +183,10 @@ export async function getNoteById(req, res) {
         return;
     }
 
-    const query = `SELECT * FROM note WHERE idstudente = $1 AND id = $2`;
+    const query = `SELECT * FROM notes WHERE studentID = $1 AND id = $2`;
     let result = null;
     try {
-        result = await conn.query(query, [req.session.email, id]);
+        result = await conn.query(query, [studentid, id]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
@@ -192,11 +203,12 @@ export async function getNoteById(req, res) {
     let note = result.rows[0];
     let noteData = {
         id: note.id,
-        title: decryptMessage(req.session.key, note.titolo),
-        description: decryptMessage(req.session.key, note.testo),
-        date: note.dataora,
+        title: decryptMessage(req.session.key, note.title),
+        description: decryptMessage(req.session.key, note.description),
+        date: note.date,
     };
 
+    //for comodity i used custom response then the ones in the returns.mjs
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');

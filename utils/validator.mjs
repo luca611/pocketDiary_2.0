@@ -1,6 +1,7 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendServerError, sendSuccess } from "./returns.mjs";
+import { NOTE_DESCRIPTION_MAX_LENGTH, NOTE_TITLE_MAX_LENGTH } from "./vars.mjs";
 
 /**
  * Validate a password
@@ -71,7 +72,7 @@ export async function isValidEmail(email) {
  * @returns {boolean} - True if the title is valid, false otherwise
 */
 export function isValidTitle(title) {
-    if (title.length < 1 || title.length > 127) {
+    if (title.length < 1 || title.length > NOTE_TITLE_MAX_LENGTH) {
         return false;
     }
     return true;
@@ -83,7 +84,7 @@ export function isValidTitle(title) {
  * @returns {boolean} - True if the description is valid, false otherwise
 */
 export function isValidDescription(description) {
-    if (description.length < 1 || description.length > 2047) {
+    if (description.length > NOTE_DESCRIPTION_MAX_LENGTH) {
         return false;
     }
     return true;
@@ -106,7 +107,7 @@ export async function validateEmail(req, res) {
         return sendError(res, "Error connecting to database");
     }
     const encryptedEmail = encryptMessage(process.env.ENCRYPTION_KEY, email);
-    const query = `SELECT * FROM studenti WHERE email = $1`;
+    const query = `SELECT * FROM students WHERE email = $1`;
     try {
         const result = await client.query(query, [encryptedEmail]);
         closeDbConnection(client);
