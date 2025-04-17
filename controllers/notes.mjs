@@ -28,8 +28,8 @@ export async function addNote(req, res) {
     }
 
     //cleanng data 
-    title = title.trim().tolowerCase();
-    description = description.trim().tolowerCase();
+    title = title.trim();
+    description = description.trim();
 
     //data validation
     if (!isValidTitle(title)) {
