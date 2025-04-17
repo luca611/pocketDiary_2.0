@@ -419,7 +419,7 @@ export async function deleteNote(req, res) {
             return;
         }
 
-        await conn.query(query, [id, req.session.email]);
+        await conn.query(query, [id, studentid]);
     } catch (err) {
         console.error(err);
         sendError(res, "Database error");
