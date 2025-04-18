@@ -149,7 +149,7 @@ export async function register(req, res) {
     }
 
     //get the user id from the database
-    const query2 = `SELECT key FROM students WHERE email = $1`;
+    const query2 = `SELECT id FROM students WHERE email = $1`;
     const params = [encryptedEmail];
 
     let userid;
@@ -162,7 +162,7 @@ export async function register(req, res) {
         return;
     }
 
-    userid = userid.rows[0].key;
+    userid = userid.rows[0].id;
     console.log(userid);
 
     //binding credential to session
