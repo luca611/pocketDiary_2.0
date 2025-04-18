@@ -1684,6 +1684,20 @@ function loadUsername() {
 //-----------------------------------------------------------------ù
 
 function getTheme() {
+	// Retrieve colors from localStorage if available
+	const storedPrimary = localStorage.getItem("primaryColor");
+	const storedSecondary = localStorage.getItem("secondaryColor");
+	const storedTertiary = localStorage.getItem("tertiaryColor");
+
+	if (storedPrimary && storedSecondary && storedTertiary) {
+		document.documentElement.style.setProperty("--primary-color", storedPrimary);
+		document.documentElement.style.setProperty("--secondary-color", storedSecondary);
+		document.documentElement.style.setProperty("--minor-color", storedTertiary);
+		primaryColor = storedPrimary;
+		secondaryColor = storedSecondary;
+		tertiaryColor = storedTertiary;
+	}
+
 	const url = serverURL + "/getTheme";
 
 	const xhr = new XMLHttpRequest();
@@ -1695,12 +1709,22 @@ function getTheme() {
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == "0") {
 			const { primary, secondary, tertiary } = response.message;
-			document.documentElement.style.setProperty("--primary-color", "#" + primary);
-			document.documentElement.style.setProperty("--secondary-color", "#" + secondary);
-			document.documentElement.style.setProperty("--minor-color", "#" + tertiary);
-			primaryColor = "#" + primary;
-			secondaryColor = "#" + secondary;
-			tertiaryColor = "#" + tertiary;
+			const primaryHex = "#" + primary;
+			const secondaryHex = "#" + secondary;
+			const tertiaryHex = "#" + tertiary;
+
+			document.documentElement.style.setProperty("--primary-color", primaryHex);
+			document.documentElement.style.setProperty("--secondary-color", secondaryHex);
+			document.documentElement.style.setProperty("--minor-color", tertiaryHex);
+
+			primaryColor = primaryHex;
+			secondaryColor = secondaryHex;
+			tertiaryColor = tertiaryHex;
+
+			// Save the new colors to localStorage
+			localStorage.setItem("primaryColor", primaryHex);
+			localStorage.setItem("secondaryColor", secondaryHex);
+			localStorage.setItem("tertiaryColor", tertiaryHex);
 		} else {
 			console.error(xhr.responseText);
 		}
