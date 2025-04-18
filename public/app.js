@@ -623,8 +623,8 @@ function hideAllPages() {
 
 //-----------------------------------------------------------------
 function validatePassword(password) {
-    const hasUpperCase = /[A-Z]/.test(password);
-    return password.length >= 8 && hasUpperCase;
+	const hasUpperCase = /[A-Z]/.test(password);
+	return password.length >= 8 && hasUpperCase;
 }
 
 async function proceedToTheme() {
@@ -644,7 +644,7 @@ async function proceedToTheme() {
 		disableLoading();
 		return;
 	}
-	if(!validatePassword(password)){
+	if (!validatePassword(password)) {
 		displayError("registerError", "Password too weak");
 		disableLoading();
 		return;
@@ -756,7 +756,7 @@ function toCalendar() {
 	closeSidebar();
 	renderCalendar();
 	let today = new Date();
-	let date = currentDate.getMonth()+1+"/"+today.getDate()+"/"+currentDate.getFullYear();
+	let date = currentDate.getMonth() + 1 + "/" + today.getDate() + "/" + currentDate.getFullYear();
 	loadCalendarNotesInfo(date);
 }
 
@@ -940,7 +940,7 @@ function checkEmailAvailability(email) {
 	let timestamp = new Date().getTime();
 	url += "&t=" + timestamp;
 	let xhr = new XMLHttpRequest();
-	xhr.open("GET", url, false); 
+	xhr.open("GET", url, false);
 	xhr.send();
 
 	if (xhr.status === 200) {
@@ -975,7 +975,12 @@ function register() {
 		return;
 	}
 
-	const data = { email, password, ntema, name: username };
+	let primary = getColorFromTheme(1, currentTheme);
+	let secondary = getColorFromTheme(2, currentTheme);
+	let tertiary = getColorFromTheme(3, currentTheme);
+
+
+	const data = { email, password, primary, secondary, tertiary, name: username };
 	const xhr = new XMLHttpRequest();
 
 	xhr.open("POST", url, true);
@@ -1001,6 +1006,66 @@ function register() {
 	};
 
 	xhr.send(JSON.stringify(data));
+}
+
+//-----------------------------------------------------------------
+
+function getColorFromTheme(type, theme) {
+	let color = null;
+	switch (type) {
+		case 1:
+			switch (theme) {
+				case 1:
+					color = rootStyles.getPropertyValue("--primary-yellow");
+					break;
+				case 2:
+					color = rootStyles.getPropertyValue("--primary-blue");
+					break;
+				case 3:
+					color = rootStyles.getPropertyValue("--primary-green");
+					break;
+				case 4:
+					color = rootStyles.getPropertyValue("--primary-purple");
+					break;
+			}
+			break;
+		case 2:
+			switch (theme) {
+				case 1:
+					color = rootStyles.getPropertyValue("--secondary-yellow");
+					break;
+				case 2:
+					color = rootStyles.getPropertyValue("--secondary-blue");
+					break;
+				case 3:
+					color = rootStyles.getPropertyValue("--secondary-green");
+					break;
+				case 4:
+					color = rootStyles.getPropertyValue("--secondary-purple");
+					break;
+			}
+			break;
+		case 3:
+			switch (theme) {
+				case 1:
+					color = rootStyles.getPropertyValue("--minor-yellow");
+					break;
+				case 2:
+					color = rootStyles.getPropertyValue("--minor-blue");
+					break;
+				case 3:
+					color = rootStyles.getPropertyValue("--minor-green");
+					break;
+				case 4:
+					color = rootStyles.getPropertyValue("--minor-purple");
+					break;
+			}
+			break;
+		default:
+			console.error("Invalid type:", type);
+			break;
+	}
+	return color;
 }
 
 //-----------------------------------------------------------------
@@ -1288,12 +1353,12 @@ function loadNotesByDate(date) {
 }
 
 
-function closeCancellation(){
+function closeCancellation() {
 	ebi("cancelOverlay").classList.add("hidden");
-	ebi("confirmCancellation").onclick = () => {};
+	ebi("confirmCancellation").onclick = () => { };
 }
 
-function showCancellation(id){
+function showCancellation(id) {
 	ebi("cancelOverlay").classList.remove("hidden");
 	ebi("confirmCancellation").onclick = () => deleteEvent(id);
 }
@@ -1324,9 +1389,9 @@ function renderCalendar() {
 		dayDiv.classList.add('day');
 		dayDiv.textContent = i;
 		dayDiv.id = i;
-		dayDiv.classList.add('calendarDays');		
+		dayDiv.classList.add('calendarDays');
 		dayDiv.onclick = () => {
-			let date = currentDate.getMonth()+1+"/"+i+"/"+currentDate.getFullYear();
+			let date = currentDate.getMonth() + 1 + "/" + i + "/" + currentDate.getFullYear();
 			loadCalendarNotesInfo(date);
 		}
 		daysContainer.appendChild(dayDiv);
@@ -1407,16 +1472,16 @@ function saveEvent(note, sentDate) {
 			ebi("eventDescription").value = "";
 			ebi("eventDate").value = "";
 			closePopup();
-			if(sentDate === 0){
+			if (sentDate === 0) {
 				loadNotes();
-			}else{
+			} else {
 				renderCalendar();
 				loadCalendarNotesInfo(sentDate);
 			}
 
 			showFeedback(0, "Event updated");
 		} else {
-			confirmButton.disabled = false; 
+			confirmButton.disabled = false;
 			displayError("eventError", response.message);
 		}
 	};
@@ -1839,8 +1904,8 @@ function cancelStudyPlan(id) {
 }
 
 
-function loadCalendarNotesInfo(date){
-	if(!date){
+function loadCalendarNotesInfo(date) {
+	if (!date) {
 		return;
 	}
 
@@ -1854,8 +1919,8 @@ function loadCalendarNotesInfo(date){
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		if(response.error!=="0"){
-			showFeedback(1,"an error occured");
+		if (response.error !== "0") {
+			showFeedback(1, "an error occured");
 			return;
 		}
 
@@ -1865,14 +1930,14 @@ function loadCalendarNotesInfo(date){
 
 		container.innerHTML = "";
 
-		if(notes.length === 0){
-			
+		if (notes.length === 0) {
+
 		}
-		else{
-			for(let note of notes){
+		else {
+			for (let note of notes) {
 
 				let externalContainer = document.createElement("div");
-				externalContainer.id = "calendarNote"+note.id;
+				externalContainer.id = "calendarNote" + note.id;
 				externalContainer.classList.add("noteCalendar");
 
 				let button = document.createElement("button");
@@ -1905,13 +1970,13 @@ function loadCalendarNotesInfo(date){
 	}
 
 	xhr.onerror = function () {
-		showFeedback(2,"Network error");
+		showFeedback(2, "Network error");
 	}
 
-	xhr.send(JSON.stringify({date}));
+	xhr.send(JSON.stringify({ date }));
 }
 
 
-function showEventDesctiption(description){
+function showEventDesctiption(description) {
 	ebi("descriptionCalendar").innerText = description;
 } 
