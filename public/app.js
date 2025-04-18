@@ -426,59 +426,38 @@ function setHexColor(type) {
 //-----------------------------------------------------------------
 
 function saveCustomTheme() {
-	let customTheme = primaryColor + ";" + secondaryColor + ";" + tertiaryColor;
+	let customTheme = {
+		primary: primaryColor.trim(),
+		secondary: secondaryColor.trim(),
+		tertiary: tertiaryColor.trim()
+	};
 
 	let xhr = new XMLHttpRequest();
 
 	xhr.withCredentials = true;
-	xhr.open("PUT", serverURL + "/updateCustomTheme");
+	xhr.open("PUT", serverURL + "/updateTheme");
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
 		if (response.error == 0) {
 			loadCustomTheme();
-		}
-		else {
+		} else {
 			console.error(response.message);
 		}
 	};
 
 	xhr.onerror = function () {
 		console.error("Network error");
-	}
+	};
 
-	xhr.send(JSON.stringify({ customTheme }));
+	xhr.send(JSON.stringify(customTheme));
 }
 
 //-----------------------------------------------------------------
 
 function loadCustomTheme() {
-	let xhr = new XMLHttpRequest();
-
-	xhr.withCredentials = true;
-	xhr.open("GET", serverURL + "/getCustomTheme");
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			if (response.customTheme !== null) {
-				let colors = response.message.split(";");
-				document.documentElement.style.setProperty("--primary-color", colors[0]);
-				document.documentElement.style.setProperty("--secondary-color", colors[1]);
-				document.documentElement.style.setProperty("--minor-color", colors[2]);
-			}
-			else {
-				console.error(response.message);
-			}
-		};
-	};
-	xhr.onerror = function () {
-		console.error("Network error");
-	};
-
-	xhr.send();
+	getTheme();
 }
 
 
