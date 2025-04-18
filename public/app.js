@@ -529,11 +529,21 @@ function enableLoading() {
 
 //-----------------------------------------------------------------
 
-function swapToLogin() {
+function swapToWelcome() {
 	cleanRegister();
 	cleanLogin();
 	ebi("welcome").classList.remove("hidden");
 	ebi("login").classList.add("hidden");
+	ebi("register").classList.add("hidden");
+}
+
+//-----------------------------------------------------------------
+
+function swapToLogin() {
+	cleanRegister();
+	cleanLogin();
+	ebi("welcome").classList.add("hidden");
+	ebi("login").classList.remove("hidden");
 	ebi("register").classList.add("hidden");
 }
 
@@ -1183,7 +1193,7 @@ async function autologin() {
 		if (response.error == 0) {
 			swapToHome();
 		} else {
-			swapToLogin();
+			swapToWelcome();
 		}
 	};
 
