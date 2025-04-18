@@ -1683,7 +1683,7 @@ function loadUsername() {
 
 //-----------------------------------------------------------------ù
 
-function getTheme() {
+function getSavedTheme() {
 	// Retrieve colors from localStorage if available
 	const storedPrimary = localStorage.getItem("primaryColor");
 	const storedSecondary = localStorage.getItem("secondaryColor");
@@ -1697,6 +1697,9 @@ function getTheme() {
 		secondaryColor = storedSecondary;
 		tertiaryColor = storedTertiary;
 	}
+}
+
+function getTheme() {
 
 	const url = serverURL + "/getTheme";
 
