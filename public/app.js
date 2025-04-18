@@ -532,8 +532,8 @@ function enableLoading() {
 function swapToLogin() {
 	cleanRegister();
 	cleanLogin();
-	ebi("welcome").classList.add("hidden");
-	ebi("login").classList.remove("hidden");
+	ebi("welcome").classList.remove("hidden");
+	ebi("login").classList.add("hidden");
 	ebi("register").classList.add("hidden");
 }
 
@@ -1683,10 +1683,14 @@ function getTheme() {
 
 	xhr.onload = function () {
 		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			currentTheme = response.message;
-			applyTheme();
-			loadCustomTheme();
+		if (response.error == "0") {
+			const { primary, secondary, tertiary } = response.message;
+			document.documentElement.style.setProperty("--primary-color", "#" + primary);
+			document.documentElement.style.setProperty("--secondary-color", "#" + secondary);
+			document.documentElement.style.setProperty("--minor-color", "#" + tertiary);
+			primaryColor = "#" + primary;
+			secondaryColor = "#" + secondary;
+			tertiaryColor = "#" + tertiary;
 		} else {
 			console.error(xhr.responseText);
 		}
