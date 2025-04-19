@@ -1,6 +1,6 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
-import { sendError, sendSuccess } from "../utils/returns.mjs";
+import { sendError, sendNotLoggedIn, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
 import { MARK_MAXSUBJECT_LENGTH, MARK_MAXTITLE_LENGTH } from "../utils/vars.mjs";
 
