@@ -256,3 +256,181 @@ export async function getSubjects(req, res) {
     res.status(200).send({ error: '0', subjects });
 
 }
+
+//----------------------------------- UPDATE -----------------------------------//
+
+/**
+ * Update a mark in the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ *  
+ * * @returns {Promise<void>} - A promise that resolves when the mark is updated
+ */
+
+export async function updateMark(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { id, mark, title, subject, date } = req.body;
+    let studentId = req.session.userid;
+
+    if (!id || !mark || !title || !subject || !date) {
+        sendError(res, "Missing inputs");
+        return;
+    }
+
+    title = title.trim();
+    subject = subject.trim();
+    date = date.trim();
+    mark = parseFloat(mark.toFixed(2));
+
+    if (isNaN(mark)) {
+        sendError(res, "Mark must be a number");
+        return;
+    }
+
+    if (title.length > MARK_MAXTITLE_LENGTH || title.length < 1) {
+        sendError(res, "Mark title too long");
+        return;
+    }
+
+    if (subject.length > MARK_MAXSUBJECT_LENGTH || subject.length < 1) {
+        sendError(res, "Mark subject too long");
+        return;
+    }
+
+    if (mark < 0 || mark > MARK_MAXGRADE) {
+        sendError(res, "Mark must be between 0 and 10");
+        return;
+    }
+
+    if (!isValidDate(date, true)) {
+        sendError(res, "Invalid date format");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    title = encryptMessage(req.session.key, title);
+    subject = encryptMessage(req.session.key, subject);
+
+    const query = `UPDATE marks SET mark = $1, title = $2, subject = $3, date = $4 WHERE studentid = $5 AND id = $6`;
+    const values = [mark, title, subject, date, studentId, id];
+
+    try {
+        await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+    sendSuccess(res, "Mark updated successfully");
+    return;
+}
+
+//----------------------------------- DELETE -----------------------------------//
+
+/**
+ * Delete a mark from the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the mark is deleted
+ */
+
+export async function deleteMark(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let { id } = req.query;
+    let studentId = req.session.userid;
+
+    if (!id) {
+        sendError(res, "Missing inputs");
+        return;
+    }
+
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    const query = `DELETE FROM marks WHERE studentid = $1 AND id = $2`;
+    const values = [studentId, id];
+
+    try {
+        await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+    sendSuccess(res, "Mark deleted successfully");
+    return;
+}
+
+
+/**
+ * Delete all marks from the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the marks are deleted
+ */
+
+export async function deleteAllMarks(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let studentId = req.session.userid;
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    const query = `DELETE FROM marks WHERE studentid = $1`;
+    const values = [studentId];
+
+    try {
+        await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+    sendSuccess(res, "All marks deleted successfully");
+    return;
+}
