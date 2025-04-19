@@ -20,7 +20,7 @@ export async function addMark(req, res) {
     }
 
     let { mark, title, subject, date } = req.body;
-    let studentId = req.session.studentId;
+    let studentId = req.session.userid;
 
     if (!mark || !title || !subject || !date) {
         sendError(res, "Missing inputs");
@@ -69,7 +69,6 @@ export async function addMark(req, res) {
     title = encryptMessage(req.session.key, title);
     subject = encryptMessage(req.session.key, subject);
 
-    console.log("Adding mark: ", mark, title, subject, date, studentId);
     const query = `INSERT INTO marks (studentid, mark, title, subject, date) VALUES ($1, $2, $3, $4, $5)`;
     const values = [studentId, mark, title, subject, date];
 
