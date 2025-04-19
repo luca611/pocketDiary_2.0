@@ -61,7 +61,7 @@ export async function addMark(req, res) {
     try {
         connection = await connectToDb();
     } catch (error) {
-        console.error(err);
+        console.error(error);
         sendError(res, "server network error");
         return;
     }
