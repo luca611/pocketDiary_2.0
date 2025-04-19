@@ -57,7 +57,7 @@ export async function addMark(req, res) {
         return;
     }
 
-    let client = null;
+    let connection = null;
     try {
         connection = await connectToDb();
     } catch (error) {
@@ -73,7 +73,7 @@ export async function addMark(req, res) {
     const values = [studentId, mark, title, subject, date];
 
     try {
-        await client.query(query, values);
+        await connection.query(query, values);
     } catch (error) {
         console.log(error);
         sendError(res, "server internal error, try again");
@@ -81,7 +81,7 @@ export async function addMark(req, res) {
         return;
     }
 
-    closeDbConnection(client);
+    closeDbConnection(connection);
     sendSuccess(res, "Mark added successfully");
     return;
 }
