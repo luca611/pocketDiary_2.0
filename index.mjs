@@ -16,7 +16,7 @@ import { addNote, deleteNote, getDayNotes, getNoteById, getNoteDates, updateNote
 import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 import { validateEmail } from './utils/validator.mjs';
-import { addMark } from './controllers/marks.mjs';
+import { addMark, getMarks, getMarksBySubject, getSubjects } from './controllers/marks.mjs';
 
 process.on('uncaughtException', function (err) {
     console.error("▶ An error occurred while processing the request: ", err);
@@ -180,6 +180,9 @@ app.delete('/deleteNote', deleteNote);
 */
 
 app.post('/addMark', addMark);
+app.get('/getMarks', getMarks);
+app.get('/getMarksBySubject', getMarksBySubject);
+app.get('/getSubjects', getSubjects);
 
 /*
     Chat routes

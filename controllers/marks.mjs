@@ -4,6 +4,7 @@ import { sendError, sendNotLoggedIn, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
 import { MARK_MAXSUBJECT_LENGTH, MARK_MAXTITLE_LENGTH, MARK_MAXGRADE } from "../utils/vars.mjs";
 
+//----------------------------------- CREATE -----------------------------------//
 /**
  * Add a mark to the database
  * 
@@ -84,4 +85,166 @@ export async function addMark(req, res) {
     closeDbConnection(connection);
     sendSuccess(res, "Mark added successfully");
     return;
+}
+
+//----------------------------------- READ -----------------------------------//
+/**
+ * Get all marks from the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the marks are retrieved
+ */
+
+export async function getMarks(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let studentId = req.session.userid;
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 ORDER BY date DESC`;
+    const values = [studentId];
+
+    let results = null;
+    try {
+        results = await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+
+    let marks = results.rows.map(mark => ({
+        id: mark.id,
+        mark: mark.mark,
+        title: decryptMessage(req.session.key, mark.title),
+        subject: decryptMessage(req.session.key, mark.subject),
+        date: mark.date,
+    }));
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.status(200).send({ error: '0', marks });
+
+    return;
+}
+
+/**
+ * Get marks by subject from the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the marks are retrieved
+ */
+export async function getMarksBySubject(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let studentId = req.session.userid;
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 AND subject = $2`;
+    const values = [studentId, req.body.subject];
+
+    let results = null;
+    try {
+        results = await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+
+    let marks = results.rows.map(mark => ({
+        id: mark.id,
+        mark: mark.mark,
+        title: decryptMessage(req.session.key, mark.title),
+        subject: decryptMessage(req.session.key, mark.subject),
+        date: mark.date,
+    }));
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.status(200).send({ error: '0', marks });
+
+}
+
+/**
+ * Get marks by date from the database
+ * 
+ * @param {Request} req - The request object
+ * @param {Response} res - The response object
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the marks are retrieved
+ */
+
+export async function getSubjects(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
+    let studentId = req.session.userid;
+    let connection = null;
+    try {
+        connection = await connectToDb();
+    } catch (error) {
+        console.error(error);
+        sendError(res, "server network error");
+        return;
+    }
+
+    const query = `SELECT DISTINCT subject FROM marks WHERE studentid = $1`;
+    const values = [studentId];
+
+    let results = null;
+    try {
+        results = await connection.query(query, values);
+    } catch (error) {
+        console.log(error);
+        sendError(res, "server internal error, try again");
+        closeDbConnection(connection)
+        return;
+    }
+
+    closeDbConnection(connection);
+
+    let subjects = results.rows.map(subject => ({
+        subject: decryptMessage(req.session.key, subject.subject),
+    }));
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.status(200).send({ error: '0', subjects });
+
 }
