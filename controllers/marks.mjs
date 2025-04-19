@@ -30,7 +30,7 @@ export async function addMark(req, res) {
     title = title.trim();
     subject = subject.trim();
     date = date.trim();
-    mark = parseFloat(mark);
+    mark = parseFloat(mark.toFixed(2));
 
     if (isNaN(mark)) {
         sendError(res, "Mark must be a number");
