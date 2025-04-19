@@ -77,7 +77,7 @@ export async function addMark(req, res) {
     } catch (error) {
         console.log(error);
         sendError(res, "server internal error, try again");
-        closeDbConnection(client)
+        closeDbConnection(connection)
         return;
     }
 
