@@ -177,7 +177,8 @@ export async function getMarksBySubject(req, res) {
         return;
     }
 
-    const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 AND subject = $2`;
+    console.log("subject", subject);
+    const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 AND subject ILIKE $2`;
     const values = [studentId, subject];
 
     let results = null;
