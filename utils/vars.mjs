@@ -6,6 +6,7 @@ export const NOTE_TITLE_MAX_LENGTH = 64;
 export const NOTE_DESCRIPTION_MAX_LENGTH = 1024;
 export const MARK_MAXTITLE_LENGTH = 128;
 export const MARK_MAXSUBJECT_LENGTH = 64;
+export const MARK_MAXGRADE = 10;
 export const STUDENT_MAXEMAIL_LENGTH = 50;
 export const STUDENT_MAXNAME_LENGTH = 50;
 export const STUDENT_MAXPASSWORD_LENGTH = 64;
