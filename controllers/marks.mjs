@@ -2,7 +2,7 @@ import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendSuccess } from "../utils/returns.mjs";
 import { isValidDate } from "../utils/validator.mjs";
-import { MARK_MAXTITLE_LENGTH } from "../utils/vars.mjs";
+import { MARK_MAXSUBJECT_LENGTH, MARK_MAXTITLE_LENGTH } from "../utils/vars.mjs";
 
 /**
  * Add a mark to the database
@@ -14,6 +14,11 @@ import { MARK_MAXTITLE_LENGTH } from "../utils/vars.mjs";
  */
 
 export async function addMark(req, res) {
+    if (!req.session.logged) {
+        sendNotLoggedIn(res);
+        return;
+    }
+
     let { mark, title, subject, date } = req.body;
     const studentId = req.session.studentId;
 
