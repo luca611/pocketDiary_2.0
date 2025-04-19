@@ -14,7 +14,7 @@ import { MARK_MAXTITLE_LENGTH } from "../utils/vars.mjs";
  */
 
 export async function addMark(req, res) {
-    const { mark, title, subject, date } = req.body;
+    let { mark, title, subject, date } = req.body;
     const studentId = req.session.studentId;
 
     if (!mark || !title || !subject || !date) {
