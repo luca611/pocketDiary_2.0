@@ -158,6 +158,15 @@ export async function getMarksBySubject(req, res) {
         return;
     }
 
+    let subject = req.query.subject;
+
+    if (!subject) {
+        sendError(res, "Missing inputs");
+        return;
+    }
+    subject = subject.trim();
+
+
     let studentId = req.session.userid;
     let connection = null;
     try {
@@ -169,7 +178,7 @@ export async function getMarksBySubject(req, res) {
     }
 
     const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 AND subject = $2`;
-    const values = [studentId, req.body.subject];
+    const values = [studentId, subject];
 
     let results = null;
     try {
@@ -195,7 +204,6 @@ export async function getMarksBySubject(req, res) {
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
     res.status(200).send({ error: '0', marks });
-
 }
 
 /**
