@@ -158,7 +158,7 @@ export async function getMarksBySubject(req, res) {
         return;
     }
 
-    let subject = req.query.subject;
+    let subject = encryptMessage(req.session.key, req.query.subject);
 
     if (!subject) {
         sendError(res, "Missing inputs");
@@ -177,7 +177,6 @@ export async function getMarksBySubject(req, res) {
         return;
     }
 
-    console.log("subject", subject);
     const query = `SELECT id, mark, title, subject, date FROM marks WHERE studentid = $1 AND subject ILIKE $2`;
     const values = [studentId, subject];
 
