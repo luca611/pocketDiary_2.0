@@ -305,7 +305,7 @@ function setPopupPage(page = 0) {
 
 			break;
 		case 1:
-			ebi("popupConfrimButton").innerText = "Create";
+			ebi("popupConfrimButton").innerText = "Add";
 			ebi("popupConfrimButton").onclick = createmark;
 			break;
 		case 2:
@@ -359,7 +359,7 @@ function createmark() {
 		date = `${month}/${day}/${year}`;
 	}
 
-	const url = serverURL + "/addGrade";
+	const url = serverURL + "/addMark";
 	const data = { mark, title, subject, date };
 
 	const xhr = new XMLHttpRequest();
