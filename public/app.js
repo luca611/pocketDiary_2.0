@@ -338,26 +338,26 @@ function setPopupPage(page = 0) {
 //-----------------------------------------------------------------
 
 function createmark() {
+	console.log("creating mark");
 	ebi("popupConfrimButton").disabled = true;
 	let title = ebi("gradeName").value.trim();
 	let subject = ebi("subject").value.trim();
 	let mark = parseFloat(ebi("grade").value.trim());
 	if (isNaN(mark) || mark < 0 || mark > 10) {
 		displayError("gradeError", "Please enter a valid grade between 0 and 10");
-		return;
+
+		console.log("error in fields numbers"); return;
 	}
 	let date = ebi("gradeDate").value.trim();
 
 	if (!title || !subject || !date) {
 		displayError("gradeError", "Please fill in all fields");
+		console.log("error in fields");
 		ebi("popupConfrimButton").disabled = false;
 		return;
 	}
 
-	if (!/^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
-		const [year, month, day] = date.split("-");
-		date = `${month}/${day}/${year}`;
-	}
+	date = formatDate(new Date(date));
 
 	const url = serverURL + "/addMark";
 	const data = { mark, title, subject, date };
@@ -368,6 +368,7 @@ function createmark() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
+		console.log("response", xhr.responseText);
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === 0) {
@@ -392,6 +393,7 @@ function createmark() {
 
 function loadGrades() {
 	// Implement the logic to load grades from the server and display them in the UI
+	console.log("Loading grades...");
 }
 
 //-----------------------------------------------------------------
