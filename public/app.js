@@ -306,7 +306,7 @@ function setPopupPage(page = 0) {
 			break;
 		case 1:
 			ebi("popupConfrimButton").innerText = "Add";
-			ebi("popupConfrimButton").onclick = createmark;
+			ebi("popupConfrimButton").onclick = addmark;
 			break;
 		case 2:
 			ebi("popupConfrimButton").onclick = changeName;
@@ -337,7 +337,7 @@ function setPopupPage(page = 0) {
 
 //-----------------------------------------------------------------
 
-function createmark() {
+function addmark() {
 	console.log("creating mark");
 	ebi("popupConfrimButton").disabled = true;
 	let title = ebi("gradeName").value.trim();
