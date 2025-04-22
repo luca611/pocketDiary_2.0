@@ -305,8 +305,10 @@ function setPopupPage(page = 0) {
 
 			break;
 		case 1:
+			ebi("popupConfrimButton").onclick = function () {
+				addmark();
+			};
 			ebi("popupConfrimButton").innerText = "Add";
-			ebi("popupConfrimButton").onclick = addmark;
 			break;
 		case 2:
 			ebi("popupConfrimButton").onclick = changeName;
