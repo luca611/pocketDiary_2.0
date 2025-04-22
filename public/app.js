@@ -305,7 +305,8 @@ function setPopupPage(page = 0) {
 
 			break;
 		case 1:
-			//ebi("popupConfrimButton").onclick = createGrade;
+			ebi("popupConfrimButton").innerText = "Create";
+			ebi("popupConfrimButton").onclick = createmark;
 			break;
 		case 2:
 			ebi("popupConfrimButton").onclick = changeName;
@@ -722,9 +723,10 @@ function toSettings() {
 //-----------------------------------------------------------------
 function toGrades() {
 	disableAddButton();
+	setPopupPage(1);
 	hideAllPages();
 	ebi("grades").classList.remove("hidden");
-	ebi("pageTitle").innerText = "Grades";
+	ebi("pageTitle").innerText = "Marks";
 	ebi("decoratedTitle").innerText = "";
 	currentPage = 3;
 	updateActivePageLink();

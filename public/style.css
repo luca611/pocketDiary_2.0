@@ -486,34 +486,45 @@ div.overlay {
 	transition: all 0.3s;
 }
 
-div.cancellationButton{
+div.cancellationButton {
 	background: white;
-    border-radius: var(--general-border-radius);
-    text-align: center;
-    display: flex;
-    width: 100%;
-    height: 3rem;
-    max-width: 20rem;
-    justify-content: center;
-    align-items: center;
+	border-radius: var(--general-border-radius);
+	text-align: center;
+	display: flex;
+	width: 100%;
+	height: 3rem;
+	max-width: 20rem;
+	justify-content: center;
+	align-items: center;
+	animation: slideUp 0.3s ease-in-out;
 }
 
-div.cancellationButton:hover{
+@keyframes slideUp {
+	0% {
+		transform: translateY(200%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
+
+div.cancellationButton:hover {
 	filter: brightness(0.9);
 	transition: all 0.3s;
 }
 
-div.confirmCancellation{
+div.confirmCancellation {
 	font-family: 'Inter';
 	color: var(--primary-red);
 }
 
-div.cancelCancellation{
+div.cancelCancellation {
 	font-family: 'Inter';
 	color: var(--primary-blue);
 }
 
-div.cancellation{
+div.cancellation {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
@@ -571,8 +582,8 @@ div#eventPlaceholder.visible {
 	align-items: center;
 }
 
-p{
-	margin:0 !important;
+p {
+	margin: 0 !important;
 }
 
 img.emptyImg {
@@ -634,6 +645,7 @@ div.upcomingEvent {
 	0% {
 		transform: translateY(-100%);
 	}
+
 	100% {
 		transform: translateY(0);
 	}
@@ -667,15 +679,15 @@ p.eventInfo {
 
 button.eventButton {
 	height: 3.5rem;
-    width: 3.5rem;
-    background-color: var(--primary-color);
-    background: var(--primary-color);
-    border-radius: var(--button-border-radius);
-    border: none;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	width: 3.5rem;
+	background-color: var(--primary-color);
+	background: var(--primary-color);
+	border-radius: var(--button-border-radius);
+	border: none;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .iconAdjustment {
@@ -1092,21 +1104,21 @@ div.calendario {
 
 div.calendario {
 	height: 100%;
-    min-height: 20rem;
+	min-height: 20rem;
 }
 
 div.evento {
 	overflow: hidden;
-    overflow-y: hidden;
-    overflow-y: auto;
-    padding: 1rem;
-    background: var(--minor-color);
-    border-radius: var(--general-border-radius);
-    height: 100%;
-    width: calc(50% - 1.5rem);
-    min-height: 10rem;
-    position: relative;
-    margin-bottom: 0.3rem;
+	overflow-y: hidden;
+	overflow-y: auto;
+	padding: 1rem;
+	background: var(--minor-color);
+	border-radius: var(--general-border-radius);
+	height: 100%;
+	width: calc(50% - 1.5rem);
+	min-height: 10rem;
+	position: relative;
+	margin-bottom: 0.3rem;
 }
 
 div.containerCalendario {
@@ -1261,6 +1273,7 @@ div.dayNames div {
 
 div.voti {
 	margin-top: 0.5rem;
+	padding: 0.5rem;
 	min-height: calc(100% - 4rem);
 	max-height: calc(100% - 4rem);
 }
@@ -1275,11 +1288,11 @@ div.containerVoti {
 	padding-bottom: 4rem;
 }
 
-.numeroVoto {
-	width: 6rem;
-	height: 6rem;
+div.numeroVoto {
+	width: 5rem;
+	height: 5rem;
 	border-radius: 100%;
-	border: 5px solid;
+	border: 0.3rem solid;
 	background-color: white;
 	display: flex;
 	flex-shrink: 0;
@@ -1293,7 +1306,7 @@ div.descriptionGrades {
 	background-color: white;
 	width: 100%;
 	border-radius: var(--general-border-radius);
-	padding: 1rem;
+	padding: 0.7rem;
 }
 
 div.descriptionGrades h4 {
@@ -1317,7 +1330,7 @@ p.descrizioneVoto {
 div.voto {
 	display: flex;
 	flex-direction: row;
-	gap: 1rem;
+	gap: 0.45rem;
 	align-items: center;
 	justify-content: space-between;
 }
@@ -1695,13 +1708,13 @@ input.priority {
 	background: transparent;
 }
 
-div.messageButtons{
+div.messageButtons {
 	display: flex;
 	flex-direction: row;
 	gap: 0.5rem;
 }
 
-div.headerNote{
+div.headerNote {
 	background-color: var(--primary-color);
 	color: white;
 	font-family: 'Inter';
@@ -1710,7 +1723,7 @@ div.headerNote{
 	border-radius: var(--minor-border-radius);
 }
 
-div.informations{
+div.informations {
 	width: 100%;
 	height: calc(100% - 4rem);
 	display: flex;
@@ -1719,65 +1732,65 @@ div.informations{
 	margin-top: 0.5rem;
 }
 
-div.noteTitle{
+div.noteTitle {
 	white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 80%;
-    line-height: 3rem;
-    cursor: pointer;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: 80%;
+	line-height: 3rem;
+	cursor: pointer;
 }
 
-div.noteList{
+div.noteList {
 	background: white;
-    border-radius: var(--minor-border-radius);
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    max-width: 50%;
-    min-width: 50%;
+	border-radius: var(--minor-border-radius);
+	padding: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	max-width: 50%;
+	min-width: 50%;
 	min-height: 50%;
-    height: 100%;
+	height: 100%;
 	gap: 0.5rem;
-    overflow-y: auto;
+	overflow-y: auto;
 }
 
-div.noteListCalendar{
+div.noteListCalendar {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 	overflow-y: auto;
 }
 
-div.noteCalendar{
+div.noteCalendar {
 	gap: 0.25rem;
-    background: var(--minor-color);
-    border-radius: var(--minor-border-radius);
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: row;
-    color: var(--primary-color);
-    min-height: 5rem;
-    align-items: center;
-    font-size: 1.4rem;
-    overflow: hidden;
-    padding-right: 1rem;
+	background: var(--minor-color);
+	border-radius: var(--minor-border-radius);
+	padding: 0.5rem;
+	display: flex;
+	flex-direction: row;
+	color: var(--primary-color);
+	min-height: 5rem;
+	align-items: center;
+	font-size: 1.4rem;
+	overflow: hidden;
+	padding-right: 1rem;
 	animation: slideDown 0.3s;
 }
 
-div.desctiptionNote{
+div.desctiptionNote {
 	max-width: calc(50% - 0.5rem);
 	min-width: calc(50% - 0.5rem);
-    max-height: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    background: white;
-    border-radius: var(--minor-border-radius);
-    padding: 1rem;
+	max-height: 50%;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	background: white;
+	border-radius: var(--minor-border-radius);
+	padding: 1rem;
 }
 
-div.headerDescription{
+div.headerDescription {
 	text-align: center;
 	font-family: 'Inter';
 }
@@ -1796,26 +1809,26 @@ img.loadingAnimation {
 	width: 2rem;
 }
 
-button.messageButton{
+button.messageButton {
 	margin-top: 0.40rem;
-    color: white;
-    font-family: 'Inter';
-    width: 4rem;
-    min-width: fit-content;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 0.25rem;
+	color: white;
+	font-family: 'Inter';
+	width: 4rem;
+	min-width: fit-content;
+	padding: 0.5rem;
+	border: none;
+	border-radius: 0.25rem;
 }
 
-button.messageButton:hover{
+button.messageButton:hover {
 	filter: brightness(0.9);
 }
 
-button.messageButton.success{
+button.messageButton.success {
 	background: var(--primary-green);
 }
 
-button.messageButton.delete{
+button.messageButton.delete {
 	background: var(--primary-red);
 }
 
@@ -1901,21 +1914,21 @@ div.messagesList {
 
 div.message {
 	flex-shrink: 0;
-    min-height: 2.5rem;
-    height: auto;
-    overflow: visible;
-    flex-wrap: nowrap;
-    display: flex;
-    overflow-y: auto;
-    overflow-x: scroll;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: var(--general-border-radius);
-    max-width: 80%;
-    color: white;
-    font-family: 'Inter';
-    font-size: var(--body-size);
+	min-height: 2.5rem;
+	height: auto;
+	overflow: visible;
+	flex-wrap: nowrap;
+	display: flex;
+	overflow-y: auto;
+	overflow-x: scroll;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	border-radius: var(--general-border-radius);
+	max-width: 80%;
+	color: white;
+	font-family: 'Inter';
+	font-size: var(--body-size);
 }
 
 div.message.ai {
@@ -2003,21 +2016,26 @@ p.warning {
 }
 
 pre {
-    display: block;
-    margin-top: 0;
-    margin-bottom: 1rem;
-    overflow: auto;
-    font-size: .875em;
-    background: var(--body-text-color);
-    padding: 1rem;
-    border-radius: 0.25rem;
+	display: block;
+	margin-top: 0;
+	margin-bottom: 1rem;
+	overflow: auto;
+	font-size: .875em;
+	background: var(--body-text-color);
+	padding: 1rem;
+	border-radius: 0.25rem;
 }
 
-tbody, td, tfoot, th, thead, tr {
-    border-color: #ffffff !important; 
-    border-style: solid !important;
-    border-width: 0.1rem !important;
-    padding: 0.1rem !important;
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+	border-color: #ffffff !important;
+	border-style: solid !important;
+	border-width: 0.1rem !important;
+	padding: 0.1rem !important;
 }
 
 blockquote {
@@ -2100,11 +2118,11 @@ blockquote {
 }
 
 @media screen and (max-width: 65.5rem) {
-	div.desctiptionNote{
+	div.desctiptionNote {
 		display: none;
 	}
 
-	div.noteList{
+	div.noteList {
 		max-width: 100%;
 		min-width: 100%;
 	}
