@@ -302,13 +302,18 @@ function setPopupPage(page = 0) {
 		case 0:
 			ebi("popupConfrimButton").onclick = createEvent;
 			ebi("popupConfrimButton").innerText = "Create";
-
+			ebi("generaladdButton").onclick = function () {
+				openPopup(0);
+			}
 			break;
 		case 1:
 			ebi("popupConfrimButton").onclick = function () {
 				addmark();
 			};
 			ebi("popupConfrimButton").innerText = "Add";
+			ebi("generaladdButton").onclick = function () {
+				openPopup(1);
+			}
 			break;
 		case 2:
 			ebi("popupConfrimButton").onclick = changeName;
@@ -665,6 +670,7 @@ function disableAddButton() {
 
 function addNotesButton(type = 0) {
 	ebi("addButtonContainer").onclick = () => {
+		console.log("type")
 		openPopup(type);
 	}
 }
@@ -800,7 +806,7 @@ function toGrades() {
 	currentPage = 3;
 	updateActivePageLink();
 	closeSidebar();
-	addNotesButton();
+	addNotesButton(0);
 }
 
 //-----------------------------------------------------------------
@@ -834,7 +840,7 @@ function toHome() {
 	currentPage = 2;
 	updateActivePageLink();
 	closeSidebar();
-	addNotesButton();
+	addNotesButton(0);
 }
 
 //-----------------------------------------------------------------
