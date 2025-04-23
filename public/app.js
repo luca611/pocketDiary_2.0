@@ -663,6 +663,12 @@ function disableAddButton() {
 	ebi("addButtonContainer").classList.add("hidden");
 }
 
+function addNotesButton(type = 0) {
+	ebi("addButtonContainer").onclick = () => {
+		openPopup(type);
+	}
+}
+
 function showAddButton() {
 	ebi("addButtonContainer").classList.remove("hidden");
 }
@@ -794,6 +800,7 @@ function toGrades() {
 	currentPage = 3;
 	updateActivePageLink();
 	closeSidebar();
+	addNotesButton();
 }
 
 //-----------------------------------------------------------------
@@ -812,6 +819,7 @@ function toCalendar() {
 	let today = new Date();
 	let date = currentDate.getMonth() + 1 + "/" + today.getDate() + "/" + currentDate.getFullYear();
 	loadCalendarNotesInfo(date);
+	addNotesButton(1);
 }
 
 //-----------------------------------------------------------------
@@ -826,6 +834,7 @@ function toHome() {
 	currentPage = 2;
 	updateActivePageLink();
 	closeSidebar();
+	addNotesButton();
 }
 
 //-----------------------------------------------------------------
