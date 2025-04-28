@@ -376,6 +376,10 @@ function addmark() {
 				loadGrades();
 				showFeedback(0, "Grade added successfully");
 				closePopup();
+				ebi("gradeName").value = "";
+				ebi("subject").value = "";
+				ebi("grade").value = "";
+				ebi("gradeDate").value = "";
 			} else {
 				displayError("gradeError", response.message);
 			}
@@ -398,7 +402,7 @@ function loadGrades() {
 	container.innerHTML ="";
 
 	const xhr = new XMLHttpRequest();
-	xhr.open("POST", serverURL + "/getMarks", true);
+	xhr.open("GET", serverURL + "/getMarks", true);
 	xhr.withCredentials = true;
 	xhr.setRequestHeader("Content-Type", "application/json");
 
@@ -416,18 +420,18 @@ function loadGrades() {
 					voto.classList.add("numeroVoto");
 
 					if (mark.mark % 1 === 0) {
-						voto.innerText = mark.mark; // Display integer grades as is
+						voto.innerText = Math.floor(mark.mark); 
 					} else if (mark.mark % 1 >= 0.1 && mark.mark % 1 <= 0.3) {
-						voto.innerText = Math.floor(mark.mark) + "+"; // Display grades with a "+" suffix
+						voto.innerText = Math.floor(mark.mark) + "+"; 
 					} else if (mark.mark % 1 >= 0.4 && mark.mark % 1 <= 0.6) {
-						voto.innerText = Math.floor(mark.mark) + ".5"; // Display grades with ".5"
+						voto.innerText = Math.floor(mark.mark) + ".5";
 					} else if (mark.mark % 1 >= 0.7 && mark.mark % 1 <= 0.9) {
-						voto.innerText = Math.ceil(mark.mark) + "-"; // Display grades with a "-" suffix
+						voto.innerText = Math.ceil(mark.mark) + "-"; 
 					} else {
-						voto.innerText = mark.mark.toFixed(1); // Display grades with one decimal place
+						voto.innerText = mark.mark.toFixed(1); 
 					}
 
-					if (mark.mark >= 8) {
+					if (mark.mark >= 6.5) {
 						voto.style.borderColor = 'green';
 					} else if (mark.mark >= 5) {
 						voto.style.borderColor = 'orange'; 
@@ -871,6 +875,7 @@ function toGrades() {
 	updateActivePageLink();
 	closeSidebar();
 	addNotesButton(0);
+	loadGrades();
 }
 
 //-----------------------------------------------------------------
