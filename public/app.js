@@ -346,7 +346,8 @@ function addmark() {
 	let mark = parseFloat(ebi("grade").value.trim());
 	if (isNaN(mark) || mark < 0 || mark > 10) {
 		displayError("gradeError", "Please enter a valid grade between 0 and 10");
-
+		
+		ebi("popupConfrimButton").disabled = false;
 		console.log("error in fields numbers"); return;
 	}
 	let date = ebi("gradeDate").value.trim();
