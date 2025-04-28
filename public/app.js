@@ -468,6 +468,12 @@ function loadGrades() {
 					button.appendChild(icon);
 					button.onclick = () => {
 						openPopup(1);
+						ebi("gradeName").value = mark.title;
+						ebi("subject").value = mark.subject;
+						ebi("grade").value = mark.mark;
+						ebi("gradeDate").value = mark.date.split("T")[0].split("-").slice(1).join("/");
+						ebi("gradeError").innerText = "";
+
 						ebi("popupConfrimButton").innerText = "Save";
 						ebi("popupConfrimButton").onclick = () => {
 							ebi("popupConfrimButton").disabled = true;
@@ -489,7 +495,6 @@ function loadGrades() {
 							date = formatDate(new Date(date));
 							let id = mark.id;
 							updateMark(id, mark, subject, date, title);
-							closePopup();
 						};
 					}
 
@@ -520,9 +525,10 @@ function loadGrades() {
 	xhr.send();
 }
 
-function updateMark(id, mark, subject, date, title) {
+function updateMark(id, mark, title, subject, date) {
 	const url = serverURL + "/updateMark";
-	const data = { id, mark, subject, date, title };
+	console.log("updating mark", id, mark, title, subject, date);
+	const data = { id, mark, title, subject, date };
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("PUT", url, true);
