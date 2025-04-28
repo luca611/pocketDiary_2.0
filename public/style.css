@@ -1301,11 +1301,12 @@ div.numeroVoto {
 	font-size: 2rem;
 	font-weight: bold;
 	box-shadow: var(--shadow);
+	flex-wrap: nowrap;
 }
 
 div.descriptionGrades {
 	background-color: white;
-	width: 100%;
+	width: calc(100% - 5.5rem);
 	border-radius: var(--general-border-radius);
 	padding: 0.7rem;
 	display: flex;
@@ -1338,6 +1339,14 @@ div.voto {
 	gap: 0.45rem;
 	align-items: center;
 	justify-content: space-between;
+	width: 100%;
+}
+
+div.desc {
+	overflow: hidden;
+	width: calc(100% - 5rem);
+	flex-direction: column;
+	text-overflow: ellipsis;
 }
 
 .max-height-3 {

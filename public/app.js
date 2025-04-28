@@ -222,6 +222,10 @@ function openPopup(page = 0) {
 		ebi("popupConfrimButton").innerText = "Create";
 		ebi("popupConfrimButton").onclick = createEvent;
 	}
+	else if (page === 2) {
+		ebi("popupConfrimButton").innerText = "add";
+		ebi("popupConfrimButton").onclick = addmark;
+	}
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
 }
@@ -374,7 +378,7 @@ function addmark() {
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
-				showFeedback(0, "Grade added successfully");
+				showFeedback(0, "Mark added successfully");
 				closePopup();
 				ebi("gradeName").value = "";
 				ebi("subject").value = "";
@@ -387,7 +391,7 @@ function addmark() {
 				displayError("gradeError", response.message);
 			}
 		} else {
-			displayError("gradeError", "Failed to add grade. Please try again.");
+			displayError("gradeError", "Failed to add mark. Please try again.");
 		}
 	};
 
@@ -466,15 +470,38 @@ function loadGrades() {
 						openPopup(1);
 						ebi("popupConfrimButton").innerText = "Save";
 						ebi("popupConfrimButton").onclick = () => {
-							updateMark(mark.id);
+							ebi("popupConfrimButton").disabled = true;
+							let mark = parseFloat(ebi("grade").value.trim());
+							if (isNaN(mark) || mark < 0 || mark > 10) {
+								displayError("gradeError", "Please enter a valid grade between 0 and 10");
+								ebi("popupConfrimButton").disabled = false;
+								return;
+							}
+							let title = ebi("gradeName").value.trim();
+							let subject = ebi("subject").value.trim();
+							let date = ebi("gradeDate").value.trim();
+							if (!title || !subject || !date) {
+								displayError("gradeError", "Please fill in all fields");
+								ebi("popupConfrimButton").disabled = false;
+								return;
+							}
+
+							date = formatDate(new Date(date));
+							let id = mark.id;
+							updateMark(id, mark, subject, date, title);
+							closePopup();
 						};
 					}
+
+					description.classList.add("desc");
 
 					description.appendChild(title);
 					description.appendChild(desc);
 
+					innerWrap.appendChild(description)
+					innerWrap.appendChild(button)
 					outerWrap.appendChild(voto);
-					outerWrap.appendChild(description);
+					outerWrap.appendChild(innerWrap);
 
 					container.appendChild(outerWrap);
 				});
@@ -493,8 +520,34 @@ function loadGrades() {
 	xhr.send();
 }
 
-function updateMark(id) {
-	console.log("updating mark", id);
+function updateMark(id, mark, subject, date, title) {
+	const url = serverURL + "/updateMark";
+	const data = { id, mark, subject, date, title };
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("PUT", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error == '0') {
+				showFeedback(0, "Mark updated successfully");
+				loadGrades();
+			} else {
+				displayError("gradeError", response.message);
+			}
+		} else {
+			displayError("gradeError", "Failed to update mark. Please try again.");
+		}
+	};
+
+	xhr.onerror = function () {
+		displayError("gradeError", "Network error. Please try again.");
+	};
+
+	xhr.send(JSON.stringify(data));
 }
 
 //-----------------------------------------------------------------
