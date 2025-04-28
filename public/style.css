@@ -1300,6 +1300,7 @@ div.numeroVoto {
 	align-items: center;
 	font-size: 2rem;
 	font-weight: bold;
+	box-shadow: var(--shadow);
 }
 
 div.descriptionGrades {
@@ -1307,6 +1308,7 @@ div.descriptionGrades {
 	width: 100%;
 	border-radius: var(--general-border-radius);
 	padding: 0.7rem;
+	box-shadow: var(--shadow);
 }
 
 div.descriptionGrades h4 {
