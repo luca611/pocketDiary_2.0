@@ -467,13 +467,14 @@ function loadGrades() {
 
 					button.appendChild(icon);
 					button.onclick = () => {
+						let id = mark.id;
 						openPopup(1);
 						ebi("gradeName").value = mark.title;
 						ebi("subject").value = mark.subject;
 						ebi("grade").value = mark.mark;
-						ebi("gradeDate").value = mark.date.split("T")[0].split("-").slice(1).join("/");
+						ebi("gradeDate").value = mark.date.split("T")[0];
 						ebi("gradeError").innerText = "";
-
+						console.log(mark.id)
 						ebi("popupConfrimButton").innerText = "Save";
 						ebi("popupConfrimButton").onclick = () => {
 							ebi("popupConfrimButton").disabled = true;
@@ -491,10 +492,8 @@ function loadGrades() {
 								ebi("popupConfrimButton").disabled = false;
 								return;
 							}
-
 							date = formatDate(new Date(date));
-							let id = mark.id;
-							updateMark(id, mark, subject, date, title);
+							updateMark(id, mark, title, subject, date);
 						};
 					}
 
@@ -527,7 +526,6 @@ function loadGrades() {
 
 function updateMark(id, mark, title, subject, date) {
 	const url = serverURL + "/updateMark";
-	console.log("updating mark", id, mark, title, subject, date);
 	const data = { id, mark, title, subject, date };
 
 	const xhr = new XMLHttpRequest();
@@ -541,16 +539,19 @@ function updateMark(id, mark, title, subject, date) {
 			if (response.error == '0') {
 				showFeedback(0, "Mark updated successfully");
 				loadGrades();
+				closePopup();
 			} else {
 				displayError("gradeError", response.message);
 			}
 		} else {
 			displayError("gradeError", "Failed to update mark. Please try again.");
+			ebi("popupConfrimButton").disabled = false;
 		}
 	};
 
 	xhr.onerror = function () {
 		displayError("gradeError", "Network error. Please try again.");
+		ebi("popupConfrimButton").disabled = false;
 	};
 
 	xhr.send(JSON.stringify(data));
