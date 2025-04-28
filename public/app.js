@@ -372,7 +372,8 @@ function addmark() {
 		console.log("response", xhr.responseText);
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
-			if (response.error === 0) {
+			if (response.error == '0') {
+				loadGrades();
 				showFeedback(0, "Grade added successfully");
 				closePopup();
 			} else {
@@ -393,8 +394,58 @@ function addmark() {
 }
 
 function loadGrades() {
-	// Implement the logic to load grades from the server and display them in the UI
-	console.log("Loading grades...");
+	let container = ebi("containerVoti");
+	container.innerHTML ="";
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("POST", serverURL + "/getMarks", true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error === "0") {
+				const marks = response.marks;
+				marks.forEach(mark => {
+					let outerWrap = document.createElement("div");
+					outerWrap.classList.add("voto");
+					outerWrap.id = mark.id;
+
+					let voto = document.createElement("div");
+					voto.classList.add("numeroVoto");
+					voto.innerText = mark.mark;
+
+					let description = document.createElement("div");
+					description.classList.add("descriptionGrades");
+
+					let title = document.createElement("h4");
+					let desc = document.createElement("p");
+					desc.classList.add("descrizioneVoto");
+					title.innerText = mark.title;
+					desc.innerText = mark.subject + " - " + mark.date.split("T")[0].split("-").slice(1).join("/");
+
+					description.appendChild(title);
+					description.appendChild(desc);
+
+					outerWrap.appendChild(voto);
+					outerWrap.appendChild(description);
+
+					container.appendChild(outerWrap);
+				});
+			} else {
+				console.error("Error fetching marks:", response.message);
+			}
+		} else {
+			console.error("Failed to fetch marks. Status:", xhr.status);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error("Network error while fetching marks.");
+	};
+
+	xhr.send();
 }
 
 //-----------------------------------------------------------------
