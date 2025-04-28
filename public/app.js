@@ -373,13 +373,15 @@ function addmark() {
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
-				loadGrades();
 				showFeedback(0, "Grade added successfully");
 				closePopup();
 				ebi("gradeName").value = "";
 				ebi("subject").value = "";
 				ebi("grade").value = "";
 				ebi("gradeDate").value = "";
+				let container = ebi("containerVoti");
+				container.innerHTML ="";
+				loadGrades();
 			} else {
 				displayError("gradeError", response.message);
 			}
