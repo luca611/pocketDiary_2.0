@@ -346,7 +346,7 @@ function addmark() {
 	let mark = parseFloat(ebi("grade").value.trim());
 	if (isNaN(mark) || mark < 0 || mark > 10) {
 		displayError("gradeError", "Please enter a valid grade between 0 and 10");
-		
+
 		ebi("popupConfrimButton").disabled = false;
 		console.log("error in fields numbers"); return;
 	}
@@ -381,7 +381,7 @@ function addmark() {
 				ebi("grade").value = "";
 				ebi("gradeDate").value = "";
 				let container = ebi("containerVoti");
-				container.innerHTML ="";
+				container.innerHTML = "";
 				loadGrades();
 			} else {
 				displayError("gradeError", response.message);
@@ -402,7 +402,7 @@ function addmark() {
 
 function loadGrades() {
 	let container = ebi("containerVoti");
-	container.innerHTML ="";
+	container.innerHTML = "";
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", serverURL + "/getMarks", true);
@@ -423,33 +423,52 @@ function loadGrades() {
 					voto.classList.add("numeroVoto");
 
 					if (mark.mark % 1 === 0) {
-						voto.innerText = Math.floor(mark.mark); 
+						voto.innerText = Math.floor(mark.mark);
 					} else if (mark.mark % 1 >= 0.1 && mark.mark % 1 <= 0.3) {
-						voto.innerText = Math.floor(mark.mark) + "+"; 
+						voto.innerText = Math.floor(mark.mark) + "+";
 					} else if (mark.mark % 1 >= 0.4 && mark.mark % 1 <= 0.6) {
 						voto.innerText = Math.floor(mark.mark) + ".5";
 					} else if (mark.mark % 1 >= 0.7 && mark.mark % 1 <= 0.9) {
-						voto.innerText = Math.ceil(mark.mark) + "-"; 
+						voto.innerText = Math.ceil(mark.mark) + "-";
 					} else {
-						voto.innerText = mark.mark.toFixed(1); 
+						voto.innerText = mark.mark.toFixed(1);
 					}
 
 					if (mark.mark >= 6.5) {
 						voto.style.borderColor = 'green';
 					} else if (mark.mark >= 5) {
-						voto.style.borderColor = 'orange'; 
+						voto.style.borderColor = 'orange';
 					} else {
 						voto.style.borderColor = 'red';
 					}
 
+					let innerWrap = document.createElement("div");
+					innerWrap.classList.add("descriptionGrades");
+
 					let description = document.createElement("div");
-					description.classList.add("descriptionGrades");
 
 					let title = document.createElement("h4");
 					let desc = document.createElement("p");
 					desc.classList.add("descrizioneVoto");
 					title.innerText = mark.title;
 					desc.innerText = mark.subject + " - " + mark.date.split("T")[0].split("-").slice(1).join("/");
+
+					let button = document.createElement("button");
+					button.classList.add("eventButton");
+
+					let icon = document.createElement("img");
+					icon.classList.add("eventIcon");
+					icon.src = "resources/icons/edit.svg";
+					icon.alt = "edit";
+
+					button.appendChild(icon);
+					button.onclick = () => {
+						openPopup(1);
+						ebi("popupConfrimButton").innerText = "Save";
+						ebi("popupConfrimButton").onclick = () => {
+							updateMark(mark.id);
+						};
+					}
 
 					description.appendChild(title);
 					description.appendChild(desc);
@@ -472,6 +491,10 @@ function loadGrades() {
 	};
 
 	xhr.send();
+}
+
+function updateMark(id) {
+	console.log("updating mark", id);
 }
 
 //-----------------------------------------------------------------

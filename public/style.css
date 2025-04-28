@@ -1308,7 +1308,10 @@ div.descriptionGrades {
 	width: 100%;
 	border-radius: var(--general-border-radius);
 	padding: 0.7rem;
+	display: flex;
 	box-shadow: var(--shadow);
+	justify-content: space-between;
+	align-items: center;
 }
 
 div.descriptionGrades h4 {
