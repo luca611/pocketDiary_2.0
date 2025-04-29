@@ -542,6 +542,7 @@ function updateMark(id, mark, title, subject, date) {
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
+				ebi("popupConfrimButton").disabled = false;
 				showFeedback(0, "Mark updated successfully");
 				loadGrades();
 				closePopup();
