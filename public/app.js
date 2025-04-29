@@ -830,7 +830,6 @@ function disableAddButton() {
 
 function addNotesButton(type = 0) {
 	ebi("addButtonContainer").onclick = () => {
-		console.log("type")
 		openPopup(type);
 	}
 }
