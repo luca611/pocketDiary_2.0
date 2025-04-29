@@ -1293,6 +1293,7 @@ select.subjectSelector{
     border-radius: var(--general-border-radius);
     border: solid;
     border-color: var(--primary-color);
+	font-family: 'Inter';
 }
 
 div.markSettingsCont{

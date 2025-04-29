@@ -1062,7 +1062,7 @@ function loadMarksbysubject() {
 	if (option === "0") {
 		loadGrades();
 	} else {
-		const url = "https://pocketserver.onrender.com/getMarksBySubject?subject=" + encodeURIComponent(option);
+		const url = serverURL+"/getMarksBySubject?subject=" + encodeURIComponent(option);
 		const xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
 		xhr.withCredentials = true;
