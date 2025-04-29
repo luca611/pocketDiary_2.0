@@ -222,6 +222,14 @@ function openPopup(page = 0) {
 		ebi("popupConfrimButton").innerText = "Create";
 		ebi("popupConfrimButton").onclick = createEvent;
 	}
+	else if (page === 2) {
+		ebi("popupConfrimButton").innerText = "add";
+		ebi("popupConfrimButton").onclick = addmark;
+		ebi("gradeName").value = "";
+		ebi("subject").value="";
+		ebi("grade").value ="";
+		ebi("gradeDate").value="";
+	}
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
 }
@@ -346,7 +354,7 @@ function addmark() {
 	let mark = parseFloat(ebi("grade").value.trim());
 	if (isNaN(mark) || mark < 0 || mark > 10) {
 		displayError("gradeError", "Please enter a valid grade between 0 and 10");
-		
+
 		ebi("popupConfrimButton").disabled = false;
 		console.log("error in fields numbers"); return;
 	}
@@ -374,20 +382,21 @@ function addmark() {
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
-				showFeedback(0, "Grade added successfully");
+				showFeedback(0, "Mark added successfully");
 				closePopup();
 				ebi("gradeName").value = "";
 				ebi("subject").value = "";
 				ebi("grade").value = "";
 				ebi("gradeDate").value = "";
 				let container = ebi("containerVoti");
-				container.innerHTML ="";
+				container.innerHTML = "";
 				loadGrades();
+				loadSubjects();
 			} else {
 				displayError("gradeError", response.message);
 			}
 		} else {
-			displayError("gradeError", "Failed to add grade. Please try again.");
+			displayError("gradeError", "Failed to add mark. Please try again.");
 		}
 	};
 
@@ -402,7 +411,7 @@ function addmark() {
 
 function loadGrades() {
 	let container = ebi("containerVoti");
-	container.innerHTML ="";
+	container.innerHTML = "";
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", serverURL + "/getMarks", true);
@@ -423,27 +432,29 @@ function loadGrades() {
 					voto.classList.add("numeroVoto");
 
 					if (mark.mark % 1 === 0) {
-						voto.innerText = Math.floor(mark.mark); 
+						voto.innerText = Math.floor(mark.mark);
 					} else if (mark.mark % 1 >= 0.1 && mark.mark % 1 <= 0.3) {
-						voto.innerText = Math.floor(mark.mark) + "+"; 
+						voto.innerText = Math.floor(mark.mark) + "+";
 					} else if (mark.mark % 1 >= 0.4 && mark.mark % 1 <= 0.6) {
 						voto.innerText = Math.floor(mark.mark) + ".5";
 					} else if (mark.mark % 1 >= 0.7 && mark.mark % 1 <= 0.9) {
-						voto.innerText = Math.ceil(mark.mark) + "-"; 
+						voto.innerText = Math.ceil(mark.mark) + "-";
 					} else {
-						voto.innerText = mark.mark.toFixed(1); 
+						voto.innerText = mark.mark.toFixed(1);
 					}
 
 					if (mark.mark >= 6.5) {
 						voto.style.borderColor = 'green';
 					} else if (mark.mark >= 5) {
-						voto.style.borderColor = 'orange'; 
+						voto.style.borderColor = 'orange';
 					} else {
 						voto.style.borderColor = 'red';
 					}
 
+					let innerWrap = document.createElement("div");
+					innerWrap.classList.add("descriptionGrades");
+
 					let description = document.createElement("div");
-					description.classList.add("descriptionGrades");
 
 					let title = document.createElement("h4");
 					let desc = document.createElement("p");
@@ -451,11 +462,55 @@ function loadGrades() {
 					title.innerText = mark.title;
 					desc.innerText = mark.subject + " - " + mark.date.split("T")[0].split("-").slice(1).join("/");
 
+					let button = document.createElement("button");
+					button.classList.add("eventButton");
+
+					let icon = document.createElement("img");
+					icon.classList.add("eventIcon");
+					icon.src = "resources/icons/edit.svg";
+					icon.alt = "edit";
+
+					button.appendChild(icon);
+					button.onclick = () => {
+						let id = mark.id;
+						openPopup(1);
+						ebi("gradeName").value = mark.title;
+						ebi("subject").value = mark.subject;
+						ebi("grade").value = mark.mark;
+						ebi("gradeDate").value = mark.date.split("T")[0];
+						ebi("gradeError").innerText = "";
+						console.log(mark.id)
+						ebi("popupConfrimButton").innerText = "Save";
+						ebi("popupConfrimButton").onclick = () => {
+							ebi("popupConfrimButton").disabled = true;
+							let mark = parseFloat(ebi("grade").value.trim());
+							if (isNaN(mark) || mark < 0 || mark > 10) {
+								displayError("gradeError", "Please enter a valid grade between 0 and 10");
+								ebi("popupConfrimButton").disabled = false;
+								return;
+							}
+							let title = ebi("gradeName").value.trim();
+							let subject = ebi("subject").value.trim();
+							let date = ebi("gradeDate").value.trim();
+							if (!title || !subject || !date) {
+								displayError("gradeError", "Please fill in all fields");
+								ebi("popupConfrimButton").disabled = false;
+								return;
+							}
+							date = formatDate(new Date(date));
+							updateMark(id, mark, title, subject, date);
+						};
+					}
+
+					description.classList.add("desc");
+
 					description.appendChild(title);
 					description.appendChild(desc);
 
+					innerWrap.appendChild(description)
+					innerWrap.appendChild(button)
 					outerWrap.appendChild(voto);
-					outerWrap.appendChild(description);
+					outerWrap.appendChild(innerWrap);
 
 					container.appendChild(outerWrap);
 				});
@@ -472,6 +527,39 @@ function loadGrades() {
 	};
 
 	xhr.send();
+}
+
+function updateMark(id, mark, title, subject, date) {
+	const url = serverURL + "/updateMark";
+	const data = { id, mark, title, subject, date };
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("PUT", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error == '0') {
+				showFeedback(0, "Mark updated successfully");
+				loadGrades();
+				closePopup();
+			} else {
+				displayError("gradeError", response.message);
+			}
+		} else {
+			displayError("gradeError", "Failed to update mark. Please try again.");
+			ebi("popupConfrimButton").disabled = false;
+		}
+	};
+
+	xhr.onerror = function () {
+		displayError("gradeError", "Network error. Please try again.");
+		ebi("popupConfrimButton").disabled = false;
+	};
+
+	xhr.send(JSON.stringify(data));
 }
 
 //-----------------------------------------------------------------
@@ -879,6 +967,7 @@ function toGrades() {
 	closeSidebar();
 	addNotesButton(0);
 	loadGrades();
+	loadSubjects();
 }
 
 //-----------------------------------------------------------------
@@ -927,6 +1016,129 @@ function toChat() {
 	currentPage = 1;
 	updateActivePageLink();
 	closeSidebar();
+}
+
+function loadSubjects() {
+	const url = serverURL + "/getSubjects";
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		const response = JSON.parse(xhr.responseText);
+		if (response.error === "0") {
+			const subjects = response.subjects;
+			const subjectList = ebi("subjectlist");
+			subjectList.innerHTML = "";
+
+			const allOption = document.createElement("option");
+			allOption.value = "0";
+			allOption.textContent = "All";
+			subjectList.appendChild(allOption);
+
+			subjects.forEach(subject => {
+				const option = document.createElement("option");
+				option.value = subject.subject;
+				option.textContent = subject.subject;
+				subjectList.appendChild(option);
+			});
+		} else {
+			console.error("Failed to load subjects:", response.message);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error("Network error while fetching subjects.");
+	};
+
+	xhr.send();
+}
+
+function loadMarksbysubject() {
+	let option = ebi("subjectlist").value;
+
+	if (option === "0") {
+		loadGrades();
+	} else {
+		const url = serverURL+"/getMarksBySubject?subject=" + encodeURIComponent(option);
+		const xhr = new XMLHttpRequest();
+		xhr.open("GET", url, true);
+		xhr.withCredentials = true;
+		xhr.setRequestHeader("Content-Type", "application/json");
+
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				const response = JSON.parse(xhr.responseText);
+				if (response.error === "0") {
+					const marks = response.marks;
+					let container = ebi("containerVoti");
+					container.innerHTML = "";
+					marks.forEach(mark => {
+						let outerWrap = document.createElement("div");
+						outerWrap.classList.add("voto");
+						outerWrap.id = mark.id;
+
+						let voto = document.createElement("div");
+						voto.classList.add("numeroVoto");
+
+						if (mark.mark % 1 === 0) {
+							voto.innerText = Math.floor(mark.mark);
+						} else if (mark.mark % 1 >= 0.1 && mark.mark % 1 <= 0.3) {
+							voto.innerText = Math.floor(mark.mark) + "+";
+						} else if (mark.mark % 1 >= 0.4 && mark.mark % 1 <= 0.6) {
+							voto.innerText = Math.floor(mark.mark) + ".5";
+						} else if (mark.mark % 1 >= 0.7 && mark.mark % 1 <= 0.9) {
+							voto.innerText = Math.ceil(mark.mark) + "-";
+						} else {
+							voto.innerText = mark.mark.toFixed(1);
+						}
+
+						if (mark.mark >= 6.5) {
+							voto.style.borderColor = 'green';
+						} else if (mark.mark >= 5) {
+							voto.style.borderColor = 'orange';
+						} else {
+							voto.style.borderColor = 'red';
+						}
+
+						let innerWrap = document.createElement("div");
+						innerWrap.classList.add("descriptionGrades");
+
+						let description = document.createElement("div");
+
+						let title = document.createElement("h4");
+						let desc = document.createElement("p");
+						desc.classList.add("descrizioneVoto");
+						title.innerText = mark.title;
+						desc.innerText = mark.subject + " - " + mark.date.split("T")[0].split("-").slice(1).join("/");
+
+						description.classList.add("desc");
+
+						description.appendChild(title);
+						description.appendChild(desc);
+
+						innerWrap.appendChild(description);
+						outerWrap.appendChild(voto);
+						outerWrap.appendChild(innerWrap);
+
+						container.appendChild(outerWrap);
+					});
+				} else {
+					console.error("Error fetching marks by subject:", response.message);
+				}
+			} else {
+				console.error("Failed to fetch marks by subject. Status:", xhr.status);
+			}
+		};
+
+		xhr.onerror = function () {
+			console.error("Network error while fetching marks by subject.");
+		};
+
+		xhr.send();
+	}
 }
 
 /*

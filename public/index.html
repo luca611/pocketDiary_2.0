@@ -319,50 +319,24 @@
             </div>
             
             <div id="grades" class="section hidden">
-                <button class="quickButton max-height-3" onclick="apriReport()">
-                    <img src="resources/icons/report.svg" alt="" style="margin-right: 0.5rem;">
-                    <b>Report</b>
-                </button>
+                <div class="markSettingsCont">
+                    <button class="quickButton max-height-3" onclick="apriReport()">
+                        <img src="resources/icons/report.svg" alt="" style="margin-right: 0.5rem;">
+                        <b>Report</b>
+                    </button>
+                    <select id="subjectlist" onchange="loadMarksbysubject()" class="subjectSelector">
+                    </select>
+                </div>
                 <div class="voti">
                     <div class="containerVoti" id="containerVoti">
-                        <div class="voto">
-                            <div class="numeroVoto">5</div>
-                            <div class="descriptionGrades">
-                                <h4>VOTE NAME</h4>
-                                <p class="descrizioneVoto">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                </p>
-                            </div>
-                        </div>
-                        <div class="voto">
-                            <div class="numeroVoto">8</div>
-                            <div class="descriptionGrades">
-                                <h4>VOTE NAME</h4>
-                                <p class="descrizioneVoto">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                </p>
-                            </div>
-                        </div>
-                        <div class="voto">
-                            <div class="numeroVoto">3</div>
-                            <div class="descriptionGrades">
-                                <h4>VOTE NAME</h4>
-                                <p class="descrizioneVoto">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                </p>
-                            </div>
-
-                        </div>
+                        
                     </div>
                     <div class="addButtonContainer" id="addButtonContainer">
-                        <button class="addButton" onclick="openPopup(1)">
+                        <button class="addButton" onclick="openPopup(2)">
                             <img class="addIcon" src="resources/icons/add.svg" alt="add">
                         </button>
                     </div>
                 </div>
-            </div>
-
-            <div id="aiChat" class="section hidden">
             </div>
 
         </div>
@@ -659,27 +633,6 @@
 
         </div>
     </div>
-
-
-    <script>
-
-        const numeriVoto = document.querySelectorAll('.numeroVoto');
-
-        numeriVoto.forEach(numeroVotoElement => {
-            // Estrai il numero contenuto (e assicurati che sia un numero valido)
-            const numeroVoto = parseInt(numeroVotoElement.textContent);
-
-            // Cambia il colore del testo in base al numero
-            if (numeroVoto >= 8) {
-                numeroVotoElement.style.borderColor = 'green'; // Verde per voti >= 8
-            } else if (numeroVoto >= 5) {
-                numeroVotoElement.style.borderColor = 'orange'; // Arancione per voti >= 5
-            } else {
-                numeroVotoElement.style.borderColor = 'red'; // Rosso per voti < 5
-            }
-        });
-    </script>
-
 </body>
 
 </html>

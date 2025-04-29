@@ -1288,6 +1288,19 @@ div.containerVoti {
 	padding-bottom: 4rem;
 }
 
+select.subjectSelector{
+	width: 8rem;
+    border-radius: var(--general-border-radius);
+    border: solid;
+    border-color: var(--primary-color);
+	font-family: 'Inter';
+}
+
+div.markSettingsCont{
+	display: flex;
+	justify-content: space-between;
+}
+
 div.numeroVoto {
 	width: 5rem;
 	height: 5rem;
@@ -1300,13 +1313,19 @@ div.numeroVoto {
 	align-items: center;
 	font-size: 2rem;
 	font-weight: bold;
+	box-shadow: var(--shadow);
+	flex-wrap: nowrap;
 }
 
 div.descriptionGrades {
 	background-color: white;
-	width: 100%;
+	width: calc(100% - 5.5rem);
 	border-radius: var(--general-border-radius);
 	padding: 0.7rem;
+	display: flex;
+	box-shadow: var(--shadow);
+	justify-content: space-between;
+	align-items: center;
 }
 
 div.descriptionGrades h4 {
@@ -1333,6 +1352,14 @@ div.voto {
 	gap: 0.45rem;
 	align-items: center;
 	justify-content: space-between;
+	width: 100%;
+}
+
+div.desc {
+	overflow: hidden;
+	width: calc(100% - 5rem);
+	flex-direction: column;
+	text-overflow: ellipsis;
 }
 
 .max-height-3 {
