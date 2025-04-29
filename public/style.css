@@ -476,7 +476,7 @@ div.popup.open {
 
 div.popup.large {
 	height: 80vh !important;
-	bottom: -80vh !important;
+	bottom: -80vh;
 }
 
 div.overlay {
