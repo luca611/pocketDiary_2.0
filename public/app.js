@@ -214,7 +214,9 @@ function closeSidebar() {
 	ebi("overlaySidebar").classList.remove("visible");
 }
 
-
+function apriReport() {
+	openPopup(3);
+}
 
 //popup functions
 function openPopup(page = 0) {
@@ -226,10 +228,16 @@ function openPopup(page = 0) {
 		ebi("popupConfrimButton").innerText = "add";
 		ebi("popupConfrimButton").onclick = addmark;
 		ebi("gradeName").value = "";
-		ebi("subject").value="";
-		ebi("grade").value ="";
-		ebi("gradeDate").value="";
+		ebi("subject").value = "";
+		ebi("grade").value = "";
+		ebi("gradeDate").value = "";
 	}
+
+	if (page === 3) {
+		ebi("popup").classList.add("large");
+		ebi("popUpBody").classList.add("large");
+	}
+
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
 }
@@ -239,6 +247,8 @@ function openPopup(page = 0) {
 
 function closePopup() {
 	ebi("popup").classList.remove("open");
+	ebi("popup").classList.remove("large");
+	ebi("popUpBody").classList.remove("large");
 	ebi("overlayPopUp").classList.remove("visible");
 	clearForm();
 }
@@ -1062,7 +1072,7 @@ function loadMarksbysubject() {
 	if (option === "0") {
 		loadGrades();
 	} else {
-		const url = serverURL+"/getMarksBySubject?subject=" + encodeURIComponent(option);
+		const url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(option);
 		const xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
 		xhr.withCredentials = true;

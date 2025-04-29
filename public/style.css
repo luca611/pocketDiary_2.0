@@ -474,6 +474,11 @@ div.popup.open {
 	transition: all 0.3s;
 }
 
+div.popup.large {
+	height: 80vh !important;
+	bottom: -80vh !important;
+}
+
 div.overlay {
 	position: fixed;
 	top: 0;
@@ -853,6 +858,10 @@ div.popUpBody {
 	height: calc(60vh - 4.5rem);
 	overflow: hidden;
 	overflow-y: auto;
+}
+
+div.popUpBody.large {
+	height: calc(80vh - 4.5rem) !important;
 }
 
 button.danger {
@@ -1288,15 +1297,15 @@ div.containerVoti {
 	padding-bottom: 4rem;
 }
 
-select.subjectSelector{
+select.subjectSelector {
 	width: 8rem;
-    border-radius: var(--general-border-radius);
-    border: solid;
-    border-color: var(--primary-color);
+	border-radius: var(--general-border-radius);
+	border: solid;
+	border-color: var(--primary-color);
 	font-family: 'Inter';
 }
 
-div.markSettingsCont{
+div.markSettingsCont {
 	display: flex;
 	justify-content: space-between;
 }
