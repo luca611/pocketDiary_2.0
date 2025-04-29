@@ -215,6 +215,7 @@ function closeSidebar() {
 }
 
 function apriReport() {
+	setPopupPage(6);
 	openPopup(3);
 }
 
@@ -246,6 +247,10 @@ function openPopup(page = 0) {
 //-----------------------------------------------------------------
 
 function closePopup() {
+
+	if (currentPopupPage === 6) {
+		setPopupPage(1);
+	}
 	ebi("popup").classList.remove("open");
 	ebi("popup").classList.remove("large");
 	ebi("popUpBody").classList.remove("large");
@@ -346,6 +351,8 @@ function setPopupPage(page = 0) {
 			};
 			ebi("popupConfrimButton").innerText = "Plan";
 			break;
+		case 6:
+		//hide confirm button
 		default:
 			console.error("Invalid page number");
 			break;
