@@ -699,6 +699,59 @@ button.eventButton {
 	;
 }
 
+div.generalInfoContainer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1rem;
+}
+
+div.avgContainer {
+	width: 33%;
+	min-width: 7rem;
+	height: 7rem;
+}
+
+div.avgValue {
+	width: 100%;
+	height: 100%;
+	background: white;
+	border-radius: 100%;
+	border: solid 0.4rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2rem;
+	font-family: 'Inter';
+}
+
+div.avgInfos {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	font-family: 'Inter';
+}
+
+div.infoRow {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 0.2rem;
+}
+
+div.rowElement {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+div.reportField {
+	background: white;
+	border-radius: 0.6rem;
+	padding: 0.2rem;
+	border: solid var(--primary-color);
+}
+
 button.eventButton:hover {
 	filter: brightness(0.9);
 	transition: all 0.3s;
