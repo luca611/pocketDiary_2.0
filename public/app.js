@@ -1116,10 +1116,51 @@ function loadMarksbysubject() {
 
 						description.classList.add("desc");
 
+						let button = document.createElement("button");
+						button.classList.add("eventButton");
+
+						let icon = document.createElement("img");
+						icon.classList.add("eventIcon");
+						icon.src = "resources/icons/edit.svg";
+						icon.alt = "edit";
+
+						button.appendChild(icon);
+						button.onclick = () => {
+							let id = mark.id;
+							openPopup(1);
+							ebi("gradeName").value = mark.title;
+							ebi("subject").value = mark.subject;
+							ebi("grade").value = mark.mark;
+							ebi("gradeDate").value = mark.date.split("T")[0];
+							ebi("gradeError").innerText = "";
+							console.log(mark.id)
+							ebi("popupConfrimButton").innerText = "Save";
+							ebi("popupConfrimButton").onclick = () => {
+								ebi("popupConfrimButton").disabled = true;
+								let mark = parseFloat(ebi("grade").value.trim());
+								if (isNaN(mark) || mark < 0 || mark > 10) {
+									displayError("gradeError", "Please enter a valid grade between 0 and 10");
+									ebi("popupConfrimButton").disabled = false;
+									return;
+								}
+								let title = ebi("gradeName").value.trim();
+								let subject = ebi("subject").value.trim();
+								let date = ebi("gradeDate").value.trim();
+								if (!title || !subject || !date) {
+									displayError("gradeError", "Please fill in all fields");
+									ebi("popupConfrimButton").disabled = false;
+									return;
+								}
+								date = formatDate(new Date(date));
+								updateMark(id, mark, title, subject, date);
+							};
+						}
+
 						description.appendChild(title);
 						description.appendChild(desc);
 
 						innerWrap.appendChild(description);
+						innerWrap.appendChild(button)
 						outerWrap.appendChild(voto);
 						outerWrap.appendChild(innerWrap);
 
