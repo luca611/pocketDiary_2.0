@@ -713,7 +713,7 @@ div.avgContainer {
 	height: 7rem;
 }
 
-select.subjectSelector {
+select.subjectSelectorReport {
 	width: 50%;
 	border-radius: var(--general-border-radius);
 	border: solid var(--primary-color);
