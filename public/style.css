@@ -1288,6 +1288,18 @@ div.containerVoti {
 	padding-bottom: 4rem;
 }
 
+select.subjectSelector{
+	width: 8rem;
+    border-radius: var(--general-border-radius);
+    border: solid;
+    border-color: var(--primary-color);
+}
+
+div.markSettingsCont{
+	display: flex;
+	justify-content: space-between;
+}
+
 div.numeroVoto {
 	width: 5rem;
 	height: 5rem;

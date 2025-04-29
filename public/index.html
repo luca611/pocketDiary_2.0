@@ -319,10 +319,14 @@
             </div>
             
             <div id="grades" class="section hidden">
-                <button class="quickButton max-height-3" onclick="apriReport()">
-                    <img src="resources/icons/report.svg" alt="" style="margin-right: 0.5rem;">
-                    <b>Report</b>
-                </button>
+                <div class="markSettingsCont">
+                    <button class="quickButton max-height-3" onclick="apriReport()">
+                        <img src="resources/icons/report.svg" alt="" style="margin-right: 0.5rem;">
+                        <b>Report</b>
+                    </button>
+                    <select id="subjectlist" onchange="loadMarksbysubject()" class="subjectSelector">
+                    </select>
+                </div>
                 <div class="voti">
                     <div class="containerVoti" id="containerVoti">
                         
@@ -629,27 +633,6 @@
 
         </div>
     </div>
-
-
-    <script>
-
-        const numeriVoto = document.querySelectorAll('.numeroVoto');
-
-        numeriVoto.forEach(numeroVotoElement => {
-            // Estrai il numero contenuto (e assicurati che sia un numero valido)
-            const numeroVoto = parseInt(numeroVotoElement.textContent);
-
-            // Cambia il colore del testo in base al numero
-            if (numeroVoto >= 8) {
-                numeroVotoElement.style.borderColor = 'green'; // Verde per voti >= 8
-            } else if (numeroVoto >= 5) {
-                numeroVotoElement.style.borderColor = 'orange'; // Arancione per voti >= 5
-            } else {
-                numeroVotoElement.style.borderColor = 'red'; // Rosso per voti < 5
-            }
-        });
-    </script>
-
 </body>
 
 </html>
