@@ -709,7 +709,18 @@ div.generalInfoContainer {
 div.avgContainer {
 	width: 33%;
 	min-width: 7rem;
+	max-width: 7rem;
 	height: 7rem;
+}
+
+select.subjectSelector {
+	width: 50%;
+	border-radius: var(--general-border-radius);
+	border: solid var(--primary-color);
+}
+
+div.halfSpace {
+	width: 50% !important;
 }
 
 div.avgValue {
