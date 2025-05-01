@@ -2442,7 +2442,7 @@ function getColor(average, opacity) {
 * @param {object} ctx - The context of the point
 * @returns {string} - The color in rgba format
 */
-function formatDate(dateString) {
+function formatDateChart(dateString) {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	const date = new Date(dateString);
 	return date.getDate() + " " + months[date.getMonth()];
@@ -2512,7 +2512,7 @@ function createChart(canvasId, dataset) {
 	dataset.sort((a, b) => new Date(a.date) - new Date(b.date));
 
 	// Extract the labels and data from the dataset
-	const labels = dataset.map(entry => formatDate(entry.date));
+	const labels = dataset.map(entry => formatDateChart(entry.date));
 	const data = dataset.map(entry => entry.mark);
 
 	// Calculate the cumulative averages
