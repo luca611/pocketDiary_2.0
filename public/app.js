@@ -217,6 +217,7 @@ function closeSidebar() {
 function apriReport() {
 	setPopupPage(6);
 	openPopup(3);
+	fillChart();
 }
 
 //popup functions
@@ -2421,4 +2422,202 @@ function loadCalendarNotesInfo(date) {
 
 function showEventDesctiption(description) {
 	ebi("descriptionCalendar").innerText = description;
-} 
+}
+
+
+/*
+		* Function to get the color based on the average mark
+		* @param {number} average - The average mark
+		* @param {number} opacity - The opacity of the color
+		* @returns {string} - The color in rgba format
+		*/
+function getColor(average, opacity) {
+	if (average < 5.75) return "rgba(255, 0, 0, " + opacity + ")"; // Red
+	if (average >= 5.75 && average <= 6.25) return "rgb(253, 218, 13, " + opacity + ")"; // Yellow
+	return "rgba(0, 128, 0, " + opacity + ")";
+}
+
+/*
+* Function to get the color of the point based on the mark
+* @param {object} ctx - The context of the point
+* @returns {string} - The color in rgba format
+*/
+function formatDate(dateString) {
+	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	const date = new Date(dateString);
+	return date.getDate() + " " + months[date.getMonth()];
+}
+
+/*
+* Function to get the color of the point based on the mark
+* @param {object} ctx - The context of the point
+* @returns {string} - The color in rgba format
+*/
+function marksTendency(ctx, opacity = 1) {
+	if (ctx.p1.parsed.y > 5.75 && ctx.p1.parsed.y <= 6.25) {
+		return "rgb(253, 218, 13, " + opacity + ")";
+	} else if (ctx.p1.parsed.y > 6.25) {
+		return "rgba(0, 128, 0, " + opacity + ")";
+	} else {
+		return "rgba(255, 0, 0, " + opacity + ")";
+	}
+}
+
+/*
+* Function to get the color of the point based on the mark
+* @param {object} ctx - the chart object
+* @returns {string} - dataset to generae the chart
+*/
+function createChart(canvasId, dataset) {
+	// Destroy previous chart instance if it exists
+	if (window.myChart) {
+		window.myChart.destroy();
+	}
+	const ctx = document.getElementById(canvasId).getContext("2d");
+
+	// Animation configuration
+	const totalDuration = 400;
+	const delayBetweenPoints = totalDuration / dataset.length;
+	const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1] ? ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y : ctx.chart.scales.y.getPixelForValue(100);
+	const animation = {
+		x: {
+			type: 'number',
+			easing: 'linear',
+			duration: delayBetweenPoints,
+			from: NaN,
+			delay(ctx) {
+				if (ctx.type !== 'data' || ctx.xStarted) {
+					return 0;
+				}
+				ctx.xStarted = true;
+				return ctx.index * delayBetweenPoints;
+			}
+		},
+		y: {
+			type: 'number',
+			easing: 'linear',
+			duration: delayBetweenPoints,
+			from: previousY,
+			delay(ctx) {
+				if (ctx.type !== 'data' || ctx.yStarted) {
+					return 0;
+				}
+				ctx.yStarted = true;
+				return ctx.index * delayBetweenPoints;
+			}
+		}
+	};
+
+	// Sort the dataset by date in case it's not sorted
+	dataset.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+	// Extract the labels and data from the dataset
+	const labels = dataset.map(entry => formatDate(entry.date));
+	const data = dataset.map(entry => entry.mark);
+
+	// Calculate the cumulative averages
+	const cumulativeAverages = data.map((_, index) => {
+		const subset = data.slice(0, index + 1);
+		return subset.reduce((sum, mark) => sum + mark, 0) / subset.length;
+	});
+
+	// Create the chart
+	const average = data.reduce((sum, mark) => sum + mark, 0) / data.length;
+	const backgroundColor = getColor(average, 0.3);
+	const borderColor = getColor(average, 1);
+	const pointColor = getColor(average, 1);
+	const six = data.map(() => 6);
+
+	window.myChart = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: [
+
+				{
+					data: data,
+					borderColor: borderColor,
+					borderWidth: 2,
+					fill: false,
+					pointRadius: 4,
+					tension: 0,
+					pointBackgroundColor: pointColor,
+					segment: {
+						borderColor: ctx => marksTendency(ctx, 1),
+					}
+				},
+
+				{
+					label: 'Average',
+					data: cumulativeAverages,
+					borderColor: 'rgb(70, 130, 180)',
+					borderWidth: 2,
+					fill: true,
+					backgroundColor: backgroundColor,
+					pointRadius: 4,
+					pointBackgroundColor: 'rgb(70, 130, 180)',
+					tension: 0,
+					segment: {
+						backgroundColor: ctx => marksTendency(ctx, 0.3),
+						pointBackgroundColor: ctx => marksTendency(ctx),
+					}
+				},
+
+				// drawing the 6 line
+				{
+					data: six,
+					borderColor: 'rgba(0, 0, 0, 0.5)',
+					borderDash: [5, 5],
+					borderWidth: 1,
+					pointRadius: 0,
+					fill: false,
+				},
+			]
+		},
+		options: {
+			animation,
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					display: false
+				}
+			},
+			scales: {
+				y: {
+					beginAtZero: true,
+					suggestedMax: 10
+				}
+			},
+
+		}
+	});
+}
+
+function fillChart() {
+	const url = serverURL + "/getMarks";
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", url);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			const transformedData = response.marks.map(mark => ({
+				date: mark.date.split("T")[0],
+				mark: parseFloat(mark.mark)
+			}));
+			createChart("chart", transformedData);
+		} else {
+			console.error(xhr.responseText);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error(xhr.statusText);
+	};
+
+	xhr.send();
+}
