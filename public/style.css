@@ -2162,6 +2162,12 @@ blockquote {
 		overflow-Y: auto;
 	}
 
+	div.popup.large {
+		height: 80vh;
+		max-height: 80vh;
+		bottom: -80vh;
+	}
+
 	div.popup.open {
 		bottom: 0;
 	}
