@@ -297,7 +297,7 @@ function openReport() {
 }
 
 function renderChartBySubject(){
-	console.log(ebi("reportSubjectList").value);
+	fillChart(ebi("reportSubjectList").value);
 }
 
 //popup functions
@@ -2679,8 +2679,14 @@ function createChart(canvasId, dataset) {
 	});
 }
 
-function fillChart() {
-	const url = serverURL + "/getMarks";
+function fillChart(subject = 0) {
+
+	let url;
+	if(subject==0){
+		url = serverURL + "/getMarks";
+	}else{
+
+	}
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", url);
