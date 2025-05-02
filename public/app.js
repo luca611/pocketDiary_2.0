@@ -223,7 +223,7 @@ function apriReport() {
 
 function openReport() {
 	
-	const url = serverURL + "/getMarks";
+	const url = serverURL + "/getMarks"+ "?t=" + Date.now();
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", url, true);
@@ -517,9 +517,9 @@ function addmark() {
 function loadGrades() {
 	let container = ebi("containerVoti");
 	container.innerHTML = "";
-
+	let url = serverURL + "/getMarks?t=" + Date.now();
 	const xhr = new XMLHttpRequest();
-	xhr.open("GET", serverURL + "/getMarks", true);
+	xhr.open("GET", serverURL + url , true);
 	xhr.withCredentials = true;
 	xhr.setRequestHeader("Content-Type", "application/json");
 
@@ -1167,7 +1167,7 @@ function loadMarksbysubject() {
 	if (option === "0") {
 		loadGrades();
 	} else {
-		const url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(option);
+		const url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(option) + "&t=" + Date.now();
 		const xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
 		xhr.withCredentials = true;
@@ -2682,10 +2682,10 @@ function createChart(canvasId, dataset) {
 function fillChart(subject = 0) {
 
 	let url;
-	if(subject==0){
-		url = serverURL + "/getMarks";
-	}else{
-		url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(subject);
+	if (subject == 0) {
+		url = serverURL + "/getMarks?t=" + Date.now();
+	} else {
+		url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(subject) + "&t=" + Date.now();
 	}
 
 	const xhr = new XMLHttpRequest();
