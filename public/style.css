@@ -1359,6 +1359,7 @@ div.voti {
 	min-height: calc(100% - 3.5rem);
 	max-height: calc(100% - 3.5rem);
 	display: flex;
+	flex-direction: column;
 }
 
 div.containerVoti {
@@ -1371,7 +1372,7 @@ div.containerVoti {
 	display: flex;
 }
 
-div.containervoti.showplaceholder {
+.showplaceholder {
 	align-items: center;
 	justify-content: center;
 }

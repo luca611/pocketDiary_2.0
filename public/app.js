@@ -496,7 +496,6 @@ function addmark() {
 				let container = ebi("containerVoti");
 				container.innerHTML = "";
 				loadGrades();
-				loadSubjects();
 			} else {
 				displayError("gradeError", response.message);
 			}
@@ -539,7 +538,7 @@ function loadGrades() {
 					img.alt = "empty grades";
 
 					let text = document.createElement("p");
-					text.innerText = "No marks available yet, add some!";
+					text.innerText = "No marks available yet, ";
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					container.appendChild(emptyMessage);
@@ -638,6 +637,8 @@ function loadGrades() {
 
 					container.appendChild(outerWrap);
 				});
+
+				loadSubjects();
 			} else {
 				console.error("Error fetching marks:", response.message);
 			}
