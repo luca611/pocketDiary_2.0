@@ -2685,7 +2685,7 @@ function fillChart(subject = 0) {
 	if(subject==0){
 		url = serverURL + "/getMarks";
 	}else{
-
+		url = serverURL + "/getMarksBySubject?subject=" + encodeURIComponent(subject);
 	}
 
 	const xhr = new XMLHttpRequest();
