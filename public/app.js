@@ -321,6 +321,10 @@ function setPopupPage(page = 0) {
 	pages[page].classList.remove("hidden");
 	ebi("popupConfrimButton").onclick = null;
 	ebi("popupCancelButton").onclick = closePopup;
+	ebi("popupConfrimButton").classList.remove("hidden");
+	ebi("popupCancelButton").classList.remove("hidden");
+	ebi("popupCancelButton").innerText= "Cancel";
+
 
 	switch (page) {
 		case 0:
@@ -353,7 +357,10 @@ function setPopupPage(page = 0) {
 			ebi("popupConfrimButton").innerText = "Plan";
 			break;
 		case 6:
-		//hide confirm button
+			ebi("popupConfrimButton").classList.add("hidden");
+			ebi("popupCancelButton").classList.remove("hidden");
+			ebi("popupCancelButton").innerText= "Close";
+
 		default:
 			console.error("Invalid page number");
 			break;
