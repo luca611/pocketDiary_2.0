@@ -222,8 +222,8 @@ function apriReport() {
 }
 
 function openReport() {
-	
-	const url = serverURL + "/getMarks"+ "?t=" + Date.now();
+
+	const url = serverURL + "/getMarks" + "?t=" + Date.now();
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", url, true);
@@ -267,9 +267,9 @@ function openReport() {
 				let worstContainer = ebi("worstSujectName");
 				let numGradeContainer = ebi("numGrades")
 
-				if(avg >= 6.5) {
+				if (avg >= 6.5) {
 					avgContainer.style.color = "green";
-				} else if(avg >= 5) {
+				} else if (avg >= 5) {
 					avgContainer.style.color = "orange";
 				} else {
 					avgContainer.style.color = "red";
@@ -296,7 +296,7 @@ function openReport() {
 	xhr.send();
 }
 
-function renderChartBySubject(){
+function renderChartBySubject() {
 	fillChart(ebi("reportSubjectList").value);
 }
 
@@ -403,7 +403,7 @@ function setPopupPage(page = 0) {
 	ebi("popupCancelButton").onclick = closePopup;
 	ebi("popupConfrimButton").classList.remove("hidden");
 	ebi("popupCancelButton").classList.remove("hidden");
-	ebi("popupCancelButton").innerText= "Cancel";
+	ebi("popupCancelButton").innerText = "Cancel";
 
 
 	switch (page) {
@@ -439,7 +439,7 @@ function setPopupPage(page = 0) {
 		case 6:
 			ebi("popupConfrimButton").classList.add("hidden");
 			ebi("popupCancelButton").classList.remove("hidden");
-			ebi("popupCancelButton").innerText= "Close";
+			ebi("popupCancelButton").innerText = "Close";
 
 		default:
 			console.error("Invalid page number");
@@ -519,7 +519,7 @@ function loadGrades() {
 	container.innerHTML = "";
 	let url = serverURL + "/getMarks?t=" + Date.now();
 	const xhr = new XMLHttpRequest();
-	xhr.open("GET", serverURL + url , true);
+	xhr.open("GET", serverURL + url, true);
 	xhr.withCredentials = true;
 	xhr.setRequestHeader("Content-Type", "application/json");
 
@@ -528,6 +528,25 @@ function loadGrades() {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === "0") {
 				const marks = response.marks;
+				if (marks.length === 0) {
+					container.classList.add("empty");
+
+					let emptyMessage = document.createElement("div");
+					emptyMessage.classList.add("markImgPlaceholder");
+
+					let img = document.createElement("img");
+					img.src = "resources/imgs/markLogo.svg";
+					img.alt = "empty grades";
+
+					let text = document.createElement("p");
+					text.innerText = "No marks available yet";
+					emptyMessage.appendChild(img);
+					emptyMessage.appendChild(text);
+					container.appendChild(emptyMessage);
+					return;
+				} else {
+					container.classList.remove("empty");
+				}
 				marks.forEach(mark => {
 					let outerWrap = document.createElement("div");
 					outerWrap.classList.add("voto");
@@ -1124,7 +1143,7 @@ function toChat() {
 }
 
 function loadSubjects(slectID = "subjectlist") {
-	const url = serverURL + "/getSubjects";
+	const url = serverURL + "/getSubjects" + "?t=" + Date.now();
 
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", url, true);
