@@ -1371,7 +1371,7 @@ div.containerVoti {
 	display: flex;
 }
 
-div.containervoti.empty {
+div.containervoti.showplaceholder {
 	align-items: center;
 	justify-content: center;
 }

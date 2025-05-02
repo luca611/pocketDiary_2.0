@@ -529,7 +529,7 @@ function loadGrades() {
 			if (response.error === "0") {
 				const marks = response.marks;
 				if (marks.length === 0) {
-					container.classList.add("empty");
+					container.classList.add("showplaceholder");
 
 					let emptyMessage = document.createElement("div");
 					emptyMessage.classList.add("markImgPlaceholder");
@@ -539,13 +539,13 @@ function loadGrades() {
 					img.alt = "empty grades";
 
 					let text = document.createElement("p");
-					text.innerText = "No marks available yet";
+					text.innerText = "No marks available yet, add some!";
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					container.appendChild(emptyMessage);
 					return;
 				} else {
-					container.classList.remove("empty");
+					container.classList.remove("showplaceholder");
 				}
 				marks.forEach(mark => {
 					let outerWrap = document.createElement("div");
