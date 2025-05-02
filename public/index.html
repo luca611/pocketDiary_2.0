@@ -649,7 +649,7 @@
                                 </div>
                                 <div class="rowElement">
                                     <p>Worst subject</p>
-                                    <div id="bestSujectName" class="reportField">--</div>
+                                    <div id="worstSujectName" class="reportField">--</div>
                                 </div>
                             </div>
                         </div>
@@ -659,7 +659,7 @@
                     </div>
                     <div class="infoRow">
                         <div class="fillContainer currentSecondary halfSpace">Select Subject:</div>
-                        <select class="subjectSelectorReport"></select>
+                        <select id="reportSubjectList" class="subjectSelectorReport" onchange="renderChartBySubject()"></select>
                     </div>
                     <div class="chartContainer">
                         <canvas id="chart"></canvas>
