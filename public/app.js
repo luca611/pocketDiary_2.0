@@ -510,7 +510,6 @@ function addmark() {
 
 	xhr.send(JSON.stringify(data));
 	ebi("popupConfrimButton").disabled = false;
-	loadGrades();
 }
 
 function loadGrades() {
@@ -538,7 +537,7 @@ function loadGrades() {
 					img.alt = "empty grades";
 
 					let text = document.createElement("p");
-					text.innerText = "No marks available yet, ";
+					text.innerText = "No marks available yet, add some!";
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					container.appendChild(emptyMessage);
