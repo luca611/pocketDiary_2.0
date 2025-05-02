@@ -2060,7 +2060,70 @@ function changePassword() {
 }
 
 function openReport() {
-	ebi("report").classList.remove("hidden");
+	
+	const url = serverURL + "/getMarks";
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error === "0") {
+				const marks = response.marks;
+
+				// Calculate average mark
+				const totalMarks = marks.reduce((sum, mark) => sum + parseFloat(mark.mark), 0);
+				const avgMark = totalMarks / marks.length;
+
+				// Group marks by subject
+				const marksBySubject = marks.reduce((acc, mark) => {
+					if (!acc[mark.subject]) {
+						acc[mark.subject] = [];
+					}
+					acc[mark.subject].push(parseFloat(mark.mark));
+					return acc;
+				}, {});
+
+				// Calculate average for each subject
+				const subjectAverages = Object.entries(marksBySubject).map(([subject, marks]) => {
+					const subjectAvg = marks.reduce((sum, mark) => sum + mark, 0) / marks.length;
+					return { subject, avg: subjectAvg };
+				});
+
+				// Find the best and worst subjects
+				const bestSubject = subjectAverages.reduce((best, current) => (current.avg > best.avg ? current : best));
+				const worstSubject = subjectAverages.reduce((worst, current) => (current.avg < worst.avg ? current : worst));
+
+				// Number of subjects
+				const numberOfSubjects = Object.keys(marksBySubject).length;
+
+				// Store results in variables
+				const avg = avgMark;
+				const best = bestSubject.subject;
+				const worst = worstSubject.subject;
+				const numSubjects = numberOfSubjects;
+
+				console.log("Average Mark:", avg);
+				console.log("Best Subject:", best);
+				console.log("Worst Subject:", worst);
+				console.log("Number of Subjects:", numSubjects);
+				
+			} else {
+				console.error("Error fetching marks:", response.message);
+			}
+		} else {
+			console.error("Failed to fetch marks. Status:", xhr.status);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error("Network error while fetching marks.");
+	};
+
+	xhr.send();
 }
 
 //-----------------------------------------------------------------
