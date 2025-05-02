@@ -458,7 +458,7 @@ function addmark() {
 	let subject = ebi("subject").value.trim();
 	let mark = parseFloat(ebi("grade").value.trim());
 	if (isNaN(mark) || mark < 0 || mark > 10) {
-		displayError("gradeError", "Please enter a valid grade between 0 and 10");
+		displayError("gradeError", "Please enter a valid mark between 0 and 10");
 
 		ebi("popupConfrimButton").disabled = false;
 		console.log("error in fields numbers"); return;
@@ -590,7 +590,7 @@ function loadGrades() {
 							ebi("popupConfrimButton").disabled = true;
 							let mark = parseFloat(ebi("grade").value.trim());
 							if (isNaN(mark) || mark < 0 || mark > 10) {
-								displayError("gradeError", "Please enter a valid grade between 0 and 10");
+								displayError("gradeError", "Please enter a valid mark between 0 and 10");
 								ebi("popupConfrimButton").disabled = false;
 								return;
 							}
@@ -1244,7 +1244,7 @@ function loadMarksbysubject() {
 								ebi("popupConfrimButton").disabled = true;
 								let mark = parseFloat(ebi("grade").value.trim());
 								if (isNaN(mark) || mark < 0 || mark > 10) {
-									displayError("gradeError", "Please enter a valid grade between 0 and 10");
+									displayError("gradeError", "Please enter a valid mark between 0 and 10");
 									ebi("popupConfrimButton").disabled = false;
 									return;
 								}
