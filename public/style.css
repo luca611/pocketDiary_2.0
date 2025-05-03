@@ -116,6 +116,21 @@ div.sideBarButtonContainer {
 	transition: all 0.3s;
 }
 
+button.deletePopubButton{
+	aspect-ratio: 1;
+    background: var(--primary-red);
+    border: none;
+    border-radius: var(--button-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.deletePopubButton:hover{
+	filter: brightness(0.9);
+	transition: all 0.3s;
+}
+
 div.topBar {
 	width: 100%;
 	height: 10rem;
@@ -1380,7 +1395,7 @@ div.containerVoti {
 div.markImgPlaceholder {
 	width: 90%;
 	aspect-ratio: 1;
-	max-width: 35rem;
+	max-width: 25rem;
 	display: flex;
 	flex-direction: column;
 }
@@ -2311,6 +2326,10 @@ blockquote {
 	}
 
 	img.emptyImg {
+		display: none;
+	}
+
+	div.markImgPlaceholder img {
 		display: none;
 	}
 }
