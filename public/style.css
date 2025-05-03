@@ -1380,7 +1380,7 @@ div.containerVoti {
 div.markImgPlaceholder {
 	width: 90%;
 	aspect-ratio: 1;
-	max-width: 35rem;
+	max-width: 25rem;
 	display: flex;
 	flex-direction: column;
 }
@@ -2311,6 +2311,10 @@ blockquote {
 	}
 
 	img.emptyImg {
+		display: none;
+	}
+
+	div.markImgPlaceholder img {
 		display: none;
 	}
 }
