@@ -243,6 +243,7 @@ function openReport() {
 					ebi("avgValue").innerText = "--";
 					ebi("avgValue").style.color = "black";
 					ebi("numGrades").innerText = "--";
+					return;
 				}
 
 				const totalMarks = marks.reduce((sum, mark) => sum + parseFloat(mark.mark), 0);
@@ -451,7 +452,7 @@ function setPopupPage(page = 0) {
 			ebi("popupConfrimButton").classList.add("hidden");
 			ebi("popupCancelButton").classList.remove("hidden");
 			ebi("popupCancelButton").innerText = "Close";
-
+			break;
 		default:
 			console.error("Invalid page number");
 			break;
