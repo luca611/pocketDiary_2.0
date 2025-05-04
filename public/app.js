@@ -1263,11 +1263,11 @@ function loadMarksbysubject() {
 						button.appendChild(icon);
 						button.onclick = () => {
 							let id = mark.id;
+							openPopup(1);
 
 							ebi("popupDeleteButton").classList.remove("hidden");
 							ebi("popupDeleteButton").onclick = () => showConfirmDelete(id, false, true);
 
-							openPopup(1);
 							ebi("gradeName").value = mark.title;
 							ebi("subject").value = mark.subject;
 							ebi("grade").value = mark.mark;
