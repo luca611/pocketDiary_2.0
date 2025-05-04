@@ -323,6 +323,7 @@ function openPopup(page = 0) {
 		ebi("subject").value = "";
 		ebi("grade").value = "";
 		ebi("gradeDate").value = "";
+		loadSubjects("subjectDataList");
 	}
 
 	if (page === 3) {
