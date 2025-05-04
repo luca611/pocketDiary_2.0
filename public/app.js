@@ -2043,6 +2043,7 @@ function deleteMark(id) {
 			loadGrades();
 			showFeedback(1, "Mark deleted");
 			closePopup();
+			loadSubjects();
 		} else {
 			loadGrades();
 			closePopup();
