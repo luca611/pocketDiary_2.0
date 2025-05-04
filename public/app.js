@@ -322,6 +322,7 @@ function openPopup(page = 0) {
 
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
+	ebi("popupDeleteButton").classList.add("hidden");
 }
 
 

@@ -116,17 +116,17 @@ div.sideBarButtonContainer {
 	transition: all 0.3s;
 }
 
-button.deletePopubButton{
+button.deletePopubButton {
 	aspect-ratio: 1;
-    background: var(--primary-red);
-    border: none;
-    border-radius: var(--button-border-radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	background: var(--primary-red);
+	border: none;
+	border-radius: var(--button-border-radius);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-button.deletePopubButton:hover{
+button.deletePopubButton:hover {
 	filter: brightness(0.9);
 	transition: all 0.3s;
 }
@@ -2289,6 +2289,7 @@ blockquote {
 	div.noteList {
 		max-width: 100%;
 		min-width: 100%;
+		height: 110%;
 	}
 
 	div.evento {
