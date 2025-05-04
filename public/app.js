@@ -1431,7 +1431,7 @@ function showDeleteButton(id) {
 function showConfirmDelete(id, iscalendar = false, isMark = false) {
 	ebi("cancelOverlay").classList.remove("hidden");
 	if (isMark) {
-		ebi("popupDeleteButton").onclick = () => deleteMark(id);
+		ebi("confirmCancellation").onclick = () => deleteMark(id);
 	} else {
 		ebi("confirmCancellation").onclick = () => deleteEvent(id, iscalendar);
 	}
@@ -2042,8 +2042,11 @@ function deleteMark(id) {
 		if (response.error == 0) {
 			loadGrades();
 			showFeedback(1, "Mark deleted");
+			closePopup();
 		} else {
 			loadGrades();
+			closePopup();
+			showFeedback(2, "Error deleting mark");
 		}
 	};
 
@@ -2080,6 +2083,8 @@ function deleteEvent(id, iscalendar = false) {
 			}
 		} else {
 			loadNotes();
+			closePopup();
+			showFeedback(2, "Error deleting event");
 		}
 	};
 
