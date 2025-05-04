@@ -464,7 +464,6 @@ function setPopupPage(page = 0) {
 //-----------------------------------------------------------------
 
 function addmark() {
-	console.log("creating mark");
 	ebi("popupConfrimButton").disabled = true;
 	let title = ebi("gradeName").value.trim();
 	let subject = ebi("subject").value.trim();
@@ -495,7 +494,6 @@ function addmark() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		console.log("response", xhr.responseText);
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
@@ -616,7 +614,6 @@ function loadGrades() {
 						ebi("grade").value = mark.mark;
 						ebi("gradeDate").value = mark.date.split("T")[0];
 						ebi("gradeError").innerText = "";
-						console.log(mark.id)
 						ebi("popupConfrimButton").innerText = "Save";
 						ebi("popupConfrimButton").onclick = () => {
 							ebi("popupConfrimButton").disabled = true;
