@@ -598,6 +598,9 @@ function loadGrades() {
 					button.onclick = () => {
 						let id = mark.id;
 						openPopup(1);
+						ebi("popupDeleteButton").classList.remove("hidden");
+						ebi("popupDeleteButton").onclick = () => showConfirmDelete(id, false, true);
+
 						ebi("gradeName").value = mark.title;
 						ebi("subject").value = mark.subject;
 						ebi("grade").value = mark.mark;
@@ -1425,9 +1428,13 @@ function showDeleteButton(id) {
 	}
 }
 
-function showConfirmDelete(id, iscalendar = false) {
+function showConfirmDelete(id, iscalendar = false, isMark = false) {
 	ebi("cancelOverlay").classList.remove("hidden");
-	ebi("confirmCancellation").onclick = () => deleteEvent(id, iscalendar);
+	if (isMark) {
+		ebi("popupDeleteButton").onclick = () => deleteMark(id);
+	} else {
+		ebi("confirmCancellation").onclick = () => deleteEvent(id, iscalendar);
+	}
 }
 
 //-----------------------------------------------------------------
@@ -2015,6 +2022,36 @@ function saveEvent(note, sentDate) {
 	};
 
 	xhr.send(JSON.stringify(data));
+}
+
+//-----------------------------------------------------------------
+
+function deleteMark(id) {
+	closeCancellation();
+	let url = serverURL + "/deleteMarkbyid";
+
+	url += `?id=` + id;
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("DELETE", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		let response = JSON.parse(xhr.responseText);
+		if (response.error == 0) {
+			loadGrades();
+			showFeedback(1, "Mark deleted");
+		} else {
+			loadGrades();
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error("Network error:", xhr);
+	};
+
+	xhr.send();
 }
 
 //-----------------------------------------------------------------
