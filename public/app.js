@@ -1273,7 +1273,6 @@ function loadMarksbysubject() {
 							ebi("grade").value = mark.mark;
 							ebi("gradeDate").value = mark.date.split("T")[0];
 							ebi("gradeError").innerText = "";
-							console.log(mark.id)
 							ebi("popupConfrimButton").innerText = "Save";
 							ebi("popupConfrimButton").onclick = () => {
 								ebi("popupConfrimButton").disabled = true;
