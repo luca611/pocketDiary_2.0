@@ -236,6 +236,15 @@ function openReport() {
 			if (response.error === "0") {
 				const marks = response.marks;
 
+				if (marks.length === 0) {
+					ebi("reportSubjectList").innerHTML = "";
+					ebi("bestSujectName").innerText = "--";
+					ebi("worstSujectName").innerText = "--";
+					ebi("avgValue").innerText = "--";
+					ebi("avgValue").style.color = "black";
+					ebi("numGrades").innerText = "--";
+				}
+
 				const totalMarks = marks.reduce((sum, mark) => sum + parseFloat(mark.mark), 0);
 				const avgMark = totalMarks / marks.length;
 
