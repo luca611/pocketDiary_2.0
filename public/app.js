@@ -1170,7 +1170,8 @@ function loadSubjects(slectID = "subjectlist") {
 			const subjectList = ebi(slectID);
 			subjectList.innerHTML = "";
 
-			if (!slectID === "subjectDataList") {
+			if (slectID === "subjectDataList") {
+			} else {
 				const allOption = document.createElement("option");
 				allOption.value = "0";
 				allOption.textContent = "All";
