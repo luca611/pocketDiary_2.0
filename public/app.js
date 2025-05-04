@@ -1424,16 +1424,16 @@ function showDeleteButton(id) {
 	}
 }
 
-function showConfirmDelete(id) {
+function showConfirmDelete(id, iscalendar = false) {
 	ebi("cancelOverlay").classList.remove("hidden");
-	ebi("confirmCancellation").onclick = () => deleteEvent(id);
+	ebi("confirmCancellation").onclick = () => deleteEvent(id, iscalendar);
 }
 
 //-----------------------------------------------------------------
 function openEvent(note, date = 0) {
 	openPopup();
 	ebi("popupDeleteButton").classList.remove("hidden");
-	ebi("popupDeleteButton").onclick = () => showConfirmDelete(note.id);
+	ebi("popupDeleteButton").onclick = () => showConfirmDelete(note.id, true);
 
 	ebi("popupConfrimButton").innerText = "Save";
 	ebi("popupConfrimButton").onclick = () => saveEvent(note, date);
@@ -2018,7 +2018,7 @@ function saveEvent(note, sentDate) {
 
 //-----------------------------------------------------------------
 
-function deleteEvent(id) {
+function deleteEvent(id, iscalendar = false) {
 	closeCancellation();
 	let url = serverURL + "/deleteNote";
 
@@ -2034,6 +2034,12 @@ function deleteEvent(id) {
 		if (response.error == 0) {
 			loadNotes();
 			showFeedback(1, "Event deleted");
+			if (iscalendar) {
+				renderCalendar();
+				let date = currentDate.getMonth() + 1 + "/" + currentDate.getDate() + "/" + currentDate.getFullYear();
+				loadCalendarNotesInfo(date);
+				closePopup();
+			}
 		} else {
 			loadNotes();
 		}
