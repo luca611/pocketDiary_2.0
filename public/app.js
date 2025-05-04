@@ -404,7 +404,8 @@ function setPopupPage(page = 0) {
 	ebi("popupConfrimButton").classList.remove("hidden");
 	ebi("popupCancelButton").classList.remove("hidden");
 	ebi("popupCancelButton").innerText = "Cancel";
-
+	ebi("popupDeleteButton").classList.add("hidden");
+	ebi("popupDeleteButton").onclick = null;
 
 	switch (page) {
 		case 0:
@@ -1431,6 +1432,9 @@ function showConfirmDelete(id) {
 //-----------------------------------------------------------------
 function openEvent(note, date = 0) {
 	openPopup();
+	ebi("popupDeleteButton").classList.remove("hidden");
+	ebi("popupDeleteButton").onclick = () => showConfirmDelete(note.id);
+
 	ebi("popupConfrimButton").innerText = "Save";
 	ebi("popupConfrimButton").onclick = () => saveEvent(note, date);
 	ebi("eventName").value = note.title;
