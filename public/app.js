@@ -1170,10 +1170,12 @@ function loadSubjects(slectID = "subjectlist") {
 			const subjectList = ebi(slectID);
 			subjectList.innerHTML = "";
 
-			const allOption = document.createElement("option");
-			allOption.value = "0";
-			allOption.textContent = "All";
-			subjectList.appendChild(allOption);
+			if (!slectID === "subjectDataList") {
+				const allOption = document.createElement("option");
+				allOption.value = "0";
+				allOption.textContent = "All";
+				subjectList.appendChild(allOption);
+			}
 
 			subjects.forEach(subject => {
 				const option = document.createElement("option");
