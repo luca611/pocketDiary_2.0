@@ -348,7 +348,7 @@ function addHour() {
 	ebi("popupConfrimButton").disabled = true;
 	let name = ebi("hourSubject").value.trim();
 	let hourNumber = parseInt(ebi("hourNumber").value.trim());
-	let day = ebi("daySelect").value;
+	let day = ebi("daySelector").value;
 	if (isNaN(hourNumber) || hourNumber < 1 || hourNumber > 12) {
 		displayError("hourError", "Please enter a valid hour between 1 and 12");
 		ebi("popupConfrimButton").disabled = false;
@@ -374,6 +374,7 @@ function addHour() {
 				loadHours();
 				closePopup();
 			} else {
+				ebi("popupConfrimButton").disabled = false;
 				displayError("hourError", response.message);
 			}
 		} else {
@@ -478,7 +479,7 @@ function openPopupWithHourInfo(hour) {
 	document.getElementById("popupDeleteButton").classList.remove("hidden");
 	document.getElementById("popupDeleteButton").onclick = () => showConfirmDelete(hour.id, false, false, true);
 	document.getElementById("hourError").innerText = "";
-	ebi("popupConfrimButton").innerText = "Upodate";
+	ebi("popupConfrimButton").innerText = "Update";
 	ebi("popupConfrimButton").onclick = () => {
 		ebi("popupConfrimButton").disabled = true;
 		let name = ebi("hourSubject").value.trim();
@@ -1666,6 +1667,7 @@ function showConfirmDelete(id, iscalendar = false, isMark = false, isSchedule = 
 }
 
 function deleteSchedule(id) {
+	closeCancellation();
 	const url = serverURL + "/deleteHour?id=" + id;
 	const data = { id };
 	const xhr = new XMLHttpRequest();
