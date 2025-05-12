@@ -23,6 +23,11 @@ export async function addHour(req, res) {
         return;
     }
 
+    if (hour <= 0) {
+        sendError(res, "Hour must be positive");
+        return;
+    }
+
     if (name.length > HOUR_MAXNAME_LENGTH) {
         sendError(res, "Name too long");
         return;
@@ -157,13 +162,20 @@ export async function updateHour(req, res) {
         return;
     }
 
-    const { id, name, day } = req.body;
+    const { id, name, day, hour } = req.body;
     let studentId = req.session.userid;
 
-    if (!id || !name || !day) {
+    if (!id || !name || !day || !hour) {
         sendError(res, "Missing data");
         return;
     }
+
+    if (hour <= 0) {
+        sendError(res, "Hour must be positive");
+        return;
+    }
+
+
 
     if (name.length > HOUR_MAXNAME_LENGTH) {
         sendError(res, "Name too long");
@@ -192,8 +204,8 @@ export async function updateHour(req, res) {
         return;
     }
 
-    const query = "UPDATE hours SET name = $1, day = $2 WHERE id = $3 AND studentid = $4";
-    const values = [encryptedname, dayValue, id, studentId];
+    const query = "UPDATE hours SET name = $1, day = $2, hour = $3 WHERE id = $4 AND studentid = $5";
+    const values = [encryptedname, dayValue, hour, id, studentId];
 
     let connection = null;
     try {
@@ -211,7 +223,7 @@ export async function updateHour(req, res) {
     } catch (error) {
         console.log(error);
         sendError(res, "server internal error, try again");
-        closeDbConnection(connection)
+        closeDbConnection(connection);
         return;
     }
     sendSuccess(res, "Hour updated successfully");
