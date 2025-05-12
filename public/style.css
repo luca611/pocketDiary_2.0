@@ -2142,6 +2142,7 @@ div.schedulebody {
 	display: flex;
 	flex-direction: column;
 	padding: 0.3rem;
+	gap: 0.5rem;
 }
 
 div.message.ai {
