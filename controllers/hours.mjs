@@ -113,7 +113,7 @@ export async function addHour(req, res) {
         return;
     }
 
-    const query = "INSERT INTO hours (studentid, day, hour, name) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO hours (studentid, day, hour, name) VALUES ($1, $2, $3, $4)";
     const values = [studentId, dayValue, hour, encryptedname];
     let connection = null;
     try {
@@ -124,7 +124,10 @@ export async function addHour(req, res) {
         return;
     }
     try {
-        await connection.query(query, values);
+        await connection.query(query, values).catch(error => {
+            console.error("Query Error:", error.message);
+            throw error;
+        });
     } catch (error) {
         console.log(error);
         sendError(res, "server internal error, try again");
