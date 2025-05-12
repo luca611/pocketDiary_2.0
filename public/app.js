@@ -477,6 +477,8 @@ function openPopupWithHourInfo(hour) {
 	document.getElementById("hourNumber").value = hour.hour;
 	document.getElementById("popupDeleteButton").classList.remove("hidden");
 	document.getElementById("popupDeleteButton").onclick = () => showConfirmDelete(hour.id, false, false, true);
+	document.getElementById("hourError").innerText = "";
+	ebi("popupConfrimButton").innerText = "Upodate";
 	ebi("popupConfrimButton").onclick = () => {
 		ebi("popupConfrimButton").disabled = true;
 		let name = ebi("hourSubject").value.trim();
@@ -525,13 +527,6 @@ function updateHour(id, name, hour) {
 	xhr.send(JSON.stringify(data));
 }
 
-function openPopupWithHourInfo(hour) {
-	openPopup(4); // Assuming popup page 4 is for hour editing
-	document.getElementById("hourSubject").value = hour.name;
-	document.getElementById("hourNumber").value = hour.hour;
-	document.getElementById("popupDeleteButton").classList.remove("hidden");
-	document.getElementById("popupDeleteButton").onclick = () => showConfirmDelete(hour.id, false, false);
-}
 //-----------------------------------------------------------------
 
 function closePopup() {
