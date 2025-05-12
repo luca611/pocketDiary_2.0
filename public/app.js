@@ -412,7 +412,7 @@ function decrementDay() {
 function updateDayName() {
 	const daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 	const dayName = daysofweek[currentDay];
-	ebi("dayNameDisplay").innerText = dayName; // Assuming there's an element with id "dayNameDisplay"
+	ebi("dayname").innerText = dayName; // Assuming there's an element with id "dayNameDisplay"
 }
 
 function loadHours(hour = -1) {
@@ -442,6 +442,24 @@ function loadHours(hour = -1) {
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === "0") {
+				if (response.hours.length === 0) {
+					scheduleList.classList.add("showplaceholder");
+
+					let emptyMessage = document.createElement("div");
+					emptyMessage.classList.add("markImgPlaceholder");
+
+					let img = document.createElement("img");
+					img.src = "./resources/imgs/hourLogo.svg";
+					img.alt = "empty hours";
+
+					let text = document.createElement("p");
+					text.innerText = "No hours available yet, add some!";
+					emptyMessage.appendChild(img);
+					emptyMessage.appendChild(text);
+					scheduleList.appendChild(emptyMessage);
+					return;
+				}
+
 				response.hours.forEach(hour => {
 					const hourContainer = document.createElement("div");
 					hourContainer.classList.add("hourContainer");
