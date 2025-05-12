@@ -33,7 +33,7 @@ export async function getHours(req, res) {
         return;
     }
 
-    const query = "SELECT * FROM hours WHERE studentid = ? AND day = ?";
+    const query = "SELECT * FROM hours WHERE studentid = $1 AND day = $2";
     const values = [studentId, dayValue];
 
     let connection = null;
