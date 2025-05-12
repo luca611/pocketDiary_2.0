@@ -2116,12 +2116,21 @@ p.hourdescription {
 	font-family: 'Itim';
 }
 
+p.hourTitle {
+	font-size: 1.4rem;
+}
+
 button.scrollMenuSchedule {
 	aspect-ratio: 1;
 	background: var(--primary-color);
 	width: 2.4rem;
 	border: none;
 	border-radius: var(--button-border-radius);
+}
+
+button.scrollMenuSchedule:hover {
+	filter: brightness(0.9);
+	transition: all 0.3s;
 }
 
 div.schedulebody {
