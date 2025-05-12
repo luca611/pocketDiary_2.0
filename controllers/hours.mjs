@@ -1,5 +1,5 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
-import { decryptMessage } from "../security/encryption.mjs";
+import { decryptMessage, encryptMessage } from "../security/encryption.mjs";
 import { sendError, sendNotLoggedIn, sendSuccess } from "../utils/returns.mjs";
 import { HOUR_MAXENCNAME_LENGTH, HOUR_MAXNAME_LENGTH } from "../utils/vars.mjs";
 
