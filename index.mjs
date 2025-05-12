@@ -17,6 +17,7 @@ import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 import { validateEmail } from './utils/validator.mjs';
 import { addMark, deleteAllMarks, deleteMark, getMarks, getMarksBySubject, getSubjects, updateMark } from './controllers/marks.mjs';
+import { addHour, getHours } from './controllers/hours.mjs';
 
 process.on('uncaughtException', function (err) {
     console.error("▶ An error occurred while processing the request: ", err);
@@ -202,6 +203,12 @@ app.get('/', (req, res) => {
     sendSuccess(res, availableRoutes);
 });
 
+
+/*
+    hours routes
+*/
+app.get('/getHours', getHours);
+app.post('addHour', addHour);
 
 
 app.listen(PORT, () => {

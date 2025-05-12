@@ -9,7 +9,7 @@ export async function getHours(req, res) {
         return;
     }
 
-    const { day } = req.body;
+    const { day } = req.query;
     let studentId = req.session.userid;
 
     if (!day) {
