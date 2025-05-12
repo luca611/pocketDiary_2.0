@@ -351,7 +351,7 @@
                 <div class="upperschedule">
                     <p id="dayname">TODAY</p>
                     <div>
-                        <button class="scrollMenuSchedule">
+                        <button class="scrollMenuSchedule" onclick="decrementDay()">
                             <img src="./resources/icons/prev.svg">
                         </button>
                         <button class="scrollMenuSchedule">
@@ -359,7 +359,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="schedulebody" id="schedulelist">
+                <div class="schedulebody" id="schedulelist" onclick="incrementDay()">
                     <div class="hourContainer">
                         <div class="eventButtonContainer">
                             <button class="eventButton">

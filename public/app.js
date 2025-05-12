@@ -393,6 +393,25 @@ function addHour() {
 
 	xhr.send(JSON.stringify(data));
 }
+let currentDay = today.getDay() - 1;
+
+function incrementDay() {
+	currentDay = (currentDay + 1) % 7;
+	updateDayName();
+	loadHours(currentDay + 1);
+}
+
+function decrementDay() {
+	currentDay = (currentDay - 1 + 7) % 7;
+	updateDayName();
+	loadHours(currentDay + 1);
+}
+
+function updateDayName() {
+	const daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+	const dayName = daysofweek[currentDay];
+	ebi("dayNameDisplay").innerText = dayName; // Assuming there's an element with id "dayNameDisplay"
+}
 
 function loadHours(hour = -1) {
 	const daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -401,10 +420,10 @@ function loadHours(hour = -1) {
 
 	if (hour === -1) {
 		const today = new Date();
-		dayName = daysofweek[today.getDay() - 1]; // Adjusting for 0-based index
+		dayName = daysofweek[today.getDay() - 1];
 		console.log("Today's day is:", dayName);
 	} else {
-		dayName = daysofweek[hour - 1]; // Adjusting for 1-based hour
+		dayName = daysofweek[hour - 1];
 		console.log("Selected day is:", dayName);
 	}
 
