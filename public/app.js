@@ -479,6 +479,7 @@ function openPopupWithHourInfo(hour) {
 	openPopup(4);
 	document.getElementById("hourSubject").value = hour.name;
 	document.getElementById("hourNumber").value = hour.hour;
+	document.getElementById("daySelector").value = hour.day;
 	document.getElementById("popupDeleteButton").classList.remove("hidden");
 	document.getElementById("popupDeleteButton").onclick = () => showConfirmDelete(hour.id, false, false, true);
 	document.getElementById("hourError").innerText = "";
@@ -497,7 +498,9 @@ function openPopupWithHourInfo(hour) {
 			ebi("popupConfrimButton").disabled = false;
 			return;
 		}
-		updateHour(hour.id, name, hourNumber);
+
+		let day = ebi("daySelector").value;
+		updateHour(hour.id, name, hourNumber, day);
 	};
 }
 
