@@ -242,7 +242,7 @@ export async function deleteHour(req, res) {
         return;
     }
 
-    const { id } = req.body;
+    const { id } = req.query;
     let studentId = req.session.userid;
 
     if (!id) {
