@@ -2135,7 +2135,7 @@ button.scrollMenuSchedule:hover {
 
 div.schedulebody {
 	background: var(--minor-color);
-	height: calc(100% - 3rem);
+	height: calc(100% - 3.5rem);
 	margin-top: 0.5rem;
 	border-radius: var(--general-border-radius);
 	position: relative;
