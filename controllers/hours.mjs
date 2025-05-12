@@ -1,6 +1,6 @@
 import { closeDbConnection, connectToDb } from "../db/dbClinet.mjs";
 import { decryptMessage } from "../security/encryption.mjs";
-import { sendError, sendSuccess } from "../utils/returns.mjs";
+import { sendError, sendNotLoggedIn, sendSuccess } from "../utils/returns.mjs";
 import { HOUR_MAXENCNAME_LENGTH, HOUR_MAXNAME_LENGTH } from "../utils/vars.mjs";
 
 export async function getHours(req, res) {
