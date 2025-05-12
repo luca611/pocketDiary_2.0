@@ -2083,6 +2083,57 @@ div.message {
 	font-size: var(--body-size);
 }
 
+div.uppershedule {
+	display: flex;
+	justify-content: space-between;
+	font-family: 'Inter';
+	font-size: var(--title-size);
+	align-items: center;
+}
+
+div.hourContainer {
+	width: 100%;
+	background: white;
+	padding: 0.4rem;
+	border-radius: var(--general-border-radius);
+	display: flex;
+	flex-direction: row;
+	font-family: 'Inter';
+}
+
+div.hourinfoContainer {
+	width: 100%;
+	margin-right: 1.2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	flex-wrap: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+p.hourdescription {
+	font-family: 'Itim';
+}
+
+button.scrollMenuSchedule {
+	aspect-ratio: 1;
+	background: var(--primary-color);
+	width: 2.4rem;
+	border: none;
+	border-radius: var(--button-border-radius);
+}
+
+div.schedulebody {
+	background: var(--minor-color);
+	height: calc(100% - 3rem);
+	margin-top: 0.5rem;
+	border-radius: var(--general-border-radius);
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
 div.message.ai {
 	background-color: var(--primary-color);
 	align-self: flex-start;

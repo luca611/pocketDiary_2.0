@@ -1121,7 +1121,7 @@ function toSchedule() {
 	ebi("hours").classList.remove("hidden");
 	ebi("pageTitle").innerText = "Schedule";
 	ebi("decoratedTitle").innerText = "";
-	currentPage = 6;
+	currentPage = 5;
 	updateActivePageLink();
 	closeSidebar();
 }
