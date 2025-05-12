@@ -538,7 +538,7 @@ function loadGrades() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		
+
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === "0") {
@@ -667,7 +667,7 @@ function loadGrades() {
 	};
 
 	xhr.onerror = function () {
-		isLoadingGrades = false; 
+		isLoadingGrades = false;
 		console.error("Network error while fetching marks.");
 	};
 
@@ -1115,6 +1115,16 @@ function toGrades() {
 	loadSubjects();
 }
 
+function toSchedule() {
+	setPopupPage(5);
+	hideAllPages();
+	ebi("hours").classList.remove("hidden");
+	ebi("pageTitle").innerText = "Schedule";
+	ebi("decoratedTitle").innerText = "";
+	currentPage = 6;
+	updateActivePageLink();
+	closeSidebar();
+}
 //-----------------------------------------------------------------
 
 function toCalendar() {
