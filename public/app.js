@@ -59,6 +59,9 @@ let tertiaryColor = rootStyles.getPropertyValue("--minor-color");
 
 let currentDate = new Date();
 
+let today = new Date();
+let currentDay = today.getDay() - 1;
+
 //-----------------------------------------------------------------
 
 /**
@@ -393,7 +396,6 @@ function addHour() {
 
 	xhr.send(JSON.stringify(data));
 }
-let currentDay = today.getDay() - 1;
 
 function incrementDay() {
 	currentDay = (currentDay + 1) % 7;
