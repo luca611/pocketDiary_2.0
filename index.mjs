@@ -208,7 +208,7 @@ app.get('/', (req, res) => {
     hours routes
 */
 app.get('/getHours', getHours);
-app.post('addHour', addHour);
+app.post('/addHour', addHour);
 
 
 app.listen(PORT, () => {
