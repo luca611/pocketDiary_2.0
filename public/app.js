@@ -799,6 +799,7 @@ function loadGrades() {
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					container.appendChild(emptyMessage);
+					isLoadingGrades = false;
 					return;
 				} else {
 					container.classList.remove("showplaceholder");
@@ -897,7 +898,7 @@ function loadGrades() {
 					container.appendChild(outerWrap);
 					isLoadingGrades = false;
 				});
-
+				isLoadingGrades = false;
 				loadSubjects();
 			} else {
 				console.error("Error fetching marks:", response.message);
