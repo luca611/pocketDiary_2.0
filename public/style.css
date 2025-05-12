@@ -2083,7 +2083,7 @@ div.message {
 	font-size: var(--body-size);
 }
 
-div.uppershedule {
+div.upperschedule {
 	display: flex;
 	justify-content: space-between;
 	font-family: 'Inter';
@@ -2132,6 +2132,7 @@ div.schedulebody {
 	position: relative;
 	display: flex;
 	flex-direction: column;
+	padding: 0.3rem;
 }
 
 div.message.ai {
