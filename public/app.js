@@ -375,7 +375,7 @@ function addHour() {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error == '0') {
 				showFeedback(0, "Hour added successfully");
-				loadHours();
+				loadHours(currentDay + 1);
 				closePopup();
 				ebi("popupConfrimButton").disabled = false;
 			} else {
@@ -558,7 +558,7 @@ function updateHour(id, name, hour, day) {
 			if (response.error == '0') {
 				ebi("popupConfrimButton").disabled = false;
 				showFeedback(0, "Hour updated successfully");
-				loadHours();
+				loadHours(currentDay + 1);
 				closePopup();
 			} else {
 				displayError("hourError", response.message);
@@ -1365,7 +1365,7 @@ function toSchedule() {
 	currentPage = 5;
 	updateActivePageLink();
 	closeSidebar();
-	loadHours();
+	loadHours(currentDay + 1);
 }
 //-----------------------------------------------------------------
 
@@ -1728,7 +1728,7 @@ function deleteSchedule(id) {
 			if (response.error == '0') {
 				showFeedback(0, "hour deleted successfully");
 				closePopup();
-				loadHours();
+				loadHours(currentDay + 1);
 			} else {
 				displayError("hourError", response.message);
 			}
