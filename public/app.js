@@ -523,12 +523,7 @@ function addmark() {
 	ebi("popupConfrimButton").disabled = false;
 }
 
-let isLoadingGrades = false;
-
 function loadGrades() {
-	if (isLoadingGrades) return; // Avoid execution if the function is already running
-	isLoadingGrades = true;
-
 	let container = ebi("containerVoti");
 	container.innerHTML = "";
 	let url = serverURL + "/getMarks?t=" + Date.now();
@@ -538,7 +533,6 @@ function loadGrades() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === "0") {
@@ -654,7 +648,6 @@ function loadGrades() {
 					outerWrap.appendChild(innerWrap);
 
 					container.appendChild(outerWrap);
-					isLoadingGrades = false;
 				});
 
 				loadSubjects();
@@ -667,7 +660,6 @@ function loadGrades() {
 	};
 
 	xhr.onerror = function () {
-		isLoadingGrades = false; 
 		console.error("Network error while fetching marks.");
 	};
 
