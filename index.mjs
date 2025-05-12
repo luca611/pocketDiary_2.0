@@ -175,10 +175,17 @@ app.get('/getNoteById', getNoteById);
 app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
+/*
+    hours routes
+*/
+app.get('/getHours', getHours);
+app.post('/addHour', addHour);
+
 
 /*
     marks routes
 */
+
 
 app.post('/addMark', addMark);
 app.get('/getMarks', getMarks);
@@ -204,11 +211,6 @@ app.get('/', (req, res) => {
 });
 
 
-/*
-    hours routes
-*/
-app.get('/getHours', getHours);
-app.post('/addHour', addHour);
 
 
 app.listen(PORT, () => {
