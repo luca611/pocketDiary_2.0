@@ -345,6 +345,7 @@ function openPopup(page = 0) {
 
 
 function addHour() {
+	ebi("hourError").innerText = "";
 	ebi("popupConfrimButton").disabled = true;
 	let name = ebi("hourSubject").value.trim();
 	let hourNumber = parseInt(ebi("hourNumber").value.trim());
@@ -373,9 +374,11 @@ function addHour() {
 				showFeedback(0, "Hour added successfully");
 				loadHours();
 				closePopup();
+				ebi("popupConfrimButton").disabled = false;
 			} else {
 				ebi("popupConfrimButton").disabled = false;
 				displayError("hourError", response.message);
+				ebi("popupConfrimButton").disabled = false;
 			}
 		} else {
 			displayError("hourError", "Failed to add hour. Please try again.");
@@ -499,6 +502,7 @@ function openPopupWithHourInfo(hour) {
 }
 
 function updateHour(id, name, hour) {
+	ebi("hourError").innerText = "";
 	const url = serverURL + "/updateHour";
 	const data = { id, name, hour };
 	const xhr = new XMLHttpRequest();
@@ -515,6 +519,7 @@ function updateHour(id, name, hour) {
 				closePopup();
 			} else {
 				displayError("hourError", response.message);
+				ebi("popupConfrimButton").disabled = false;
 			}
 		} else {
 			displayError("hourError", "Failed to update hour. Please try again.");
