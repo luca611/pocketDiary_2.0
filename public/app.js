@@ -331,11 +331,20 @@ function openPopup(page = 0) {
 		ebi("popUpBody").classList.add("large");
 	}
 
+	if (page === 4) {
+		ebi("popupConfrimButton").innerText = "add";
+		ebi("popupConfrimButton").onclick = addHour;
+	}
+
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
 	ebi("popupDeleteButton").classList.add("hidden");
 }
 
+
+function addHour() {
+	console.log("adding");
+}
 
 //-----------------------------------------------------------------
 
@@ -453,6 +462,8 @@ function setPopupPage(page = 0) {
 			ebi("popupConfrimButton").classList.add("hidden");
 			ebi("popupCancelButton").classList.remove("hidden");
 			ebi("popupCancelButton").innerText = "Close";
+			break;
+		case 7:
 			break;
 		default:
 			console.error("Invalid page number");
@@ -1116,7 +1127,7 @@ function toGrades() {
 }
 
 function toSchedule() {
-	setPopupPage(5);
+	setPopupPage(7);
 	hideAllPages();
 	ebi("hours").classList.remove("hidden");
 	ebi("pageTitle").innerText = "Schedule";
@@ -1124,6 +1135,7 @@ function toSchedule() {
 	currentPage = 5;
 	updateActivePageLink();
 	closeSidebar();
+	loadHours();
 }
 //-----------------------------------------------------------------
 

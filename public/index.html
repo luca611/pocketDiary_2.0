@@ -182,7 +182,7 @@
                         <img class="icon" src="resources/icons/grade.svg" alt="">
                         <b clas="buttonText">Marks</b>
                     </button>
-                    <button class="quickButton">
+                    <button class="quickButton" onclick="toSchedule()">
                         <img class="icon" src="resources/icons/clock.svg" alt="">
                         <b class="buttonText">Schedule</b>
                     </button>
@@ -342,6 +342,12 @@
             </div>
 
             <div id="hours" class="section hidden">
+                <div class="addButtonContainer" id="addButtonContainer">
+                    <button class="addButton" onclick="openPopup(3)">
+                        <img class="addIcon" src="resources/icons/add.svg" alt="add">
+                    </button>
+                </div>
+
                 <div class="upperschedule">
                     <p id="dayname">TODAY</p>
                     <div>
@@ -700,6 +706,33 @@
                     <div class="chartContainer">
                         <canvas id="chart"></canvas>
                     </div>
+                </div>
+
+                <div id="schedule" class="bodyContainer hidden">
+                    <div class="fillContainer">
+                        Hour subject
+                    </div>
+                    <div class="inputContainer">
+                        <input class="inputField" type="text" id="hourSubject" placeholder="biology">
+                    </div>
+                    <div class="fillContainer">
+                        Hour
+                    </div>
+                    <div class="inputContainer">
+                        <input class="inputField" type="number" id="hourNumber" min="1" max="24" placeholder="1">
+                    </div>
+                    <div class="fillContainer">
+                        Day
+                    </div>
+                    <select id="daySelector" class="subjectSelector">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
                 </div>
             </div>
             <!-- lower part of the pop up same as always-->
