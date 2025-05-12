@@ -116,7 +116,7 @@ export async function getHours(req, res) {
         return;
     }
 
-    const query = "SELECT * FROM hours WHERE studentid = $1 AND day = $2";
+    const query = "SELECT * FROM hours WHERE studentid = $1 AND day = $2 order by hour asc";
     const values = [studentId, dayValue];
 
     let connection = null;
@@ -250,7 +250,7 @@ export async function deleteHour(req, res) {
         return;
     }
 
-    const query = "DELETE FROM hours WHERE id = $1 AND studentid = $2 order by hour asc";
+    const query = "DELETE FROM hours WHERE id = $1 AND studentid = $2";
     const values = [id, studentId];
 
     let connection = null;

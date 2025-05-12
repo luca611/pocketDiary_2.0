@@ -504,10 +504,10 @@ function openPopupWithHourInfo(hour) {
 	};
 }
 
-function updateHour(id, name, hour) {
+function updateHour(id, name, hour, day) {
 	ebi("hourError").innerText = "";
 	const url = serverURL + "/updateHour";
-	const data = { id, name, hour };
+	const data = { id, name, hour, day };
 	const xhr = new XMLHttpRequest();
 	xhr.open("PUT", url, true);
 	xhr.withCredentials = true;
