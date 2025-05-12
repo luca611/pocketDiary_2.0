@@ -460,6 +460,7 @@ function loadHours(hour = -1) {
 					return;
 				}
 
+				scheduleList.classList.remove("showplaceholder");
 				response.hours.forEach(hour => {
 					const hourContainer = document.createElement("div");
 					hourContainer.classList.add("hourContainer");
