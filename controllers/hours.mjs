@@ -45,6 +45,7 @@ export async function getHours(req, res) {
         return;
     }
 
+    let results;
     try {
         results = await connection.query(query, values);
     } catch (error) {
