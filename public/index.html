@@ -343,7 +343,7 @@
 
             <div id="hours" class="section hidden">
                 <div class="addButtonContainer" id="addButtonContainer">
-                    <button class="addButton" onclick="openPopup(3)">
+                    <button class="addButton" onclick="openPopup(4)">
                         <img class="addIcon" src="resources/icons/add.svg" alt="add">
                     </button>
                 </div>
@@ -359,7 +359,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="schedulebody">
+                <div class="schedulebody" id="schedulelist">
                     <div class="hourContainer">
                         <div class="eventButtonContainer">
                             <button class="eventButton">
@@ -724,7 +724,7 @@
                     <div class="fillContainer">
                         Day
                     </div>
-                    <select id="daySelector" class="subjectSelector">
+                    <select id="daySelector" class="subjectSelector hourdayselect">
                         <option value="Monday">Monday</option>
                         <option value="Tuesday">Tuesday</option>
                         <option value="Wednesday">Wednesday</option>
@@ -733,6 +733,7 @@
                         <option value="Saturday">Saturday</option>
                         <option value="Sunday">Sunday</option>
                     </select>
+                    <p class="error" id="hourerror"></p>
                 </div>
             </div>
             <!-- lower part of the pop up same as always-->

@@ -2190,6 +2190,12 @@ p.warning {
 	font-weight: bold;
 }
 
+select.hourdayselect {
+	max-height: 4rem;
+	min-height: 3rem;
+	width: 100%;
+}
+
 
 @keyframes slideIn {
 	0% {
