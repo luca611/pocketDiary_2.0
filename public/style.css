@@ -2083,6 +2083,70 @@ div.message {
 	font-size: var(--body-size);
 }
 
+div.upperschedule {
+	display: flex;
+	justify-content: space-between;
+	font-family: 'Inter';
+	font-size: var(--title-size);
+	align-items: center;
+}
+
+div.hourContainer {
+	width: 100%;
+	background: white;
+	padding: 0.4rem;
+	border-radius: var(--general-border-radius);
+	display: flex;
+	flex-direction: row;
+	font-family: 'Inter';
+}
+
+div.hourinfoContainer {
+	width: 100%;
+	margin-left: 1.2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	flex-wrap: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+p.hourdescription {
+	font-family: 'Itim';
+}
+
+p.hourTitle {
+	font-size: 1.4rem;
+}
+
+button.scrollMenuSchedule {
+	aspect-ratio: 1;
+	background: var(--primary-color);
+	width: 2.4rem;
+	border: none;
+	border-radius: var(--button-border-radius);
+}
+
+button.scrollMenuSchedule:hover {
+	filter: brightness(0.9);
+	transition: all 0.3s;
+}
+
+div.schedulebody {
+	background: var(--minor-color);
+	height: calc(100% - 3.3rem);
+	margin-top: 0.5rem;
+	border-radius: var(--general-border-radius);
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 0.3rem;
+	gap: 0.5rem;
+	overflow-y: auto;
+	padding-bottom: 5rem;
+}
+
 div.message.ai {
 	background-color: var(--primary-color);
 	align-self: flex-start;
@@ -2127,6 +2191,12 @@ p.warning {
 	color: var(--primary-yellow);
 	margin: 0;
 	font-weight: bold;
+}
+
+select.hourdayselect {
+	max-height: 4rem;
+	min-height: 3rem;
+	width: 100%;
 }
 
 
@@ -2289,7 +2359,7 @@ blockquote {
 	div.noteList {
 		max-width: 100%;
 		min-width: 100%;
-		height: 110%;
+		height: 105%;
 	}
 
 	div.evento {

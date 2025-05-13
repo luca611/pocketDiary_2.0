@@ -17,6 +17,7 @@ import { connectToDb, executeQuery } from './db/dbClinet.mjs';
 import { getChatCompletion, setStudyPlan } from './PocketAi/chat.mjs';
 import { validateEmail } from './utils/validator.mjs';
 import { addMark, deleteAllMarks, deleteMark, getMarks, getMarksBySubject, getSubjects, updateMark } from './controllers/marks.mjs';
+import { addHour, deleteHour, getHours, updateHour } from './controllers/hours.mjs';
 
 process.on('uncaughtException', function (err) {
     console.error("▶ An error occurred while processing the request: ", err);
@@ -174,16 +175,28 @@ app.get('/getNoteById', getNoteById);
 app.put('/updateNote', updateNote);
 
 app.delete('/deleteNote', deleteNote);
+/*
+    hours routes
+*/
+app.get('/getHours', getHours);
+
+app.post('/addHour', addHour);
+
+app.put('/updateHour', updateHour);
+
+app.delete('/deleteHour', deleteHour);
 
 /*
     marks routes
 */
-
 app.post('/addMark', addMark);
+
 app.get('/getMarks', getMarks);
 app.get('/getMarksBySubject', getMarksBySubject);
 app.get('/getSubjects', getSubjects);
+
 app.put('/updateMark', updateMark);
+
 app.delete('/deleteMarkbyid', deleteMark);
 app.delete('/deleteAllMarks', deleteAllMarks);
 
@@ -201,6 +214,7 @@ app.get('/', (req, res) => {
     const availableRoutes = getAvailableRoutes(app);
     sendSuccess(res, availableRoutes);
 });
+
 
 
 

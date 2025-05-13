@@ -59,6 +59,9 @@ let tertiaryColor = rootStyles.getPropertyValue("--minor-color");
 
 let currentDate = new Date();
 
+let today = new Date();
+let currentDay = today.getDay() - 1;
+
 //-----------------------------------------------------------------
 
 /**
@@ -331,11 +334,247 @@ function openPopup(page = 0) {
 		ebi("popUpBody").classList.add("large");
 	}
 
+	if (page === 4) {
+		ebi("popupConfrimButton").innerText = "add";
+		ebi("popupConfrimButton").onclick = addHour;
+		ebi("hourSubject").value = "";
+		ebi("hourNumber").value = "";
+	}
+
 	ebi("popup").classList.add("open");
 	ebi("overlayPopUp").classList.add("visible");
 	ebi("popupDeleteButton").classList.add("hidden");
 }
 
+
+function addHour() {
+	ebi("hourError").innerText = "";
+	ebi("popupConfrimButton").disabled = true;
+	let name = ebi("hourSubject").value.trim();
+	let hourNumber = parseInt(ebi("hourNumber").value.trim());
+	let day = ebi("daySelector").value;
+	if (isNaN(hourNumber) || hourNumber < 1 || hourNumber > 12) {
+		displayError("hourError", "Please enter a valid hour between 1 and 12");
+		ebi("popupConfrimButton").disabled = false;
+		return;
+	}
+	if (!name) {
+		displayError("hourError", "Please fill in all fields");
+		ebi("popupConfrimButton").disabled = false;
+		return;
+	}
+	const url = serverURL + "/addHour";
+	const data = { name, hour: hourNumber, day };
+	const xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error == '0') {
+				showFeedback(0, "Hour added successfully");
+				loadHours(currentDay + 1);
+				closePopup();
+				ebi("popupConfrimButton").disabled = false;
+			} else {
+				ebi("popupConfrimButton").disabled = false;
+				displayError("hourError", response.message);
+				ebi("popupConfrimButton").disabled = false;
+			}
+		} else {
+			displayError("hourError", "Failed to add hour. Please try again.");
+			ebi("popupConfrimButton").disabled = false;
+		}
+	};
+
+	xhr.onerror = function () {
+		displayError("hourError", "Network error. Please try again.");
+		ebi("popupConfrimButton").disabled = false;
+	};
+
+	xhr.send(JSON.stringify(data));
+}
+
+function incrementDay() {
+	currentDay = (currentDay + 1) % 7;
+	updateDayName();
+	loadHours(currentDay + 1);
+}
+
+function decrementDay() {
+	currentDay = (currentDay - 1 + 7) % 7;
+	updateDayName();
+	loadHours(currentDay + 1);
+}
+
+function updateDayName() {
+	const daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+	const dayName = daysofweek[currentDay];
+	ebi("dayname").innerText = dayName; // Assuming there's an element with id "dayNameDisplay"
+}
+
+function loadHours(hour = -1) {
+	const daysofweek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+	let dayName;
+
+	if (hour === -1) {
+		const today = new Date();
+		dayName = daysofweek[today.getDay() - 1];
+		console.log("Today's day is:", dayName);
+	} else {
+		dayName = daysofweek[hour - 1];
+		console.log("Selected day is:", dayName);
+	}
+
+	const scheduleList = document.getElementById("schedulelist");
+	scheduleList.innerHTML = "";
+
+	const url = "./gethours?day=" + dayName + "&t=" + Date.now(); // Add timestamp to prevent caching
+
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.setRequestHeader("Content-Type", "application/json");
+
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error === "0") {
+				if (response.hours.length === 0) {
+					scheduleList.classList.add("showplaceholder");
+
+					let emptyMessage = document.createElement("div");
+					emptyMessage.classList.add("markImgPlaceholder");
+
+					let img = document.createElement("img");
+					img.src = "./resources/imgs/hourLogo.svg";
+					img.alt = "empty hours";
+
+					let text = document.createElement("p");
+					text.innerText = "No hours available yet, add some!";
+					emptyMessage.appendChild(img);
+					emptyMessage.appendChild(text);
+					scheduleList.appendChild(emptyMessage);
+					return;
+				}
+
+				scheduleList.classList.remove("showplaceholder");
+				response.hours.forEach(hour => {
+					const hourContainer = document.createElement("div");
+					hourContainer.classList.add("hourContainer");
+					hourContainer.id = hour.id;
+
+					const eventButtonContainer = document.createElement("div");
+					eventButtonContainer.classList.add("eventButtonContainer");
+
+					const eventButton = document.createElement("button");
+					eventButton.classList.add("eventButton");
+
+					const eventIcon = document.createElement("img");
+					eventIcon.classList.add("eventIcon");
+					eventIcon.src = "resources/icons/edit.svg";
+					eventIcon.alt = "edit";
+					eventIcon.onclick = () => openPopupWithHourInfo(hour);
+
+					eventButton.appendChild(eventIcon);
+					eventButtonContainer.appendChild(eventButton);
+
+					const hourInfoContainer = document.createElement("div");
+					hourInfoContainer.classList.add("hourinfoContainer");
+
+					const hourTitle = document.createElement("p");
+					hourTitle.classList.add("hourTitle");
+					hourTitle.textContent = hour.hour + "° hour";
+
+					const hourDescription = document.createElement("p");
+					hourDescription.classList.add("hourdescription");
+					hourDescription.textContent = hour.name;
+
+					hourInfoContainer.appendChild(hourTitle);
+					hourInfoContainer.appendChild(hourDescription);
+
+					hourContainer.appendChild(eventButtonContainer);
+					hourContainer.appendChild(hourInfoContainer);
+
+					scheduleList.appendChild(hourContainer);
+				});
+			} else {
+				console.error("Error fetching hours:", response.message);
+			}
+		} else {
+			console.error("Failed to fetch hours. Status:", xhr.status);
+		}
+	};
+
+	xhr.onerror = function () {
+		console.error("Network error while fetching hours.");
+	};
+
+	xhr.send();
+}
+
+function openPopupWithHourInfo(hour) {
+	openPopup(4);
+	document.getElementById("hourSubject").value = hour.name;
+	document.getElementById("hourNumber").value = hour.hour;
+	document.getElementById("daySelector").value = hour.day;
+	document.getElementById("popupDeleteButton").classList.remove("hidden");
+	document.getElementById("popupDeleteButton").onclick = () => showConfirmDelete(hour.id, false, false, true);
+	document.getElementById("hourError").innerText = "";
+	ebi("popupConfrimButton").innerText = "Update";
+	ebi("popupConfrimButton").onclick = () => {
+		ebi("popupConfrimButton").disabled = true;
+		let name = ebi("hourSubject").value.trim();
+		let hourNumber = parseInt(ebi("hourNumber").value.trim());
+		if (isNaN(hourNumber) || hourNumber < 1 || hourNumber > 12) {
+			displayError("hourError", "Please enter a valid hour between 1 and 12");
+			ebi("popupConfrimButton").disabled = false;
+			return;
+		}
+		if (!name) {
+			displayError("hourError", "Please fill in all fields");
+			ebi("popupConfrimButton").disabled = false;
+			return;
+		}
+
+		let day = ebi("daySelector").value;
+		updateHour(hour.id, name, hourNumber, day);
+	};
+}
+
+function updateHour(id, name, hour, day) {
+	ebi("hourError").innerText = "";
+	const url = serverURL + "/updateHour";
+	const data = { id, name, hour, day };
+	const xhr = new XMLHttpRequest();
+	xhr.open("PUT", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error == '0') {
+				ebi("popupConfrimButton").disabled = false;
+				showFeedback(0, "Hour updated successfully");
+				loadHours(currentDay + 1);
+				closePopup();
+			} else {
+				displayError("hourError", response.message);
+				ebi("popupConfrimButton").disabled = false;
+			}
+		} else {
+			displayError("hourError", "Failed to update hour. Please try again.");
+			ebi("popupConfrimButton").disabled = false;
+		}
+	};
+	xhr.onerror = function () {
+		displayError("hourError", "Network error. Please try again.");
+		ebi("popupConfrimButton").disabled = false;
+	};
+	xhr.send(JSON.stringify(data));
+}
 
 //-----------------------------------------------------------------
 
@@ -454,6 +693,8 @@ function setPopupPage(page = 0) {
 			ebi("popupCancelButton").classList.remove("hidden");
 			ebi("popupCancelButton").innerText = "Close";
 			break;
+		case 7:
+			break;
 		default:
 			console.error("Invalid page number");
 			break;
@@ -538,7 +779,7 @@ function loadGrades() {
 	xhr.setRequestHeader("Content-Type", "application/json");
 
 	xhr.onload = function () {
-		
+
 		if (xhr.status === 200) {
 			const response = JSON.parse(xhr.responseText);
 			if (response.error === "0") {
@@ -558,6 +799,7 @@ function loadGrades() {
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					container.appendChild(emptyMessage);
+					isLoadingGrades = false;
 					return;
 				} else {
 					container.classList.remove("showplaceholder");
@@ -656,7 +898,7 @@ function loadGrades() {
 					container.appendChild(outerWrap);
 					isLoadingGrades = false;
 				});
-
+				isLoadingGrades = false;
 				loadSubjects();
 			} else {
 				console.error("Error fetching marks:", response.message);
@@ -667,7 +909,7 @@ function loadGrades() {
 	};
 
 	xhr.onerror = function () {
-		isLoadingGrades = false; 
+		isLoadingGrades = false;
 		console.error("Network error while fetching marks.");
 	};
 
@@ -1115,6 +1357,17 @@ function toGrades() {
 	loadSubjects();
 }
 
+function toSchedule() {
+	setPopupPage(7);
+	hideAllPages();
+	ebi("hours").classList.remove("hidden");
+	ebi("pageTitle").innerText = "Schedule";
+	ebi("decoratedTitle").innerText = "";
+	currentPage = 5;
+	updateActivePageLink();
+	closeSidebar();
+	loadHours(currentDay + 1);
+}
 //-----------------------------------------------------------------
 
 function toCalendar() {
@@ -1450,13 +1703,45 @@ function showDeleteButton(id) {
 	}
 }
 
-function showConfirmDelete(id, iscalendar = false, isMark = false) {
+function showConfirmDelete(id, iscalendar = false, isMark = false, isSchedule = false) {
 	ebi("cancelOverlay").classList.remove("hidden");
 	if (isMark) {
 		ebi("confirmCancellation").onclick = () => deleteMark(id);
+	}
+	else if (isSchedule) {
+		ebi("confirmCancellation").onclick = () => deleteSchedule(id);
 	} else {
 		ebi("confirmCancellation").onclick = () => deleteEvent(id, iscalendar);
 	}
+}
+
+function deleteSchedule(id) {
+	closeCancellation();
+	const url = serverURL + "/deleteHour?id=" + id;
+	const data = { id };
+	const xhr = new XMLHttpRequest();
+	xhr.open("DELETE", url, true);
+	xhr.withCredentials = true;
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onload = function () {
+		if (xhr.status === 200) {
+			const response = JSON.parse(xhr.responseText);
+			if (response.error == '0') {
+				showFeedback(0, "hour deleted successfully");
+				closePopup();
+				loadHours(currentDay + 1);
+			} else {
+				displayError("hourError", response.message);
+			}
+		} else {
+			displayError("hourError", "Failed to delete hour. Please try again.");
+		}
+	};
+	xhr.onerror = function () {
+		displayError("hourError", "Network error. Please try again.");
+	}
+	xhr.send(JSON.stringify(data));
+	ebi("popupConfrimButton").disabled = false;
 }
 
 //-----------------------------------------------------------------
