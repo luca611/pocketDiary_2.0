@@ -449,7 +449,7 @@ function loadHours(hour = -1) {
 					emptyMessage.classList.add("markImgPlaceholder");
 
 					let img = document.createElement("img");
-					img.src = "./resources/imgs/hourLogo.svg";
+					img.src = "./resources/imgs/hourLogo.webp";
 					img.alt = "empty hours";
 
 					let text = document.createElement("p");
@@ -791,7 +791,7 @@ function loadGrades() {
 					emptyMessage.classList.add("markImgPlaceholder");
 
 					let img = document.createElement("img");
-					img.src = "resources/imgs/markLogo.svg";
+					img.src = "resources/imgs/markLogo.webp";
 					img.alt = "empty grades";
 
 					let text = document.createElement("p");
