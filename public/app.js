@@ -426,7 +426,6 @@ function loadHours(hour = -1) {
 		console.log("Today's day is:", dayName);
 	} else {
 		dayName = daysofweek[hour - 1];
-		console.log("Selected day is:", dayName);
 	}
 
 	const scheduleList = document.getElementById("schedulelist");
