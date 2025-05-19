@@ -426,7 +426,6 @@ function loadHours(hour = -1) {
 		console.log("Today's day is:", dayName);
 	} else {
 		dayName = daysofweek[hour - 1];
-		console.log("Selected day is:", dayName);
 	}
 
 	const scheduleList = document.getElementById("schedulelist");
@@ -449,7 +448,7 @@ function loadHours(hour = -1) {
 					emptyMessage.classList.add("markImgPlaceholder");
 
 					let img = document.createElement("img");
-					img.src = "./resources/imgs/hourLogo.svg";
+					img.src = "./resources/imgs/hourLogo.webp";
 					img.alt = "empty hours";
 
 					let text = document.createElement("p");
@@ -791,7 +790,7 @@ function loadGrades() {
 					emptyMessage.classList.add("markImgPlaceholder");
 
 					let img = document.createElement("img");
-					img.src = "resources/imgs/markLogo.svg";
+					img.src = "resources/imgs/markLogo.webp";
 					img.alt = "empty grades";
 
 					let text = document.createElement("p");

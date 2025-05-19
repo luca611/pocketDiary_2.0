@@ -138,10 +138,21 @@ export async function getHours(req, res) {
         return;
     }
 
+    const dayMappingReverse = {
+        1: "monday",
+        2: "tuesday",
+        3: "wednesday",
+        4: "thursday",
+        5: "friday",
+        6: "saturday",
+        7: "sunday"
+    };
+
     const hours = results.rows.map(hour => ({
         id: hour.id,
         name: decryptMessage(req.session.key, hour.name),
         hour: hour.hour,
+        day: dayMappingReverse[hour.day],
     }));
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
