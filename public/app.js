@@ -268,7 +268,7 @@ function openReport() {
 				const bestSubject = subjectAverages.reduce((best, current) => (current.avg > best.avg ? current : best));
 				const worstSubject = subjectAverages.reduce((worst, current) => (current.avg < worst.avg ? current : worst));
 
-				const numberOfSubjects = Object.keys(marksBySubject).length;
+				const numberOfSubjects = Object.keys(marksBySubject).length + 1;
 
 				const avg = avgMark;
 				const best = bestSubject.subject;
