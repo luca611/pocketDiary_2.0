@@ -107,17 +107,6 @@ You should see the Pocket dIAry frontend loaded and ready to use.
 
 ---
 
-## 🛠 Optional Tips
-
-* For development, consider using `nodemon`:
-
-  ```bash
-  npx nodemon index.mjs
-  ```
-
-* To expose the server to your local network, change the `HOST` value in your code to `0.0.0.0` (if supported).
-
----
 
 ## ✅ Done!
 
