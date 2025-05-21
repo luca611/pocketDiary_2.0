@@ -1,3 +1,4 @@
+![Pocket dIAry Banner](./bannerManual.png)
 # 📥 Manual Installation Guide for Pocket dIAry
 
 This guide will walk you through installing Pocket dIAry manually on your system without Docker.
@@ -41,7 +42,7 @@ Create a `.env` file in the root directory and fill it with the following variab
 ### ✅ Required:
 
 ```env
-AI_API_KEY=your_api_key              # Obtainable for free at https://groq.com
+AI_API_KEY=your_api_key             # Obtainable for free at https://groq.com
 DATABASE_URL=your_database_url      # e.g. postgres://user:pass@localhost:5432/pocketdiary
 ENCRYPTION_KEY=your_encryption_key  # Obtainable from https://pocketdiary.tech/getKey
 ```
@@ -50,8 +51,8 @@ ENCRYPTION_KEY=your_encryption_key  # Obtainable from https://pocketdiary.tech/g
 
 ```env
 CORS_ORIGIN=*                       # Set your frontend origin here (default: *)
-SESSION_DURATION=3600000           # Session duration in ms (default: 1 hour)
-SESSION_SECRET=your_secret_value   # Random secret string for session management
+SESSION_DURATION=3600000            # Session duration in ms (default: 1 hour)
+SESSION_SECRET=your_secret_value    # Random secret string for session management
 PORT=3000                           # Port to run the server (default: 3000)
 ```
 
