@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pocket dIAry – Smart Study Planner</title>
+<meta name="description" content="Pocket dIAry – your AI-powered study planner and grade tracker." />
+<meta property="og:title" content="Pocket dIAry" />
+<meta property="og:description" content="Plan smarter and track school progress with Pocket dIAry." />
+<meta property="og:url" content="https://www.pocketdiary.tech" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/favicon.ico" />
+
+<!-- Gasoek One Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN with custom pastel orange-yellow -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    gasoek: ['Gasoek One', 'sans-serif'],
+                },
+                colors: {
+                    pastel: {
+                        yellow: '#FFE5B2',         // pastel version of FF9900
+                        yellowDark: '#FFD085',     // slightly deeper pastel orange
+                        yellowAccent: '#FFB84D',   // pastel accent close to FF9900
+                    },
+                    indigo: {
+                        600: '#6D5DFB'
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<!-- Heroicons CDN for icons -->
+<script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body class="bg-pastel-yellow text-gray-800 font-sans">
+<!-- Header -->
+        <header class="bg-pastel-yellow shadow-md sticky top-0 z-50">
+                <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                <!-- Logo image instead of text -->
+                <a href="/">
+                    <img src="./resources/textLogo.svg" alt="Pocket dIAry Logo" class="h-10 w-auto" />
+                </a>
+                <nav>
+                        <a href="#features" class="text-gray-700 hover:text-pastel-yellowAccent px-3">Features</a>
+                        <a href="#demo" class="text-gray-700 hover:text-pastel-yellowAccent px-3">Demo</a>
+                        <a href="https://www.pocketdiary.tech" class="bg-pastel-yellowAccent text-gray-900 py-2 px-4 rounded shadow hover:bg-pastel-yellowDark transition">Try It Now</a>
+                </nav>
+                </div>
+        </header>
+
+        <!-- Hero -->
+        <section class="text-center py-20 px-6  bg-white">
+            <!-- Add logo image above the headline -->
+            <img src="./resources/logo.webp" alt="Pocket dIAry Logo" class="mx-auto mb-12 h-56 w-56 object-contain" />
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-pastel-yellowAccent font-gasoek">Your Smart Study Companion</h2>
+            <p class="text-gray-700 max-w-2xl mx-auto mb-8">
+                Plan better. Stay on top of your grades. Let AI help you organize your school life, all in one simple and fast PWA.
+            </p>
+            <a href="https://www.pocketdiary.tech" class="bg-pastel-yellowAccent text-gray-900 py-3 px-6 rounded-lg shadow hover:bg-pastel-yellowDark transition text-lg">
+                Launch Pocket dIAry
+            </a>
+        </section>
+
+        <!-- Screenshot / Demo -->
+        <section id="demo" class="py-16 px-6 bg-white">
+                <div class="max-w-6xl mx-auto text-center">
+                <h3 class="text-2xl font-semibold text-pastel-yellowAccent mb-6 font-gasoek">Live Preview</h3>
+                <div class="shadow-xl rounded-xl overflow-hidden max-w-4xl mx-auto">
+                        <img src="https://via.placeholder.com/1000x600?text=App+Screenshot" alt="Pocket dIAry Screenshot" class="w-full" />
+                </div>
+                </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="py-20 bg-pastel-yellow px-6">
+                <div class="max-w-6xl mx-auto text-center">
+                <h3 class="text-3xl font-bold mb-12 text-pastel-yellowAccent font-gasoek">Features</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
+                        <!-- AI Icon -->
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1m4 0h-1v-4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1m4 0h-1v-4h-1" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">AI-Powered Planner</h4>
+                        <p class="text-gray-700">Automatically organize your study sessions, exams, and tasks efficiently using smart algorithms.</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
+                        <!-- Calendar Icon -->
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <rect width="18" height="18" x="3" y="4" rx="2" stroke-width="2" stroke="currentColor" fill="none"/>
+                                <path stroke="currentColor" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">Interactive Calendar</h4>
+                        <p class="text-gray-700">Get a full view of your academic year with an easy-to-use, color-coded calendar layout.</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
+                        <!-- Grade Icon -->
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 018 0v2m-4-6a4 4 0 100-8 4 4 0 000 8zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">Grade Tracker</h4>
+                        <p class="text-gray-700">Keep track of your grades and calculate averages automatically for each subject.</p>
+                        </div>
+                </div>
+                </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-pastel-yellow text-center py-6 text-sm text-gray-500">
+                <p>© 2025 Pocket dIAry. Made with ❤️ to help students thrive.</p>
+        </footer>
+<script>
+    feather.replace();
+</script>
+</body>
+</html>
