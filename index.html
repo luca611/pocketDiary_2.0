@@ -1,131 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pocket dIAry – Smart Study Planner</title>
-<meta name="description" content="Pocket dIAry – your AI-powered study planner and grade tracker." />
-<meta property="og:title" content="Pocket dIAry" />
-<meta property="og:description" content="Plan smarter and track school progress with Pocket dIAry." />
-<meta property="og:url" content="https://www.pocketdiary.tech" />
-<meta property="og:type" content="website" />
-<link rel="icon" href="/favicon.ico" />
-
-<!-- Gasoek One Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap" rel="stylesheet">
-
-<!-- Tailwind CDN with custom pastel orange-yellow -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    gasoek: ['Gasoek One', 'sans-serif'],
-                },
-                colors: {
-                    pastel: {
-                        yellow: '#FFE5B2',         // pastel version of FF9900
-                        yellowDark: '#FFD085',     // slightly deeper pastel orange
-                        yellowAccent: '#FFB84D',   // pastel accent close to FF9900
-                    },
-                    indigo: {
-                        600: '#6D5DFB'
-                    }
-                }
-            }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pocket dIAry – Your smart study companion. Plan better, track grades, and organize your school life with AI-powered tools."
+    />
+    <meta
+      name="keywords"
+      content="study planner, AI diary, student organizer, grade tracker, school app, calendar, productivity, Pocket dIAry"
+    />
+    <meta name="author" content="Pocket dIAry Team" />
+    <meta
+      property="og:title"
+      content="Pocket dIAry – Your Smart Study Companion"
+    />
+    <meta
+      property="og:description"
+      content="Plan better, track grades, and organize your school life with AI-powered tools."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="logo.png" />
+    <meta property="og:url" content="https://yourdomain.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Pocket dIAry – Your Smart Study Companion"
+    />
+    <meta
+      name="twitter:description"
+      content="Plan better, track grades, and organize your school life with AI-powered tools."
+    />
+    <meta name="twitter:image" content="logo.png" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <title>Pocket dIAry</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gasoek+One&family=Inter:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .title-font {
+        font-family: "Gasoek One", sans-serif;
+      }
+      /* Animations */
+      @keyframes float {
+        0% {
+          transform: translateY(0);
         }
-    }
-</script>
+        50% {
+          transform: translateY(-20px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      .animate-fadeInUp {
+        animation: fadeInUp 1s cubic-bezier(0.23, 1.01, 0.32, 1) both;
+      }
+      .animate-fadeIn {
+        animation: fadeIn 1.2s ease both;
+      }
+      /* Delay helpers */
+      .delay-200 {
+        animation-delay: 0.2s;
+      }
+      .delay-400 {
+        animation-delay: 0.4s;
+      }
+      .delay-600 {
+        animation-delay: 0.6s;
+      }
+      .delay-800 {
+        animation-delay: 0.8s;
+      }
+    </style>
+  </head>
+  <body class="bg-[#FFF7E6] text-[#FF9100]">
+    <!-- Navbar -->
+    <nav
+      class="fixed top-0 left-0 right-0 flex justify-between items-center px-8 py-4 bg-[#FFF7E6] bg-opacity-90 shadow z-20 animate-fadeIn"
+    >
+      <img
+        src="./resources/textLogo.svg"
+        alt="Pocket dIAry logo"
+        class="h-10 animate-fadeInUp"
+      />
+      <div class="space-x-2">
+        <a
+          href="https://github.com/luca611/pocketDiary_2.0"
+          target="_blank"
+          rel="noopener"
+          class="bg-white text-[#FF9100] px-4 py-2 rounded flex items-center gap-2 inline-flex transition-colors duration-200 hover:bg-[#FF9100] hover:text-white border border-[#FF9100] animate-fadeInUp delay-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            class="w-5 h-5"
+          >
+            <path
+              d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.157-1.11-1.465-1.11-1.465-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.339-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.566 4.944.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .268.18.58.688.482C19.138 20.2 22 16.448 22 12.021 22 6.484 17.523 2 12 2z"
+            />
+          </svg>
+          <span class="hidden sm:inline">Github repo</span>
+        </a>
+        <a
+          href="https://www.pocketdiary.tech"
+          target="_blank"
+          rel="noopener"
+          class="bg-[#FF9100] text-white px-4 py-2 rounded inline-flex items-center gap-2 transition-colors duration-200 hover:bg-white hover:text-[#FF9100] border border-[#FF9100] animate-fadeInUp delay-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+            />
+          </svg>
+          <span class="hidden sm:inline">Download</span>
+        </a>
+      </div>
+    </nav>
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-[75vh] flex flex-col md:flex-row justify-around items-center px-8 py-12 overflow-hidden mt-20"
+    >
+      <!-- Bubbles (smaller, responsive visibility) -->
+      <div
+        class="absolute top-0 left-0 w-40 h-40 md:w-80 md:h-80 bg-[#FAF0E1] rounded-full -z-10 opacity-80 hidden sm:block animate-float"
+        style="animation-duration: 6s"
+      ></div>
+      <div
+        class="absolute bottom-0 right-0 w-32 h-32 md:w-64 md:h-64 bg-[#FAF0E1] rounded-full -z-10 opacity-80 hidden sm:block animate-float"
+        style="animation-delay: 2s; animation-duration: 7s"
+      ></div>
+      <!-- Extra bubbles for more visual interest -->
+      <div
+        class="absolute top-10 right-10 w-20 h-20 md:w-52 md:h-52 bg-[#FAF0E1] rounded-full -z-10 opacity-70 hidden md:block animate-float"
+        style="animation-delay: 1s; animation-duration: 5s"
+      ></div>
+      <div
+        class="absolute bottom-16 left-20 w-16 h-16 md:w-32 md:h-32 bg-[#FAF0E1] rounded-full -z-10 opacity-60 hidden md:block animate-float"
+        style="animation-delay: 3s; animation-duration: 6s"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 w-12 h-12 md:w-24 md:h-24 bg-[#FAF0E1] rounded-full -z-10 opacity-40 hidden md:block animate-float"
+        style="
+          transform: translate(-50%, -50%);
+          animation-delay: 2s;
+          animation-duration: 8s;
+        "
+      ></div>
 
-<!-- Heroicons CDN for icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-</head>
-<body class="bg-pastel-yellow text-gray-800 font-sans">
-<!-- Header -->
-        <header class="bg-pastel-yellow shadow-md sticky top-0 z-50">
-                <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-                <!-- Logo image instead of text -->
-                <a href="/">
-                    <img src="./resources/textLogo.svg" alt="Pocket dIAry Logo" class="h-10 w-auto" />
-                </a>
-                <nav>
-                        <a href="#features" class="text-gray-700 hover:text-pastel-yellowAccent px-3">Features</a>
-                        <a href="#demo" class="text-gray-700 hover:text-pastel-yellowAccent px-3">Demo</a>
-                        <a href="https://www.pocketdiary.tech" class="bg-pastel-yellowAccent text-gray-900 py-2 px-4 rounded shadow hover:bg-pastel-yellowDark transition">Try It Now</a>
-                </nav>
-                </div>
-        </header>
+      <!-- Text Content -->
+      <div class="max-w-xl mt-10 md:mt-0 animate-fadeInUp delay-200">
+        <h1 class="text-5xl title-font leading-tight">
+          Your Smart Study <br />
+          <span class="text-yellow-400">Companion</span>
+        </h1>
+        <p class="mt-4 text-yellow-500">
+          Plan better. Stay on top of your grades. Let AI help you organize your
+          school life, all in one simple tap.
+        </p>
+        <a
+          href="https://www.pocketdiary.tech"
+          target="_blank"
+          rel="noopener"
+          class="inline-block mt-6 bg-[#FF9100] text-white px-4 py-2 rounded flex items-center gap-2 w-fit transition-colors duration-200 hover:bg-[#ffb347] hover:text-[#FF9100] animate-fadeInUp delay-400"
+          style="max-width: 180px"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+            />
+          </svg>
+          <span class="truncate">Download</span>
+        </a>
+      </div>
+      <!-- Illustration -->
+      <img
+        src="./resources/logo.webp"
+        alt="Pocket AI illustration"
+        class="w-80 md:w-96 mt-10 md:mt-0 order-first md:order-none animate-fadeInUp delay-600"
+        style="pointer-events: none"
+      />
+    </section>
 
-        <!-- Hero -->
-        <section class="text-center py-20 px-6  bg-white">
-            <!-- Add logo image above the headline -->
-            <img src="./resources/logo.webp" alt="Pocket dIAry Logo" class="mx-auto mb-12 h-56 w-56 object-contain" />
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-pastel-yellowAccent font-gasoek">Your Smart Study Companion</h2>
-            <p class="text-gray-700 max-w-2xl mx-auto mb-8">
-                Plan better. Stay on top of your grades. Let AI help you organize your school life, all in one simple and fast PWA.
-            </p>
-            <a href="https://www.pocketdiary.tech" class="bg-pastel-yellowAccent text-gray-900 py-3 px-6 rounded-lg shadow hover:bg-pastel-yellowDark transition text-lg">
-                Launch Pocket dIAry
-            </a>
-        </section>
+    <!-- Section 2 -->
+    <section
+      class="relative min-h-[75vh] flex flex-col md:flex-row justify-around items-center px-8 py-16 bg-[#FFE7BF] overflow-hidden border-t border-b"
+      style="border-color: #ddc298"
+    >
+      <div
+        class="absolute top-0 right-0 w-[20rem] h-[20rem] bg-[#FAF0E1] rounded-full -z-10 opacity-80 animate-float"
+        style="animation-duration: 7s"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 w-[25rem] h-[25rem] bg-[#FAF0E1] rounded-full -z-10 opacity-80 animate-float"
+        style="animation-delay: 2s; animation-duration: 8s"
+      ></div>
 
-        <!-- Screenshot / Demo -->
-        <section id="demo" class="py-16 px-6 bg-white">
-                <div class="max-w-6xl mx-auto text-center">
-                <h3 class="text-2xl font-semibold text-pastel-yellowAccent mb-6 font-gasoek">Live Preview</h3>
-                <div class="shadow-xl rounded-xl overflow-hidden max-w-4xl mx-auto">
-                        <img src="https://via.placeholder.com/1000x600?text=App+Screenshot" alt="Pocket dIAry Screenshot" class="w-full" />
-                </div>
-                </div>
-        </section>
+      <img
+        src="mockup2.png"
+        alt="Pocket AI UI"
+        class="w-64 md:w-72 animate-fadeInUp delay-200"
+      />
 
-        <!-- Features -->
-        <section id="features" class="py-20 bg-pastel-yellow px-6">
-                <div class="max-w-6xl mx-auto text-center">
-                <h3 class="text-3xl font-bold mb-12 text-pastel-yellowAccent font-gasoek">Features</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
-                        <!-- AI Icon -->
-                        <div class="mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1m4 0h-1v-4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1m4 0h-1v-4h-1" />
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">AI-Powered Planner</h4>
-                        <p class="text-gray-700">Automatically organize your study sessions, exams, and tasks efficiently using smart algorithms.</p>
-                        </div>
-                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
-                        <!-- Calendar Icon -->
-                        <div class="mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <rect width="18" height="18" x="3" y="4" rx="2" stroke-width="2" stroke="currentColor" fill="none"/>
-                                <path stroke="currentColor" stroke-width="2" d="M16 2v4M8 2v4M3 10h18"/>
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">Interactive Calendar</h4>
-                        <p class="text-gray-700">Get a full view of your academic year with an easy-to-use, color-coded calendar layout.</p>
-                        </div>
-                        <div class="p-6 rounded-xl bg-white shadow hover:shadow-lg transition flex flex-col items-center">
-                        <!-- Grade Icon -->
-                        <div class="mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-pastel-yellowAccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 018 0v2m-4-6a4 4 0 100-8 4 4 0 000 8zm-6 8v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
-                            </svg>
-                        </div>
-                        <h4 class="text-xl font-semibold text-pastel-yellowAccent mb-2 font-gasoek">Grade Tracker</h4>
-                        <p class="text-gray-700">Keep track of your grades and calculate averages automatically for each subject.</p>
-                        </div>
-                </div>
-                </div>
-        </section>
+      <div class="max-w-xl mt-10 md:mt-0 animate-fadeInUp delay-400">
+        <h2 class="text-4xl title-font leading-snug">
+          Here to help you,<span class="hidden md:inline"><br /></span> with
+          <span class="text-yellow-400">Pocket AI</span>
+        </h2>
+        <p class="mt-4 text-yellow-500">
+          Pocket AI is your everyday study buddy and planner, always ready to
+          help you stay organized, boost your focus, and make school life a
+          little easier – all in your pocket.
+        </p>
+      </div>
+    </section>
 
-        <!-- Footer -->
-        <footer class="bg-pastel-yellow text-center py-6 text-sm text-gray-500">
-                <p>© 2025 Pocket dIAry. Made with ❤️ to help students thrive.</p>
-        </footer>
-<script>
-    feather.replace();
-</script>
-</body>
+    <!-- Section 3 -->
+    <section
+      class="relative min-h-[75vh] flex flex-col md:flex-row justify-around items-center px-8 py-16"
+    >
+      <div
+        class="absolute top-0 left-0 w-40 h-40 md:w-80 md:h-80 bg-[#FAF0E1] rounded-full -z-10 opacity-80 hidden sm:block animate-float"
+        style="animation-duration: 6s"
+      ></div>
+      <div
+        class="absolute bottom-0 right-0 w-32 h-32 md:w-64 md:h-64 bg-[#FAF0E1] rounded-full -z-10 opacity-80 hidden sm:block animate-float"
+        style="animation-delay: 2s; animation-duration: 7s"
+      ></div>
+      <!-- Extra bubbles for more visual interest -->
+      <div
+        class="absolute top-10 right-10 w-20 h-20 md:w-52 md:h-52 bg-[#FAF0E1] rounded-full -z-10 opacity-70 hidden md:block animate-float"
+        style="animation-delay: 1s; animation-duration: 5s"
+      ></div>
+      <div
+        class="absolute bottom-16 left-20 w-16 h-16 md:w-32 md:h-32 bg-[#FAF0E1] rounded-full -z-10 opacity-60 hidden md:block animate-float"
+        style="animation-delay: 3s; animation-duration: 6s"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 w-12 h-12 md:w-24 md:h-24 bg-[#FAF0E1] rounded-full -z-10 opacity-40 hidden md:block animate-float"
+        style="
+          transform: translate(-50%, -50%);
+          animation-delay: 2s;
+          animation-duration: 8s;
+        "
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 w-24 h-24 bg-[#FAF0E1] rounded-full -z-10 opacity-40 animate-float"
+        style="
+          transform: translate(-50%, -50%);
+          animation-delay: 1s;
+          animation-duration: 9s;
+        "
+      ></div>
+      <div class="max-w-xl animate-fadeInUp delay-200">
+        <h2 class="text-4xl title-font leading-snug">
+          Your calendar, marks
+          <br class="hidden md:block" />
+          and schedule all in <br class="hidden md:block" />
+          your <span class="text-yellow-400">pocket</span>.
+        </h2>
+        <p class="mt-4 text-yellow-500">
+          Pocket dIAry offers you a full set of tools to stay on top of school
+          life – from smart calendar features to easy grade tracking, and even
+          an AI-powered study planner to help you focus and succeed.
+        </p>
+      </div>
+      <img
+        src="mockup3.png"
+        alt="Pocket dIAry UI"
+        class="w-64 md:w-72 mt-10 md:mt-0 animate-fadeInUp delay-400"
+      />
+    </section>
+
+    <!-- Section 4 -->
+    <section
+      class="relative min-h-[75vh] flex flex-col md:flex-row justify-around items-center px-8 py-16 bg-[#FFE7BF] overflow-hidden border-t border-b"
+      style="border-color: #ddc298"
+    >
+      <img
+        src="mockup4.png"
+        alt="Settings UI"
+        class="w-64 md:w-72 animate-fadeInUp delay-200"
+      />
+      <div class="max-w-xl mt-10 md:mt-0 animate-fadeInUp delay-400">
+        <h2 class="text-4xl title-font leading-snug">
+          Your diary, your vibe <br class="hidden md:block" />
+          personalize it with <br class="hidden md:block" />
+          colors you <span class="text-yellow-400">love</span>
+        </h2>
+        <p class="mt-4 text-yellow-500">
+          Pocket dIAry isn’t just smart, it’s personal. Choose from a variety of
+          colors, or invent your own, to make the app feel like yours. Whether
+          you’re into clean and minimal or bold and colorful, there’s a look to
+          match your style.
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer Banner -->
+    <footer
+      class="bg-[#FF9100] text-white text-center py-8 text-4xl title-font animate-fadeInUp delay-400"
+    >
+      Plan today, succeed tomorrow
+    </footer>
+  </body>
 </html>
