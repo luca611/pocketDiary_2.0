@@ -23,8 +23,6 @@ Pick the installation method that works best for you:
 * 🧠 AI-powered study planner
 * 📝 Personal notes and to-dos
 * 📊 Grade & attendance tracking
-* 🔒 100% self-hosted with PostgreSQL backend
-* 💡 Designed for offline-first use (PWA)
 
 ---
 
