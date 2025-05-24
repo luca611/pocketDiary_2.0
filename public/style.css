@@ -124,11 +124,37 @@ button.deletePopubButton {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	cursor: pointer;
+	transition: filter 0.3s ease;
 }
 
 button.deletePopubButton:hover {
-	filter: brightness(0.9);
-	transition: all 0.3s;
+	filter: brightness(0.85);
+}
+
+@keyframes shakeRotate {
+
+	0%,
+	100% {
+		transform: rotate(0deg);
+	}
+
+	25% {
+		transform: rotate(-5deg);
+	}
+
+	50% {
+		transform: rotate(5deg);
+	}
+
+	75% {
+		transform: rotate(-5deg);
+	}
+}
+
+button.deletePopubButton:hover img {
+	animation: shakeRotate 0.4s ease-in-out infinite;
+	transform-origin: center center;
 }
 
 div.topBar {
@@ -401,26 +427,44 @@ b.buttonText {
 }
 
 button.quickButton {
+	position: relative;
+	overflow: hidden;
 	flex-shrink: 0;
 	color: var(--sidebar-text-color);
 	background-color: var(--primary-color);
 	border: none;
 	height: 100%;
 	width: 8rem;
-	min-width: --webkit-fill-available;
+	min-width: fit-content;
 	border-radius: var(--button-border-radius);
-	transition: all 0.3s;
 	box-shadow: var(--shadow);
 	display: flex;
 	align-content: center;
 	align-items: center;
+	justify-content: center;
 	padding: 0.5rem;
-	min-width: fit-content;
+	transition: background-color 0.3s ease;
 }
 
-button.quickButton:hover {
-	filter: brightness(0.9);
-	transition: all 0.3s;
+button.quickButton::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: #ffffff30;
+	transition: left 0.4s ease;
+	z-index: 0;
+}
+
+button.quickButton:hover::after {
+	left: 0;
+}
+
+button.quickButton>* {
+	position: relative;
+	z-index: 1;
 }
 
 img.icon {
@@ -534,13 +578,69 @@ div.cancellationButton:hover {
 }
 
 div.confirmCancellation {
+	position: relative;
 	font-family: 'Inter';
 	color: var(--primary-red);
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	border-radius: var(--button-border-radius);
+	overflow: hidden;
+	/* clip the sliding bg */
+	transition: color 0.3s ease;
+}
+
+div.confirmCancellation::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 0;
+	background-color: var(--primary-red);
+	border-radius: var(--button-border-radius);
+	transition: width 0.3s ease;
+	z-index: -1;
+	/* behind the text */
+}
+
+div.confirmCancellation:hover::before {
+	width: 100%;
+}
+
+div.confirmCancellation:hover {
+	color: white;
 }
 
 div.cancelCancellation {
+	position: relative;
 	font-family: 'Inter';
 	color: var(--primary-blue);
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	border-radius: var(--button-border-radius);
+	overflow: hidden;
+	transition: color 0.3s ease;
+}
+
+div.cancelCancellation::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 0;
+	background-color: var(--primary-blue);
+	border-radius: var(--button-border-radius);
+	transition: width 0.3s ease;
+	z-index: -1;
+}
+
+div.cancelCancellation:hover::before {
+	width: 100%;
+}
+
+div.cancelCancellation:hover {
+	color: white;
 }
 
 div.cancellation {
@@ -709,6 +809,39 @@ button.eventButton {
 	justify-content: center;
 }
 
+
+button.eventButton:hover .eventIcon {
+	animation: penSwing 0.6s ease-in-out;
+	transform-origin: bottom left;
+}
+
+
+@keyframes penSwing {
+	0% {
+		transform: rotate(0deg) translateX(0);
+	}
+
+	20% {
+		transform: rotate(-6deg) translateX(-0.15rem);
+	}
+
+	40% {
+		transform: rotate(4deg) translateX(-0.1rem);
+	}
+
+	60% {
+		transform: rotate(-3deg) translateX(-0.12rem);
+	}
+
+	80% {
+		transform: rotate(1.5deg) translateX(-0.07rem);
+	}
+
+	100% {
+		transform: rotate(0deg) translateX(0);
+	}
+}
+
 .iconAdjustment {
 	margin-left: -.2rem !important;
 	;
@@ -788,10 +921,6 @@ div.reportField {
 	border: solid var(--primary-color);
 }
 
-button.eventButton:hover {
-	filter: brightness(0.9);
-	transition: all 0.3s;
-}
 
 div.eventInfoContainer {
 	display: flex;
@@ -1506,6 +1635,22 @@ hr.navSeparator {
 	border-radius: var(--minor-border-radius);
 }
 
+button.barLink::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background-color: #ffffff4a;
+	z-index: -1;
+	transition: left 0.4s ease;
+}
+
+button.barLink:hover::before {
+	left: 0;
+}
+
 button.barLink {
 	width: 90%;
 	text-align: left;
@@ -1516,6 +1661,8 @@ button.barLink {
 	color: var(--sidebar-text-color);
 	display: flex;
 	align-items: center;
+	position: relative;
+	overflow: hidden;
 }
 
 button.barLink.active {
