@@ -397,13 +397,17 @@ function addHour() {
 	xhr.send(JSON.stringify(data));
 }
 
+let canchangeday = true;
+
 function incrementDay() {
+	if (!canchangeday) return;
 	currentDay = (currentDay + 1) % 7;
 	updateDayName();
 	loadHours(currentDay + 1);
 }
 
 function decrementDay() {
+	if (!canchangeday) return;
 	currentDay = (currentDay - 1 + 7) % 7;
 	updateDayName();
 	loadHours(currentDay + 1);
@@ -422,14 +426,17 @@ function loadHours(hour = -1) {
 
 	if (hour === -1) {
 		const today = new Date();
-		dayName = daysofweek[today.getDay() - 1];
-		console.log("Today's day is:", dayName);
+		let dayIndex = today.getDay() - 1;
+		if (dayIndex < 0) dayIndex = 6;
+		dayName = daysofweek[dayIndex];
 	} else {
 		dayName = daysofweek[hour - 1];
 	}
 
 	const scheduleList = document.getElementById("schedulelist");
 	scheduleList.innerHTML = "";
+
+	canchangeday = false;
 
 	const url = "./gethours?day=" + dayName + "&t=" + Date.now(); // Add timestamp to prevent caching
 
@@ -499,16 +506,20 @@ function loadHours(hour = -1) {
 
 					scheduleList.appendChild(hourContainer);
 				});
+				canchangeday = true;
 			} else {
 				console.error("Error fetching hours:", response.message);
+				canchangeday = true;
 			}
 		} else {
 			console.error("Failed to fetch hours. Status:", xhr.status);
+			canchangeday = true;
 		}
 	};
 
 	xhr.onerror = function () {
 		console.error("Network error while fetching hours.");
+		canchangeday = true;
 	};
 
 	xhr.send();
