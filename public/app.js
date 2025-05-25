@@ -463,6 +463,7 @@ function loadHours(hour = -1) {
 					emptyMessage.appendChild(img);
 					emptyMessage.appendChild(text);
 					scheduleList.appendChild(emptyMessage);
+					canchangeday = true;
 					return;
 				}
 
@@ -1376,7 +1377,7 @@ function toSchedule() {
 	currentPage = 5;
 	updateActivePageLink();
 	closeSidebar();
-	loadHours(currentDay + 1);
+	loadHours();
 }
 //-----------------------------------------------------------------
 
