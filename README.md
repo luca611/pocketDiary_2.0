@@ -10,7 +10,11 @@ Whether you're planning your week, tracking grades, logging study hours, or orga
 
 ## 🚀 Get Started
 
-Pick the installation method that works best for you:
+Curious to see Pocket dIAry in action?
+
+* ⚒️ [**Try the Live Demo**](https://pocketdiary.tech) — Explore all features instantly, no installation needed!
+
+Pick the installation method that works best for your organization:
 
 * 📥 [**Manual Installation Guide**](./README.manual.md) — for full control and custom setups
 * 🐳 [**Docker Installation Guide**](./README.docker.md) — the fastest and easiest way to deploy
@@ -23,6 +27,12 @@ Pick the installation method that works best for you:
 * 🧠 AI-powered study planner
 * 📝 Personal notes and to-dos
 * 📊 Grade & attendance tracking
+
+---
+
+## 📌 Roadmap
+
+You can check out our development roadmap [here](./ROADMAP.md).
 
 ---
 
