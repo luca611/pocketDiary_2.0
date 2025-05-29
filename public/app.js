@@ -1,14 +1,15 @@
+const cacheName = "pocketdiary";
 
-
-const cacheName = "pwaname"; //PWA id here
 //Register PWA service worker
 if ("serviceWorker" in navigator) {
 	navigator.serviceWorker.register("sw.js");
 }
+
 //Redirect HTTP to HTTPS
 if (location.protocol == "http:") {
 	location.href = "https" + location.href.substring(4);
 }
+
 //Check for updates
 let xhr = new XMLHttpRequest();
 xhr.onload = function () {
@@ -23,12 +24,12 @@ xhr.onload = function () {
 		});
 	}
 };
+
 xhr.onerror = function () {
 	console.log("Update check failed");
 };
 xhr.open("GET", "pwaversion.txt?t=" + Date.now());
 xhr.send();
-
 
 // Check if cookies are enabled
 if (!navigator.cookieEnabled) {
@@ -813,11 +814,11 @@ function loadGrades() {
 
 					if (mark.mark % 1 === 0) {
 						voto.innerText = Math.floor(mark.mark);
-					} else if (mark.mark % 1 >= 0.1 && mark.mark % 1 <= 0.3) {
+					} else if (mark.mark % 1 > 0 && mark.mark % 1 < 0.25) {
 						voto.innerText = Math.floor(mark.mark) + "+";
-					} else if (mark.mark % 1 >= 0.4 && mark.mark % 1 <= 0.6) {
+					} else if (mark.mark % 1 >= 0.25 && mark.mark % 1 < 0.75) {
 						voto.innerText = Math.floor(mark.mark) + ".5";
-					} else if (mark.mark % 1 >= 0.7 && mark.mark % 1 <= 0.9) {
+					} else if (mark.mark % 1 >= 0.75 && mark.mark % 1 < 1) {
 						voto.innerText = Math.ceil(mark.mark) + "-";
 					} else {
 						voto.innerText = mark.mark.toFixed(1);
