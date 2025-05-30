@@ -1,3 +1,6 @@
+import { isAuthenticated, logged as auth_logged, notLogged as auth_notLogged, error as auth_error } from "./modules/auth.js";
+
+
 const cacheName = "pocketdiary";
 
 //Register PWA service worker
@@ -6,9 +9,11 @@ if ("serviceWorker" in navigator) {
 }
 
 //Redirect HTTP to HTTPS
-if (location.protocol == "http:") {
+/*
+	if (location.protocol == "http:") {
 	location.href = "https" + location.href.substring(4);
 }
+*/
 
 //Check for updates
 let xhr = new XMLHttpRequest();
@@ -35,6 +40,107 @@ xhr.send();
 if (!navigator.cookieEnabled) {
 	alert("Cookies are disabled in your browser. Please enable cookies to use this application.");
 }
+
+
+
+
+
+/**
+ * Function to initialize the application called when the page loads from html .
+ * This function sets up the initial state of the application, checks user authentication and sets the page accordingly.
+ */
+
+async function initialize() {
+	try {
+		const status = await isAuthenticated();
+		stopLoadingAnimation();
+
+		if (status === auth_error) {
+			showFeedback(2, "Seems like you are offline");
+
+		}
+		else if (status === auth_logged) {
+			getSavedTheme();
+			getTheme();
+			toHome();
+		}
+		else if (status === auth_notLogged) {
+			swapToWelcome();
+		}
+		else {
+			//error checking authentication
+			showFeedback(2, "Error checking authentication status");
+		}
+	} catch (err) {
+		showFeedback(2, "Error checking authentication status");
+		stopLoadingAnimation();
+	}
+}
+
+
+window.setColor = setColor;
+window.toSettings = toSettings;
+window.openSideBar = openSideBar;
+window.stopLoadingAnimation = stopLoadingAnimation;
+window.initialize = initialize;
+window.swapToLogin = swapToLogin;
+window.login = login;
+window.logout = logout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1126,7 +1232,7 @@ function clearForm() {
 	}
 }
 
-function disableLoading() {
+function stopLoadingAnimation() {
 	ebi("loadingScreen").classList.add("hidden");
 }
 
@@ -1991,55 +2097,32 @@ function login(logEmail = ebi("loginUsername").value.trim().toLowerCase(), logPa
 		.catch(err => {
 			displayError("loginError", "Network error. Please try again.");
 		});
+	disableLoading();
+	return true;
 }
 
 //-----------------------------------------------------------------
 
-function isLoggedTest() {
-	const url = serverURL + "/isLogged";
-	xhr.withCredentials = true;
-	const xhr = new XMLHttpRequest();
-	xhr.open("GET", url, true);
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			swapToHome();
-		} else {
-			swapToLogin();
-		}
-	};
-
-	xhr.send();
-}
 
 async function autologin() {
-	if (!navigator.onLine) {
-		showFeedback(2, "You are offline");
-		return;
-	}
-
-	const url = serverURL + "/isLogged";
-
-	const xhr = new XMLHttpRequest();
-	xhr.withCredentials = true;
-	xhr.open("GET", url, true);
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			swapToHome();
-		} else {
+	switch (isAuthenticated) {
+		case 0: // not authenticated
 			swapToWelcome();
-		}
-	};
-
-	xhr.send();
+			break;
+		case 1: // authenticated
+			enableLoading();
+			await checkSession();
+			break;
+		case 2: // session expired
+			swapToLogin();
+			break;
+		default:
+			console.error("Unknown authentication state:", isAuthenticated);
+			swapToWelcome();
+			break;
+	}
 }
 
-loadCustomTheme();
 
 /*
 	db manipulation functions
@@ -2559,6 +2642,8 @@ function loadUsername() {
 
 	xhr.send();
 }
+
+
 
 //-----------------------------------------------------------------ù
 

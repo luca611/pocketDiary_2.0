@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="libs/markdown-it.min.js" type="text/javascript"></script>
     <script src="libs/chart.js" type="text/javascript"></script>
-    <script src="app.js" type="text/javascript"></script>
+    <script src="app.js" type="module"></script>
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <meta name="viewport" content="width=device-width" />
@@ -16,7 +16,7 @@
         content="A digital diary to keep track of your school life featuring a calendar, a schedule, an ia and a grade tracker.">
 </head>
 
-<body id="pageBody" class="body" onload="getSavedTheme(); disableLoading(); autologin();">
+<body id="pageBody" class="body" onload="initialize()">
 
     <div class="loadingScreen" id="loadingScreen">
         <img class="loadingIcon" src="resources/imgs/loading.webp" alt="">
