@@ -97,30 +97,20 @@ export function getValue(element = null) {
 }
 
 /**
- * Function to remove borders from all theme color elements.
- * This function iterates through predefined theme colors and removes the "border" class from each element.
+ * Function to display an error message in an HTML element with the specified ID.
+ * @param {string} elementId - The ID of the HTML element where the error message will be displayed.
+ * @param {string} message - The error message to display.
  */
-export function removeBorders() {
-    const themeColors = {
-        1: "yellow",
-        2: "blue",
-        3: "green",
-        4: "purple"
-    };
-
-    Object.values(themeColors).forEach(themeColor => {
-        ebi(themeColor).classList.remove("border");
-    });
+export function displayError(elementId, message) {
+    ebi(elementId).innerText = message;
 }
 
-/** 
- * Function to apply a border to an HTML element based on the provided color. if id is in themeColors
- * @param {string} color - The color to apply as a border, which should match the ID of the HTML element.
+/**
+ * Function to check if an object can be interacted with.
+ * @param {Object} object - The object to check for interaction.
+ * @returns {boolean} - Returns true if the object is not null, not undefined, is an object, and has at least one key; otherwise, returns false.
  */
-export function applyborder(color) {
-    const element = ebi(color);
-    const colorVar = "--primary-" + color;
-    const colorValue = getComputedStyle(document.documentElement).getPropertyValue(colorVar);
-    document.documentElement.style.setProperty("--currentBorderColor", colorValue);
-    element.classList.add("border");
+export function canInteract(object) {
+    if (object === null || object === undefined) return false;
+    return true;
 }

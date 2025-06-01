@@ -1,9 +1,12 @@
-import { validatePassword, isAuthenticated, login as login_func, logged as auth_logged, notLogged as auth_notLogged, error as auth_error, checkEmailAvailability as isEmailAvailable, emailAvailable, emailTaken as auth_emailTaken } from "./modules/auth.js";
-import { removeBorders, applyborder, getValue, ebi } from "./modules/utils.js";
-import { navigateTo } from "./modules/navigation.js";
+import { getUserInfo, register as register_func, validateName, validatePassword, isAuthenticated, login as login_func, logged as auth_logged, notLogged as auth_notLogged, error as auth_error, checkEmailAvailability as isEmailAvailable, emailAvailable, emailTaken as auth_emailTaken } from "./modules/auth.js";
+import { displayError, getValue, ebi } from "./modules/utils.js";
+import { applyTheme, getColorsObject, removeBorders, applyborder } from "./modules/themes.js";
+import { setTitle, navigateTo } from "./modules/navigation.js";
+import { loadNotes } from "./modules/notes.js";
+import { closeSidebar, openSideBar } from "./modules/sidebar.js";
 
 //debug only
-import { hideAuthForms, showAuthForm, hideAllSections, showSection } from "./modules/navigation.js";
+//import { hideAuthForms, showAuthForm, hideAllSections, showSection } from "./modules/navigation.js";
 
 const cacheName = "pocketdiary";
 
@@ -40,9 +43,15 @@ xhr.onerror = function () {
 xhr.open("GET", "pwaversion.txt?t=" + Date.now());
 xhr.send();
 
-//app code 
+// Check if cookies are enabled
+if (!navigator.cookieEnabled) {
+	alert("Cookies disabled, this app may not work correctly.");
+}
 
-//dev only
+//----------------------------------------------app code -----------------------------------------------
+
+
+//debug only
 function keepClearingCache() {
 	if ('caches' in window) {
 		setInterval(() => {
@@ -62,42 +71,53 @@ keepClearingCache();
 
 
 
-// Check if cookies are enabled
-if (!navigator.cookieEnabled) {
-	alert("Cookies are disabled in your browser. Please enable cookies to use this application.");
-}
 
-//making functions available globally
+
+//TO BE REPLACED
 window.setColor = setColor;
 window.toSettings = toSettings;
 window.openSideBar = openSideBar;
 window.stopLoadingAnimation = stopLoadingAnimation;
-window.initialize = initialize;
+
 window.swapToLogin = swapToLogin;
-window.login = login;
+
 window.logout = logout;
+
+// USED IN THE HTML
 window.toTheme = toTheme;
+window.toName = toName;
+window.toHome = toHome;
 
-
+window.login = login;
+window.register = register;
+window.initialize = initialize;
 window.navigateTo = navigateTo;
+window.setColorPreference = setColorPreference;
 
+window.closeSidebar = closeSidebar;
+
+/* DEBUG ONLY
 window.hideAllSections = hideAllSections;
 window.showSection = showSection;
 window.hideAuthForms = hideAuthForms;
 window.showAuthForm = showAuthForm;
-window.getValue = getValue;
-window.setColorPreference = setColorPreference;
 
+window.getValue = getValue;
+*/
 
 //app variables
 let __auth_registerPassord = "-1";
 let __auth_registerEmail = "-1";
 let __auth_registerName = "-1";
 let __auth_registerColorString = "-1";
-let __auth_colorPreference = "-1";
+
+let __username = "loading";
+let __primaryColor = "";
+let __secondaryColor = "";
+let __tertiaryColor = "";
 
 /**
- * Function to initialize the application called when the page loads from html .
+ * Function to initialize ( login into ) the application called when the page loads from html .
  * This function sets up the initial state of the application, checks user authentication and sets the page accordingly.
  */
 
@@ -111,8 +131,19 @@ async function initialize() {
 
 		}
 		else if (status === auth_logged) {
-			getSavedTheme();
-			getTheme();
+			applyTheme();
+
+			startLoadingAnimation();
+			let userInfos = await getUserInfo();
+			stopLoadingAnimation();
+
+			__username = userInfos.name;
+			__primaryColor = userInfos.primary;
+			__secondaryColor = userInfos.secondary;
+			__tertiaryColor = userInfos.tertiary;
+
+			applyTheme(__primaryColor, __secondaryColor, __tertiaryColor);
+
 			toHome();
 		}
 		else if (status === auth_notLogged) {
@@ -123,7 +154,7 @@ async function initialize() {
 			showFeedback(2, "Error checking authentication status");
 		}
 	} catch (err) {
-		showFeedback(2, "Error checking authentication status");
+		showFeedback(2, "Error checking authentication status" + err.message);
 		stopLoadingAnimation();
 	}
 }
@@ -143,24 +174,36 @@ async function login(email = getValue("loginUsername"), password = getValue("log
 		return;
 	}
 
-	startLoadingAnimation();
 	if (email === "-1" || password === "-1") {
 		stopLoadingAnimation();
 		displayError("loginError", "Please fill in all fields");
 		return;
 	}
 
+	startLoadingAnimation();
+
 	const progression = await login_func(email, password);
 
+	stopLoadingAnimation();
+
 	if (progression.status === auth_logged) {
+		applyTheme();
+
+		startLoadingAnimation();
+		let userInfos = await getUserInfo();
 		stopLoadingAnimation();
-		cleanLogin();
-		swapToHome();
+
+		__username = userInfos.name;
+		__primaryColor = userInfos.primary;
+		__secondaryColor = userInfos.secondary;
+		__tertiaryColor = userInfos.tertiary;
+
+		applyTheme(__primaryColor, __secondaryColor, __tertiaryColor);
+		toHome();
 		return;
 	}
 
 	if (progression.status === auth_notLogged || progression.status === auth_error) {
-		stopLoadingAnimation();
 		displayError("loginError", progression.message);
 		return;
 	}
@@ -170,8 +213,103 @@ async function login(email = getValue("loginUsername"), password = getValue("log
 
 
 /**
+ * Function that sets a flat and manages borders while the user is selecting a color.
+ * @param {string} color - The color selected by the user.
+*/
+function setColorPreference(color = "yellow") {
+	__auth_registerColorString = getColorsObject(color);
+	removeBorders();
+	applyborder(color);
+}
+
+
+/**
+ * Function to swap the current view to the home page.
+ * This function hides the authentication section and shows the main page section.
+ * @param {string} [email=__auth_registerEmail] - The email to fill in the registration form (optional).
+ * @param {string} [password=__auth_registerPassord] - The password to fill in the registration form (optional).
+ * @param {string} [colorString=__auth_registerColorString] - The color string to fill in the registration form (optional).
+ * @return {Promise<void>} - A promise that resolves when the home page is successfully displayed.
+*/
+async function register(email = __auth_registerEmail, password = __auth_registerPassord, colorString = __auth_registerColorString) {
+	displayError("nameError", "");
+
+	let isValidName = validateName(getValue("registerName"));
+	if (!isValidName.status) {
+		displayError("nameError", isValidName.message);
+		return;
+	}
+
+	let name = getValue("registerName");
+	if (name === "-1" || name === "") {
+		displayError("nameError", "Please fill in all fields");
+		return;
+	}
+
+	__auth_registerName = name;
+
+	if (!navigator.onLine) {
+		showFeedback(2, "network error, please try again");
+		return;
+	}
+
+	startLoadingAnimation();
+
+	const progression = await register_func(email, password, name, colorString);
+
+	stopLoadingAnimation();
+
+	if (progression.status === auth_notLogged || progression.status === auth_error) {
+		navigateTo("register");
+		displayError("registerError", progression.message);
+		return;
+	}
+
+	applyTheme();
+
+	startLoadingAnimation();
+	let userInfos = await getUserInfo();
+	stopLoadingAnimation();
+
+	__username = userInfos.name;
+	__primaryColor = userInfos.primary;
+	__secondaryColor = userInfos.secondary;
+	__tertiaryColor = userInfos.tertiary;
+
+	applyTheme(__primaryColor, __secondaryColor, __tertiaryColor);
+	toHome();
+
+}
+
+
+
+
+
+
+//------------- (still navigation functions with some logic added tho) ------------------------
+// these functions should be placed in the navigation.js file, but since logic is involved it's
+// more pratical fot them to be here and not in the navigation.js file
+//---------------------------------------------------------------------------------------------
+
+/**
+ * checks for invalid sequence of steps in the registration process.
+ * If any of the required fields are not set, it redirects the user to the registration page and displays an error message.
+*/
+function toName() {
+	if (__auth_registerEmail === "-1" || __auth_registerPassord === "-1" || __auth_registerColorString === "-1") {
+		navigateTo("register");
+		displayError("registerError", "sequence error, please try again");
+		return;
+	}
+
+	navigateTo("name");
+}
+
+/**
  * Function to log the user out of the application.
- * This function clears the local storage, cookies, and redirects the user to the login page.
+ * @param {string} [email = getValue("registerUsername")] 
+ * @param {string} [password= getValue("registerPassword")]
+ * @param {string} [confirmPassword= getValue("confirmPassword")] 
  * @returns {Promise<void>} - A promise that resolves when the logout process is complete.
 */
 async function toTheme(email = getValue("registerUsername"), password = getValue("registerPassword"), confirmPassword = getValue("confirmPassword")) {
@@ -219,27 +357,23 @@ async function toTheme(email = getValue("registerUsername"), password = getValue
 	__auth_registerPassord = password;
 
 	navigateTo("theme");
+	setColorPreference("yellow");
 }
 
-function setColorPreference(color) {
-	__auth_colorPreference = color;
-	removeBorders();
-	applyborder(color);
+/**
+ * Function to swap the current view to the welcome page.
+ * This function hides the main page section and shows the authentication section.
+ * @returns {void}
+*/
+function toHome() {
+	navigateTo("home");
+	setTitle("Welcome", __username)
+
+	startLoadingAnimation();
+	loadNotes();
+	stopLoadingAnimation();
 }
 
-function toName() {
-	if (!__auth_registerEmail || !__auth_registerPassord || !__auth_colorPreference) {
-		navigateTo("register");
-		displayError("registerError", "sequence error, please try again");
-		return;
-	}
-
-	switch (__auth_colorPreference) {
-		case "yellow":
-			__auth_registerColorString = "primary-yellow";
-			break;
-	}
-}
 
 
 
@@ -320,31 +454,7 @@ window.addEventListener('offline', () => {
 //COLORS FUNCTIONS
 //-----------------------------------------------------------------
 
-/**
- * Function that applys a standart theme to the website, used if custom theme is not set
- */
-function applyTheme() {
-	const themeColors = {
-		1: "yellow",
-		2: "blue",
-		3: "green",
-		4: "purple"
-	};
 
-	if (themeColors[currentTheme]) {
-		let colorVar = `--primary-${themeColors[currentTheme]}`;
-		let colorValue = getComputedStyle(document.documentElement).getPropertyValue(colorVar);
-		document.documentElement.style.setProperty("--primary-color", colorValue);
-
-		colorVar = `--secondary-${themeColors[currentTheme]}`;
-		colorValue = getComputedStyle(document.documentElement).getPropertyValue(colorVar);
-		document.documentElement.style.setProperty("--secondary-color", colorValue);
-
-		colorVar = `--minor-${themeColors[currentTheme]}`;
-		colorValue = getComputedStyle(document.documentElement).getPropertyValue(colorVar);
-		document.documentElement.style.setProperty("--minor-color", colorValue);
-	}
-}
 
 //-----------------------------------------------------------------
 
@@ -435,18 +545,7 @@ function applyTertiaryColor(color) {
 
 //-----------------------------------------------------------------
 
-//sidebar functions
-function openSideBar() {
-	ebi("sidebar").classList.add("open");
-	ebi("overlaySidebar").classList.add("visible");
-}
 
-//-----------------------------------------------------------------
-
-function closeSidebar() {
-	ebi("sidebar").classList.remove("open");
-	ebi("overlaySidebar").classList.remove("visible");
-}
 
 function apriReport() {
 	openReport();
@@ -1529,9 +1628,6 @@ function cleanLogin() {
 
 //-----------------------------------------------------------------
 
-function displayError(elementId, message) {
-	ebi(elementId).innerText = message;
-}
 
 //-----------------------------------------------------------------
 
@@ -1622,19 +1718,7 @@ function toCalendar() {
 }
 
 //-----------------------------------------------------------------
-function toHome() {
-	loadNotes();
-	setPopupPage(0);
-	showAddButton();
-	hideAllPages();
-	ebi("homepage").classList.remove("hidden");
-	ebi("pageTitle").innerText = "hi, ";
-	ebi("decoratedTitle").innerText = username;
-	currentPage = 2;
-	updateActivePageLink();
-	closeSidebar();
-	addNotesButton(0);
-}
+
 
 //-----------------------------------------------------------------
 
@@ -1829,113 +1913,15 @@ function loadMarksbysubject() {
 	-> openEvent: opens the popup with the event data
 */
 
-function showPlaceholder() {
-	ebi("eventsList").classList.add("hidden");
-	ebi("eventPlaceholder").classList.remove("hidden");
-	ebi("eventPlaceholder").classList.add("visible");
-}
+
 
 //-----------------------------------------------------------------
 
 
-function showNotes(notes) {
-	ebi("eventsList").classList.remove("hidden");
-	ebi("eventPlaceholder").classList.add("hidden");
-	ebi("eventPlaceholder").classList.remove("visible");
-	let list = ebi("eventsList");
-	list.innerHTML = "";
-
-	notes.forEach((note, index) => {
-		const event = document.createElement("div");
-		event.classList.add("upcomingEvent");
-		event.id = note.id;
-		event.onclick = () => showDeleteButton(note.id);
-
-		const buttonContainer = document.createElement("div");
-		buttonContainer.classList.add("eventButtonContainer");
-
-		const button = document.createElement("button");
-		button.classList.add("eventButton");
-		button.onclick = () => openEvent(note);
-
-		const icon = document.createElement("img");
-		icon.classList.add("eventIcon");
-		icon.src = "resources/icons/edit.svg";
-		icon.alt = "edit";
-
-		button.appendChild(icon);
-		buttonContainer.appendChild(button);
-
-		const infoContainer = document.createElement("div");
-		infoContainer.classList.add("eventInfoContainer");
-
-		const title = document.createElement("h3");
-		title.classList.add("eventTitle");
-		title.innerText = note.title;
-
-		const info = document.createElement("p");
-		info.classList.add("eventInfo");
-		info.innerText = note.description;
-
-		infoContainer.appendChild(title);
-		infoContainer.appendChild(info);
-
-		event.appendChild(buttonContainer);
-		event.appendChild(infoContainer);
-
-		const fakeEmpty = document.createElement("div");
-		fakeEmpty.classList.add("fakeEmpty");
-
-		event.appendChild(fakeEmpty);
-
-		list.appendChild(event);
-	});
-	const confirmButton = ebi("popupConfrimButton");
-	confirmButton.disabled = false;
-}
 
 //-----------------------------------------------------------------
 
-function showDeleteButton(id) {
-	if (!ebi(id).querySelector(".deleteNoteButton")) {
-		let deleteButton = document.createElement("button");
-		deleteButton.classList.add("deleteNoteButton");
 
-		let deleteIcon = document.createElement("img");
-		deleteIcon.src = "resources/icons/delete.svg";
-		deleteIcon.classList.add("eventIcon");
-
-		deleteButton.appendChild(deleteIcon);
-		ebi(id).appendChild(deleteButton);
-
-		deleteButton.onclick = (e) => {
-			e.stopPropagation();
-			showConfirmDelete(id);
-		};
-
-		let fakeScroll = document.createElement("div");
-		fakeScroll.classList.add("fakeEmpty", "fakeScroll");
-		ebi(id).appendChild(fakeScroll);
-
-		const handleClickOutside = (e) => {
-			try {
-				if (!ebi(id).contains(e.target)) {
-					fakeScroll.classList.add("hide");
-					setTimeout(() => {
-						fakeScroll.classList.remove("fakeScroll");
-						fakeScroll.classList.remove("hide");
-						deleteButton.remove();
-						fakeScroll.remove();
-					}, 210);
-					document.removeEventListener("click", handleClickOutside);
-				}
-			} catch (e) {
-			}
-		};
-
-		document.addEventListener("click", handleClickOutside);
-	}
-}
 
 function showConfirmDelete(id, iscalendar = false, isMark = false, isSchedule = false) {
 	ebi("cancelOverlay").classList.remove("hidden");
@@ -2005,59 +1991,6 @@ function openEvent(note, date = 0) {
 //-----------------------------------------------------------------
 
 
-function register() {
-	displayError("registerError", "");
-	enableLoading();
-	username = ebi("registerName").value;
-	let ntema = currentTheme;
-
-	const url = serverURL + "/register";
-
-	if (!email || !password) {
-		toPage("name", "register");
-		displayError("registerError", "an error occurred, please try again");
-		disableLoading();
-		return;
-	}
-
-	if (!username) {
-		displayError("nameError", "Please fill in all fields");
-		disableLoading();
-		return;
-	}
-
-	let primary = getColorFromTheme(1, currentTheme);
-	let secondary = getColorFromTheme(2, currentTheme);
-	let tertiary = getColorFromTheme(3, currentTheme);
-
-
-	const data = { email, password, primary, secondary, tertiary, name: username };
-	const xhr = new XMLHttpRequest();
-
-	xhr.open("POST", url, true);
-	xhr.withCredentials = true;
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		disableLoading();
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 1) {
-			displayError("nameError", "Registration failed: " + response.message);
-			return;
-		}
-
-		swapToHome();
-		location.reload();
-	};
-
-	xhr.onerror = function () {
-		disableLoading();
-		console.error("Network error:", xhr);
-		displayError("nameError", "Network error. Please try again.");
-	};
-
-	xhr.send(JSON.stringify(data));
-}
 
 //-----------------------------------------------------------------
 
@@ -2240,50 +2173,7 @@ function createEvent() {
 }
 
 //-----------------------------------------------------------------
-function loadNotes() {
-	const url = serverURL + "/getDayNotes";
 
-	let date = new Date();
-	date = formatDate(date);
-	const body = JSON.stringify({ date });
-
-	const xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.withCredentials = true;
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == 0) {
-			try {
-				if (Array.isArray(JSON.parse(xhr.responseText).notes)) {
-					if (response.notes.length > 0) {
-						showNotes(response.notes);
-					} else {
-						showPlaceholder();
-						return;
-					}
-				} else {
-					showPlaceholder();
-					throw new Error("Unexpected response format");
-				}
-			} catch (e) {
-				showPlaceholder();
-				throw new Error("Error parsing response" + e);
-			}
-		} else {
-			showPlaceholder();
-			throw new Error(xhr.responseText);
-		}
-	};
-
-	xhr.onerror = function () {
-		showPlaceholder();
-		throw new Error(xhr.statusText);
-
-	};
-	xhr.send(body);
-}
 
 
 function formatDate(date) {
@@ -2719,46 +2609,7 @@ function getSavedTheme() {
 	}
 }
 
-function getTheme() {
 
-	const url = serverURL + "/getTheme";
-
-	const xhr = new XMLHttpRequest();
-	xhr.open("GET", url);
-	xhr.withCredentials = true;
-	xhr.setRequestHeader("Content-Type", "application/json");
-
-	xhr.onload = function () {
-		let response = JSON.parse(xhr.responseText);
-		if (response.error == "0") {
-			const { primary, secondary, tertiary } = response.message;
-			const primaryHex = "#" + primary;
-			const secondaryHex = "#" + secondary;
-			const tertiaryHex = "#" + tertiary;
-
-			document.documentElement.style.setProperty("--primary-color", primaryHex);
-			document.documentElement.style.setProperty("--secondary-color", secondaryHex);
-			document.documentElement.style.setProperty("--minor-color", tertiaryHex);
-
-			primaryColor = primaryHex;
-			secondaryColor = secondaryHex;
-			tertiaryColor = tertiaryHex;
-
-			// Save the new colors to localStorage
-			localStorage.setItem("primaryColor", primaryHex);
-			localStorage.setItem("secondaryColor", secondaryHex);
-			localStorage.setItem("tertiaryColor", tertiaryHex);
-		} else {
-			console.error(xhr.responseText);
-		}
-	};
-
-	xhr.onerror = function () {
-		console.error(xhr.statusText);
-	};
-
-	xhr.send();
-}
 
 //-----------------------------------------------------------------
 

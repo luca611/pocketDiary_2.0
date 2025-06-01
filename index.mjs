@@ -61,7 +61,7 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: COOKIE_MAX_AGE,
-        secure: true,
+        secure: false, // TO CHANGE
         httpOnly: true,
         sameSite: "lax"
     }
@@ -108,7 +108,7 @@ app.use(cors(
         origin: process.env.CORS_ORIGIN || "*",
         methods: "GET,POST,DELETE,PUT",
         allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true
+        credentials: false // TO CHANGE
     }
 ));
 
