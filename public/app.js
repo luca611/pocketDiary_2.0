@@ -1,5 +1,9 @@
-import { isAuthenticated, logged as auth_logged, notLogged as auth_notLogged, error as auth_error } from "./modules/auth.js";
+import { validatePassword, isAuthenticated, login as login_func, logged as auth_logged, notLogged as auth_notLogged, error as auth_error, checkEmailAvailability as isEmailAvailable, emailAvailable, emailTaken as auth_emailTaken } from "./modules/auth.js";
+import { removeBorders, applyborder, getValue, ebi } from "./modules/utils.js";
+import { navigateTo } from "./modules/navigation.js";
 
+//debug only
+import { hideAuthForms, showAuthForm, hideAllSections, showSection } from "./modules/navigation.js";
 
 const cacheName = "pocketdiary";
 
@@ -36,14 +40,61 @@ xhr.onerror = function () {
 xhr.open("GET", "pwaversion.txt?t=" + Date.now());
 xhr.send();
 
+//app code 
+
+//dev only
+function keepClearingCache() {
+	if ('caches' in window) {
+		setInterval(() => {
+			caches.delete(cacheName).then((deleted) => {
+				if (deleted) {
+					console.log(`Cache "${cacheName}" deleted`);
+				}
+			}).catch((err) => {
+			});
+		}, 5000); // every 5 seconds
+	}
+}
+
+// Uncomment to enable continuous cache clearing
+keepClearingCache();
+
+
+
+
 // Check if cookies are enabled
 if (!navigator.cookieEnabled) {
 	alert("Cookies are disabled in your browser. Please enable cookies to use this application.");
 }
 
+//making functions available globally
+window.setColor = setColor;
+window.toSettings = toSettings;
+window.openSideBar = openSideBar;
+window.stopLoadingAnimation = stopLoadingAnimation;
+window.initialize = initialize;
+window.swapToLogin = swapToLogin;
+window.login = login;
+window.logout = logout;
+window.toTheme = toTheme;
 
 
+window.navigateTo = navigateTo;
 
+window.hideAllSections = hideAllSections;
+window.showSection = showSection;
+window.hideAuthForms = hideAuthForms;
+window.showAuthForm = showAuthForm;
+window.getValue = getValue;
+window.setColorPreference = setColorPreference;
+
+
+//app variables
+let __auth_registerPassord = "-1";
+let __auth_registerEmail = "-1";
+let __auth_registerName = "-1";
+let __auth_registerColorString = "-1";
+let __auth_colorPreference = "-1";
 
 /**
  * Function to initialize the application called when the page loads from html .
@@ -78,37 +129,117 @@ async function initialize() {
 }
 
 
-window.setColor = setColor;
-window.toSettings = toSettings;
-window.openSideBar = openSideBar;
-window.stopLoadingAnimation = stopLoadingAnimation;
-window.initialize = initialize;
-window.swapToLogin = swapToLogin;
-window.login = login;
-window.logout = logout;
+/**
+ * Function to log the user in the application.
+ * @param {string} email - The email to pre-fill in the login form (optional).
+ * @param {string} password - The password to pre-fill in the login form (optional).
+ */
+async function login(email = getValue("loginUsername"), password = getValue("loginPassword")) {
+	displayError("loginError", "");
+
+	if (!navigator.onLine) {
+		displayError("loginError", "No connection. Please try again.");
+		disableLoading();
+		return;
+	}
+
+	startLoadingAnimation();
+	if (email === "-1" || password === "-1") {
+		stopLoadingAnimation();
+		displayError("loginError", "Please fill in all fields");
+		return;
+	}
+
+	const progression = await login_func(email, password);
+
+	if (progression.status === auth_logged) {
+		stopLoadingAnimation();
+		cleanLogin();
+		swapToHome();
+		return;
+	}
+
+	if (progression.status === auth_notLogged || progression.status === auth_error) {
+		stopLoadingAnimation();
+		displayError("loginError", progression.message);
+		return;
+	}
+
+	showFeedback(2, "An error occurred during login.");
+}
 
 
+/**
+ * Function to log the user out of the application.
+ * This function clears the local storage, cookies, and redirects the user to the login page.
+ * @returns {Promise<void>} - A promise that resolves when the logout process is complete.
+*/
+async function toTheme(email = getValue("registerUsername"), password = getValue("registerPassword"), confirmPassword = getValue("confirmPassword")) {
+	displayError("registerError", "");
+	if (!navigator.onLine) {
+		showFeedback(2, "network error, please try again");
+		return;
+	}
 
+	if (email === "-1" || password === "-1" || confirmPassword === "-1") {
+		displayError("registerError", "Please fill in all fields");
+		return;
+	}
 
+	if (password !== confirmPassword) {
+		displayError("registerError", "Passwords do not match");
+		return;
+	}
 
+	let validPassword = validatePassword(password);
+	if (!validPassword.status) {
+		displayError("registerError", validPassword.message);
+		return;
+	}
 
+	const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailPattern.test(email)) {
+		displayError("registerError", "Please enter a valid email address");
+		return;
+	}
 
+	startLoadingAnimation();
 
+	const emailAvailable = await isEmailAvailable(email);
 
+	stopLoadingAnimation();
 
+	if (emailAvailable.status === auth_emailTaken || emailAvailable.status === auth_error) {
 
+		displayError("registerError", emailAvailable.message);
+		return;
+	}
 
+	__auth_registerEmail = email;
+	__auth_registerPassord = password;
 
+	navigateTo("theme");
+}
 
+function setColorPreference(color) {
+	__auth_colorPreference = color;
+	removeBorders();
+	applyborder(color);
+}
 
+function toName() {
+	if (!__auth_registerEmail || !__auth_registerPassord || !__auth_colorPreference) {
+		navigateTo("register");
+		displayError("registerError", "sequence error, please try again");
+		return;
+	}
 
-
-
-
-
-
-
-
+	switch (__auth_colorPreference) {
+		case "yellow":
+			__auth_registerColorString = "primary-yellow";
+			break;
+	}
+}
 
 
 
@@ -171,14 +302,7 @@ let currentDay = today.getDay() - 1;
 
 //-----------------------------------------------------------------
 
-/**
- * shorthand for document.getElementById
- * @param {string} id html object id 
- * @returns 
- */
-function ebi(id) {
-	return document.getElementById(id);
-}
+
 
 //-----------------------------------------------------------------
 
@@ -1236,7 +1360,7 @@ function stopLoadingAnimation() {
 	ebi("loadingScreen").classList.add("hidden");
 }
 
-function enableLoading() {
+function startLoadingAnimation() {
 	ebi("loadingScreen").classList.remove("hidden");
 }
 
@@ -1253,11 +1377,7 @@ function swapToWelcome() {
 //-----------------------------------------------------------------
 
 function swapToLogin() {
-	cleanRegister();
-	cleanLogin();
-	ebi("welcome").classList.add("hidden");
-	ebi("login").classList.remove("hidden");
-	ebi("register").classList.add("hidden");
+	navigateTo("login");
 }
 
 //-----------------------------------------------------------------
@@ -1350,11 +1470,7 @@ function hideAllPages() {
 	});
 }
 
-//-----------------------------------------------------------------
-function validatePassword(password) {
-	const hasUpperCase = /[A-Z]/.test(password);
-	return password.length >= 8 && hasUpperCase;
-}
+
 
 async function proceedToTheme() {
 	enableLoading();
@@ -1884,27 +2000,7 @@ function openEvent(note, date = 0) {
  
 */
 
-function checkEmailAvailability(email) {
-	if (!navigator.onLine) {
-		return false;
-	}
-	if (!email) {
-		return false;
-	}
-	let url = serverURL + "/validateEmail?email=" + email;
-	let timestamp = new Date().getTime();
-	url += "&t=" + timestamp;
-	let xhr = new XMLHttpRequest();
-	xhr.open("GET", url, false);
-	xhr.send();
 
-	if (xhr.status === 200) {
-		let response = JSON.parse(xhr.responseText);
-		return response.error === "0";
-	} else {
-		return false;
-	}
-}
 
 //-----------------------------------------------------------------
 
@@ -2059,47 +2155,7 @@ function swapToRgb() {
 
 //-----------------------------------------------------------------
 
-function login(logEmail = ebi("loginUsername").value.trim().toLowerCase(), logPassword = ebi("loginPassword").value.trim()) {
-	displayError("loginError", "");
-	enableLoading();
-	if (!navigator.onLine) {
-		displayError("loginError", "No connection. Please try again.");
-		disableLoading();
-		return false;
-	}
 
-	const url = serverURL + "/login";
-
-	if (!logEmail || !logPassword) {
-		disableLoading();
-		displayError("loginError", "Please fill in all fields");
-		return false;
-	}
-
-	fetch(url, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ email: logEmail, password: logPassword }),
-		credentials: 'include' // This is important for sending/receiving cookies
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.error == 0) {
-				cleanLogin();
-				swapToHome();
-			} else {
-				disableLoading();
-				displayError("loginError", data.message);
-			}
-		})
-		.catch(err => {
-			displayError("loginError", "Network error. Please try again.");
-		});
-	disableLoading();
-	return true;
-}
 
 //-----------------------------------------------------------------
 

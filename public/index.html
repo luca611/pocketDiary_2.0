@@ -46,7 +46,7 @@
     </div>
 
     <!-- Auth pages (inlcuding hero page since it has same layout) -->
-    <div class="autenticazione " id="autenticazione">
+    <div class="autenticazione " id="authentication">
         <!-- Hero page -->
         <div class="welcomePage" id="welcome">
             <img class="logo" src="resources/imgs/pocketDiaryLogo.svg" alt="">
@@ -56,8 +56,8 @@
             </h1>
             <hr>
             <div class="actionContainer">
-                <button class="bottoneLogin" onclick="swapToLogin()"> Login </button>
-                <button class="bottoneSignUp" onclick="swapToRegister()">Don’t have an account yet?</button>
+                <button class="bottoneLogin" onclick="navigateTo('login')"> Login </button>
+                <button class="bottoneSignUp" onclick="navigateTo('register')">Don’t have an account yet?</button>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
                     <p id="loginError" class="error"></p>
                 </div>
                 <button class="bottoneLogin confirm" id="confermaLogin" onclick="login()">Login</button>
-                <button class="bottoneSignUp" onclick="swapToRegister()">Don’t have an account yet?</button>
+                <button class="bottoneSignUp" onclick="navigateTo('register')">Don’t have an account yet?</button>
             </div>
         </div>
 
@@ -93,8 +93,8 @@
                     <p id="registerError" class="error"></p>
                 </div>
                 <button class="bottoneLogin confirm" id="confermaRegistrazione"
-                    onclick="proceedToTheme()">Continue</button>
-                <button class="bottoneSignUp" onclick="swapToLogin()">Have an account already?</button>
+                    onclick="toTheme()">Continue</button>
+                <button class="bottoneSignUp" onclick="navigateTo('login')">Have an account already?</button>
             </div>
         </div>
 
@@ -104,7 +104,7 @@
                         class="style3">me</b></h1>
                 <hr class="authHr">
                 <div class="themeScroll">
-                    <div id="yellow" class="tuttiTemi border" onclick="setTheme(1)">
+                    <div id="yellow" class="tuttiTemi border" onclick="setColorPreference('yellow')">
                         <img src="resources/imgs/YellowBook.svg" alt="">
                         <div class="raggruppamento">
                             <div class="primoDivTema"> Primary</div>
@@ -112,7 +112,7 @@
                             <div class="terzoDivTema"> Pins</div>
                         </div>
                     </div>
-                    <div id="blue" class="tuttiTemi" onclick="setTheme(2)">
+                    <div id="blue" class="tuttiTemi" onclick="setColorPreference('blue')">
                         <img src="resources/imgs/BlueBook.svg" alt="">
                         <div class="raggruppamento">
                             <div class="primoDivTema bluePrimary"> Primary</div>
@@ -120,7 +120,7 @@
                             <div class="terzoDivTema bluePins"> Pins</div>
                         </div>
                     </div>
-                    <div id="green" class="tuttiTemi" onclick="setTheme(3)">
+                    <div id="green" class="tuttiTemi" onclick="setColorPreference('green')">
                         <img src="resources/imgs/GreenBook.svg" alt="">
                         <div class="raggruppamento">
                             <div class="primoDivTema greenPrimary"> Primary</div>
@@ -128,7 +128,7 @@
                             <div class="terzoDivTema greenPins"> Pins</div>
                         </div>
                     </div>
-                    <div id="purple" class="tuttiTemi" onclick="setTheme(4)">
+                    <div id="purple" class="tuttiTemi" onclick="setColorPreference('purple')">
                         <img src="resources/imgs/PurpleBook.svg" alt="">
                         <div class="raggruppamento">
                             <div class="primoDivTema purplePrimary"> Primary</div>

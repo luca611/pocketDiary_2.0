@@ -160,7 +160,7 @@ app.get('/getName', getName);
 app.delete('/logout', logout);
 app.delete('/deleteAccount', deleteUser);
 
-app.get("/validateEmail", validateEmail);
+app.get("/checkEmail", validateEmail);
 
 /*
     Note routes
